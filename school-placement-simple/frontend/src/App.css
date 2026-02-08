@@ -1,0 +1,314 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+/* Tabs navigation */
+.tabs-nav {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  padding: 0.6rem 0.95rem;
+  font-size: 1.05rem;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #333;
+  transition: background 0.15s ease, transform 0.08s ease;
+}
+
+.tab-btn:hover {
+  background: rgba(0,0,0,0.03);
+  transform: translateY(-1px);
+}
+
+.tab-btn.active {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(102,126,234,0.2);
+}
+
+.tab-btn .app-icon {
+  width: 1.3em;
+  height: 1.3em;
+  margin-right: 0.6rem;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+  font-size: 1.8rem;
+}
+
+/* Login Styles */
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-box {
+  background: white;
+  padding: 3rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  text-align: center;
+  max-width: 400px;
+}
+
+.login-box h1 {
+  color: #333;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Responsive header and layout */
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .header-left h1 {
+    font-size: 1.2rem;
+  }
+
+  .btn-logout {
+    align-self: center;
+  }
+}
+
+/* Tabs responsiveness */
+ .tabs-nav {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 600px) {
+  .tabs-nav {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .tab-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+    border-radius: 8px;
+  }
+
+  .tab-btn .app-icon {
+    width: 1.05em;
+    height: 1.05em;
+    margin-right: 0.45rem;
+  }
+}
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-student,
+.btn-admin {
+  flex: 1;
+  color: white;
+  font-size: 1.1rem;
+  padding: 1rem;
+}
+
+.btn-student {
+  background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
+}
+
+.btn-student:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #4556ba 100%);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-admin {
+  background: linear-gradient(135deg, #764ba2 0%, #63408f 100%);
+}
+
+.btn-admin:hover {
+  background: linear-gradient(135deg, #63408f 0%, #52357a 100%);
+  box-shadow: 0 8px 20px rgba(118, 75, 162, 0.4);
+}
+
+.btn-logout {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+  color: white;
+  padding: 0.6rem 1.2rem;
+}
+
+.btn-logout:hover {
+  background: linear-gradient(135deg, #ff5252 0%, #ff3838 100%);
+  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.3);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #4556ba 100%);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+  box-shadow: 0 8px 20px rgba(112, 128, 144, 0.3);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+  color: white;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #40c057 0%, #2f9e44 100%);
+  box-shadow: 0 8px 20px rgba(81, 207, 102, 0.3);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #fa5252 0%, #f03e3e 100%);
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, #ffd43b 0%, #fcc419 100%);
+  color: #1f2937;
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #fcc419 0%, #fab005 100%);
+  box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);
+}
+
+.btn-submit {
+  width: 100%;
+  margin-top: 2rem;
+  padding: 1rem;
+  font-size: 1.1rem;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn:disabled:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Icon helper for consistent sizing and spacing */
+.app-icon {
+  vertical-align: middle;
+  width: 1.1em;
+  height: 1.1em;
+  margin-right: 0.5rem;
+  display: inline-block;
+}
+
+/* Icon colors: base + contextual overrides */
+.app-icon { color: #06b6d4; }
+
+/* Icons inside buttons should inherit button text color */
+.btn .app-icon { color: currentColor; }
+
+/* Tab icons: teal when inactive, white when active */
+.tab-btn .app-icon { color: #06b6d4; }
+.tab-btn.active .app-icon { color: #fff; }
+
+/* Stat card icons: distinct colors per card */
+.stats-grid .stat-card:nth-child(1) .app-icon { color: #7c3aed; }
+.stats-grid .stat-card:nth-child(2) .app-icon { color: #f59e0b; }
+.stats-grid .stat-card:nth-child(3) .app-icon { color: #16a34a; }
+.stats-grid .stat-card:nth-child(4) .app-icon { color: #fb923c; }
+
+/* Search and small icons */
+.search-box .app-icon, .students-header .app-icon { color: #0c5aa6; }
+
+/* Status icons */
+.status-badge.placed .status-icon { color: #16a34a; }
+.status-badge.notplaced .status-icon { color: #ea580c; }
+
+/* Placement action icon (play) */
+.placement-actions .app-icon { color: #fff; }

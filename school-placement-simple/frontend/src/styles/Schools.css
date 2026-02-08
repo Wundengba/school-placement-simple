@@ -1,0 +1,333 @@
+.schools-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.schools-header {
+  margin-bottom: 2rem;
+}
+
+.schools-header h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.schools-summary {
+  font-size: 0.95rem;
+  color: #666;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 6px;
+  border-left: 4px solid #3498db;
+}
+
+.schools-summary strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.schools-filters {
+  display: grid;
+  grid-template-columns: 1fr 150px 200px auto;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 1.1rem;
+  color: #999;
+  pointer-events: none;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.clear-icon {
+  position: absolute;
+  right: 12px;
+  font-size: 1rem;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.clear-icon:hover {
+  color: #333;
+}
+
+.filter-group select {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.btn-secondary {
+  padding: 0.8rem 1.2rem;
+  background: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.btn-secondary:hover {
+  background: #7f8c8d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary .icon {
+  font-size: 1rem;
+}
+
+.schools-info {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: #e3f2fd;
+  border-radius: 4px;
+  border-left: 3px solid #2196F3;
+}
+
+.schools-info strong {
+  color: #1976D2;
+  font-weight: 600;
+}
+
+.schools-table-container {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.schools-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.schools-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.85rem;
+}
+
+.schools-table th {
+  padding: 1.2rem;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+.schools-table td {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.schools-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.schools-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.schools-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.school-id {
+  font-weight: 600;
+  color: #667eea;
+  min-width: 60px;
+}
+
+.school-name {
+  font-weight: 500;
+  color: #333;
+  max-width: 450px;
+}
+
+.school-category {
+  min-width: 140px;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.category-badge-A {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.category-badge-B {
+  background: #cfe2ff;
+  color: #084298;
+  border: 1px solid #b6d4fe;
+}
+
+.category-badge-C {
+  background: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}
+
+.school-region {
+  color: #555;
+  font-weight: 500;
+}
+
+.category-A:hover {
+  background: #f0f8f5;
+}
+
+.category-B:hover {
+  background: #f0f5ff;
+}
+
+.category-C:hover {
+  background: #fff5f7;
+}
+
+.no-results {
+  background: #f9f9f9 !important;
+}
+
+.empty-message {
+  text-align: center;
+  color: #999;
+  padding: 3rem 1rem !important;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .schools-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filter-group:nth-child(3),
+  .filter-group:nth-child(4) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .schools-container {
+    padding: 1rem;
+  }
+
+  .schools-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .schools-summary {
+    font-size: 0.85rem;
+  }
+
+  .schools-filters {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .btn-secondary {
+    width: 100%;
+  }
+
+  .schools-table {
+    font-size: 0.85rem;
+  }
+
+  .schools-table th,
+  .schools-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .school-name {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .category-badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+}

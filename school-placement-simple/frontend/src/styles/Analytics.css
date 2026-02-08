@@ -1,0 +1,212 @@
+.analytics-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.analytics-container h2 {
+  color: #333;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.analytics-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  text-align: center;
+}
+
+.analytics-card h3 {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.large-metric {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.analytics-card p {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.analytics-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 900px) {
+  .analytics-section { overflow: auto; }
+  .demand-table { min-width: 700px; }
+}
+
+.analytics-section h3 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 0.5rem;
+}
+
+.analytics-grid .analytics-card h3 {
+  color: #fff;
+  font-size: 1.05rem;
+}
+
+.analytics-card ol {
+  padding-left: 1.1rem;
+  color: #fff;
+}
+
+.analytics-card li {
+  font-weight: 600;
+}
+
+.demand-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.demand-table thead {
+  background: #f0f1ff;
+  border-bottom: 2px solid #667eea;
+}
+
+.demand-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+}
+
+.demand-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.demand-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.center {
+  text-align: center;
+  font-weight: 600;
+}
+
+.utilization-bar {
+  background: #e9ecef;
+  border-radius: 8px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 8px;
+  transition: width 0.3s ease;
+}
+
+.status-normal {
+  background: linear-gradient(90deg, #51cf66, #40c057);
+}
+
+.status-high {
+  background: linear-gradient(90deg, #ffd93d, #ffb000);
+}
+
+.status-over-capacity {
+  background: linear-gradient(90deg, #ff6b6b, #ff5252);
+}
+
+.bar-label {
+  position: relative;
+  z-index: 10;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-normal {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-high {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-over-capacity {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.analytics-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.analytics-actions button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.analytics-actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-success {
+  background: #51cf66;
+}
+
+.btn-success:hover {
+  background: #40c057;
+  box-shadow: 0 6px 16px rgba(81, 207, 102, 0.3);
+}
+
+.btn-info {
+  background: #1da1f2;
+}
+
+.btn-info:hover {
+  background: #1a91da;
+  box-shadow: 0 6px 16px rgba(29, 161, 242, 0.3);
+}

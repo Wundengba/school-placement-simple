@@ -1,0 +1,286 @@
+.schoolselection-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.schoolselection-container h2 {
+  color: #0f172a;
+  margin-bottom: 0.75rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.schoolselection-container .muted {
+  color: #64748b;
+  margin-bottom: 2.5rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Student Lookup Section */
+.student-lookup-section {
+  background: linear-gradient(135deg, #f0f7ff 0%, #f8fbff 100%);
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  border: 1px solid #dbeafe;
+  margin-top: 2rem;
+}
+
+.lookup-input-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.lookup-input {
+  flex: 1;
+  min-width: 240px;
+  padding: 0.85rem 1.2rem;
+  border: 2px solid #bfdbfe;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: white;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.lookup-input:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.lookup-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+  background: #f8fafc;
+}
+
+.lookup-input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Student Info Bar */
+.student-info-bar {
+  background: linear-gradient(135deg, #f0f9ff 0%, #f0fdfa 100%);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 5px solid #0891b2;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.05rem;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.1);
+}
+
+.student-info-bar p {
+  margin: 0;
+  color: #0c4a6e;
+  font-weight: 500;
+}
+
+.student-info-bar .muted {
+  margin: 0;
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.selection-form {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.section { 
+  margin-bottom: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.section h3 { 
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cat-search { 
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.cat-search input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  border: 2px solid #cbd5e0;
+  background: #ffffff;
+  font-size: 0.96rem;
+  font-weight: 500;
+  color: #1f2937;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.cat-search input::placeholder {
+  color: #a0aec0;
+  font-weight: 500;
+}
+
+.cat-search input:hover {
+  border-color: #4299e1;
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.12);
+}
+
+.cat-search input:focus {
+  outline: none;
+  border-color: #3182ce;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.grid-2 { 
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.grid-4 { 
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+select { 
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  border-radius: 10px;
+  border: 2px solid #cbd5e0;
+  background: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #2d3748;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+select:hover {
+  border-color: #4299e1;
+  box-shadow: 0 4px 8px rgba(66, 153, 225, 0.1);
+}
+
+select:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.error-box { 
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #fed7d7 0%, #fec5c5 100%);
+  color: #742a2a;
+  border-radius: 10px;
+  border-left: 4px solid #fc8181;
+  font-weight: 500;
+}
+
+.success-box { 
+  background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid #c6f6d5;
+}
+
+.success-box h2 {
+  color: #22543d;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.success-box p {
+  color: #2f855a;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.selection-summary { 
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  border: 1px solid #c6f6d5;
+}
+
+.selection-summary h4 { 
+  margin: 0.75rem 0 0.5rem 0;
+  color: #22543d;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.selection-summary ol {
+  color: #2f855a;
+  padding-left: 1.5rem;
+}
+
+.selection-summary ol li {
+  margin-bottom: 0.5rem;
+}
+
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 900px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-2 { grid-template-columns: 1fr; }
+  .selection-form {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-4 { grid-template-columns: 1fr; }
+  .schoolselection-container h2 {
+    font-size: 1.5rem;
+  }
+  .section h3 {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,189 @@
+.testscores-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.testscores-container h2 {
+  color: #1f2937;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.testscores-header {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.upload-section {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-select {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.scores-table {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+  overflow: auto;
+  margin-bottom: 1.25rem;
+}
+
+.scores-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+@media (max-width: 900px) {
+  .scores-table table {
+    min-width: 900px;
+  }
+
+  .scores-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .entry-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.scores-table thead {
+  background: #f1f5f9;
+  color: #1f2937;
+}
+
+.scores-table th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.scores-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  text-align: left;
+  font-size: 0.95rem;
+  color: #344054;
+}
+
+.scores-table tbody tr:hover {
+  background: #fbfdff;
+}
+
+.score-cell {
+  text-align: center;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.score-average {
+  text-align: center;
+  background: linear-gradient(90deg,#eef2ff,#f8fafc);
+  color: #0f172a;
+  font-weight: 800;
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+}
+
+.grade-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  min-width: 36px;
+}
+
+.grade-A { background: #16a34a; color: white; }
+.grade-B { background: #f59e0b; color: white; }
+.grade-C { background: #ef4444; color: white; }
+.grade-D { background: #6b7280; color: white; }
+.grade-E { background: #374151; color: white; }
+
+.btn-sm {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.9rem;
+  background: linear-gradient(90deg,#2563eb,#7c3aed);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 6px 18px rgba(124,58,237,0.12);
+}
+
+.btn-sm:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(124,58,237,0.14); }
+
+/* Entry form styles */
+.scores-entry { margin: 1rem 0 1.5rem 0; background: #ffffff; padding: 1rem; border-radius: 10px; border: 1px solid #eef2ff; box-shadow: 0 6px 20px rgba(16,24,40,0.04); }
+.entry-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.scores-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+.scores-grid .form-group label { font-size: 0.85rem; font-weight: 600; color: #0f172a; }
+.scores-grid .form-group input { padding: 0.5rem 0.6rem; border-radius: 8px; border: 1px solid #e6edf3; background: #fbfdff; }
+
+@media (max-width: 900px) { .scores-grid { grid-template-columns: repeat(2, 1fr); } .entry-row { grid-template-columns: 1fr; } }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.form-group input {
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group input:read-only {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.2rem;
+}

@@ -1,0 +1,956 @@
+Abetifi Kyemase Technical Institute	Category A	Eastern
+Abomosu STEM Senior High	Category A	Eastern
+Aburi Girls' Senior High	Category A	Eastern
+Accra Academy	Category A	Greater Accra
+Accra Girls Senior High .	Category A	Greater Accra
+Accra Tech. Trg. Centre	Category A	Greater Accra
+Achimota Senior High	Category A	Greater Accra
+Ada Tech. Inst.	Category A	Greater Accra
+Adako Jachie Technical Institute	Category A	Ashanti
+Adisadel College	Category A	Central
+Akwatia Tech. Inst.	Category A	Eastern
+Anlo Tech. Inst.	Category A	Volta
+Archbishop Porter Girls Snr.High .	Category A	Western
+Assin Foso Technical Institute	Category A	Central
+Asuansi Tech. Inst.	Category A	Central
+Awaso STEM Senior High	Category A	Western North
+Bawku Tech. Inst.	Category A	Upper East
+Berekum Presby Senior High	Category A	Bono
+Biriwa Technical Institute	Category A	Central
+Bishop Herman College	Category A	Volta
+Bolga Girls Senior High	Category A	Upper East
+Bolga Tech. Inst.	Category A	Upper East
+Bolgatanga Senior High	Category A	Upper East
+Bosomtwe Girls STEM Senior High	Category A	Ashanti
+Bosomtwe STEM Academy	Category A	Ashanti
+Cape Coast Tech. Inst.	Category A	Central
+Dabokpa Voc/Tech. Inst.	Category A	Northern
+Dormaa Technical Institute	Category A	Bono
+East Legon Applied Technology Institute	Category A	Greater Accra
+Fijai Senior High	Category A	Western
+Ghana Senior High School, Tamale	Category A	Northern
+Ghana Senior High, Koforidua	Category A	Eastern
+Ghana Senior High/Tech	Category A	Western
+Holy Child School, Cape Coast	Category A	Central
+Kibi Technical Institute	Category A	Eastern
+Kikam Tech. Inst.	Category A	Western
+Koforidua Senior High/Tech	Category A	Eastern
+Koforidua Tech. Inst.	Category A	Eastern
+Konongo Odumase Senior High .	Category A	Ashanti
+Kpando Tech. Inst.	Category A	Volta
+Kpasenpke STEM Senior High	Category A	North East
+Krobo Girls' Presby Senior High	Category A	Eastern
+Kumasi High School	Category A	Ashanti
+Kumasi Tech. Inst.	Category A	Ashanti
+Lawra Senior High	Category A	Upper West
+Madina Technical Institute	Category A	Greater Accra
+Mawuli School, Ho	Category A	Volta
+Mfantsiman Girls' Senior High	Category A	Central
+Mfantsipim School	Category A	Central
+Nandom Senior High	Category A	Upper West
+Navrongo Senior High	Category A	Upper East
+New Century Technical Institute	Category A	Greater Accra
+Nkoranza Tech Inst.	Category A	Bono East
+Notre Dame Girls Senior High School, Sunyani	Category A	Bono
+Notre Dame Sem/ Senior High, Navrongo	Category A	Upper East
+OLA Girls Senior High, Ho	Category A	Volta
+OLA Girls Senior High, Kenyasi	Category A	Ahafo
+Ofori Panin Senior High	Category A	Eastern
+Okuapeman Senior High	Category A	Eastern
+Opoku Ware School	Category A	Ashanti
+Our Lady of Providence Senior High	Category A	Bono
+Panfokrom Technical Institute	Category A	Central
+Pilot Technical Institute	Category A	Greater Accra
+Pope John Snr. High & Min. Sem., Koforidua	Category A	Eastern
+Prempeh College	Category A	Ashanti
+Presby Boys' Senior High, Legon	Category A	Greater Accra
+Sekondi College	Category A	Western
+Serwaa Kesse Girls Senior High	Category A	Ahafo
+St. Augustine's College, Cape Coast	Category A	Central
+St. Charles Senior High, Tamale	Category A	Northern
+St. Francis Girls Senior High, Jirapa	Category A	Upper West
+St. James Sem & Senior High, Abesim	Category A	Bono
+St. John's Senior High, Sekondi	Category A	Western
+St. Louis Senior High, Kumasi	Category A	Ashanti
+St. Mary's Senior High, Korle Gonno	Category A	Greater Accra
+St. Mary's Technical Institute, Asamankese	Category A	Eastern
+St. Paul's Tech. Inst.	Category A	Eastern
+St. Peter's Senior High, Nkwatia	Category A	Eastern
+St. Rose's Senior High, Akwatia	Category A	Eastern
+St. Thomas Aquinas Senior High, Cantoments	Category A	Greater Accra
+Suame Technical Institute	Category A	Ashanti
+Sunyani Senior High	Category A	Bono
+T. I. Ahmadiyya Senior High, Kumasi	Category A	Ashanti
+Takoradi Tech. Inst.	Category A	Western
+Tamale Senior High .	Category A	Northern
+Tema Mission Technical Institute	Category A	Greater Accra
+Tema Senior High	Category A	Greater Accra
+Tema Tech. Inst.	Category A	Greater Accra
+Wa Tech. Inst.	Category A	Upper West
+Wesley Girls' High School, Cape Coast	Category A	Central
+Winneba Technical Institute	Category A	Central
+Yaa Asantewaa Girls Senior High .	Category A	Ashanti
+Yamfo Technical Institute	Category A	Ahafo
+Abetifi Presby Senior High	Category B	Eastern
+Abetifi Tech. Inst.	Category B	Eastern
+Abuakwa State College	Category B	Eastern
+Abutia Senior High/Tchnical	Category B	Volta
+Academy of Christ the King	Category B	Central
+Accra STEM Academy	Category B	Greater Accra
+Accra Senior High	Category B	Greater Accra
+Acherensua Senior High	Category B	Ahafo
+Achiase Senior High	Category B	Eastern
+Ada Senior High	Category B	Greater Accra
+Adankwaman Senior High	Category B	Central
+Adiembra Senior High	Category B	Western
+Adonten Senior High	Category B	Eastern
+Aduman Senior High	Category B	Ashanti
+Adventist Senior High, Kumasi	Category B	Ashanti
+Afienya Technical Institute	Category B	Greater Accra
+Afua Kobi Ampem Girls' Senior High	Category B	Ashanti
+Agate Comm. Senior High	Category B	Volta
+Aggrey Mem. A.M.E.Zion Snr. High	Category B	Central
+Agona Senior High/Tech	Category B	Ashanti
+Agona Swedru Technical Institute	Category B	Central
+Agona Technical Institute	Category B	Ashanti
+Ahafoman Senior High/Tech	Category B	Ahafo
+Ahantaman Girls' Senior High	Category B	Western
+Akim Swedru Senior High	Category B	Eastern
+Akontombra Senior High	Category B	Western North
+Akrofuom Senior High/Tech	Category B	Ashanti
+Akumfi Ameyaw Senior High/Tech.	Category B	Bono East
+Akwamuman Senior High	Category B	Eastern
+Al-Azariya Islamic Snr. High, Kumasi	Category B	Ashanti
+Amankwakrom Fisheries Agric. Tech. Inst.	Category B	Eastern
+Amanten Senior High	Category B	Bono East
+Amenfiman Senior High	Category B	Western
+Anglican Senior High, Kumasi	Category B	Ashanti
+Anlo Senior High	Category B	Volta
+Anum Presby Technical Institute	Category B	Eastern
+Apam Senior High	Category B	Central
+Armed Forces Senior High/Tech, Kumasi	Category B	Ashanti
+Asamankese Senior High	Category B	Eastern
+Asankare Technical Institute	Category B	Ashanti
+Asanteman Senior High	Category B	Ashanti
+Asare Bediako Senior High .	Category B	Ashanti
+Asawinso Senior High	Category B	Western North
+Attafuah Senior High/Tech	Category B	Eastern
+Awudome Senior High .	Category B	Volta
+Awutu Winton Senior High	Category B	Central
+Axim Technical Institute	Category B	Western
+Badu Senior High/Tech.	Category B	Bono
+Baglo Ridge Senior High/Tech.	Category B	Oti
+Bankoman Senior High	Category B	Ashanti
+Bawku Senior High	Category B	Upper East
+Bechem Presby Senior High	Category B	Ahafo
+Bechem Technical Institute	Category B	Ahafo
+Benkum Senior High	Category B	Eastern
+Beposo Senior High	Category B	Ashanti
+Berekum Senior High	Category B	Bono
+Bia Senior High/Tech	Category B	Western North
+Boa-Amponsem Senior High	Category B	Central
+Boakye Tromo Senior High/Tech	Category B	Ahafo
+Bodi Senior High	Category B	Western North
+Bomaa Comm. Senior High	Category B	Ahafo
+Bompeh Senior High./Tech	Category B	Western
+Breman Asikuma Senior High	Category B	Central
+Bueman Senior High .	Category B	Oti
+Charlotte Dolphyne Technical Institute	Category B	Western
+Chemu Senior High/Tech	Category B	Greater Accra
+Chiraa Senior High	Category B	Bono
+Christ the King Cath., Obuasi	Category B	Ashanti
+Collins Senior High/Commercial, Agogo	Category B	Ashanti
+Comboni Tech/Voc Inst.	Category B	Volta
+Daboase Senior High/Tech	Category B	Western
+Dadieso Senior High	Category B	Western North
+Derma Comm. Day School	Category B	Ahafo
+Diamono Senior High Sch.	Category B	Bono
+Diaso Senior High	Category B	Central
+Dompoase Senior High	Category B	Ashanti
+Don Bosco Voc./Tech. Inst.	Category B	Bono
+Dormaa Senior High	Category B	Bono
+Drobo Senior High	Category B	Bono
+Dwamena Akenten Senior High	Category B	Ashanti
+E.P.C. Mawuko Girls Senior High	Category B	Volta
+Edinaman Senior High	Category B	Central
+Ejisu Senior High/Tech	Category B	Ashanti
+Ekumfi T. I. Ahmadiiyya SHTS	Category B	Central
+Enyan-Abaasa Technical Institute	Category B	Central
+Esiama Senior High/Tech	Category B	Western
+Fomena T.I. Ahmadiyya Senior High	Category B	Ashanti
+Forces Senior High/Tech, Burma Camp	Category B	Greater Accra
+Ghana Muslim Mission Senior High	Category B	Ashanti
+Ghana National College	Category B	Central
+Ghanata Senior High	Category B	Greater Accra
+Goka Senior High/Tech.	Category B	Bono
+Gomoa Adaa Technical Institute	Category B	Central
+Government Technical Institute	Category B	Greater Accra
+Guakro Effah Senior High	Category B	Bono East
+Gyamfi Kumanini Senior High/Tech	Category B	Ahafo
+Half Assini Senior High	Category B	Western
+Have Tech. Inst.	Category B	Volta
+Hwidiem Senior High	Category B	Ahafo
+Islamic Girls Senior High,Suhum	Category B	Eastern
+Islamic Senior High,Kumasi	Category B	Ashanti
+Istiquaama Snr. High	Category B	Bono
+Jachie Pramso Senior High	Category B	Ashanti
+Jacobu Senior High/Tech.	Category B	Ashanti
+Jema Senior High	Category B	Bono East
+Jinijini Senior High	Category B	Bono
+Juaben Senior High	Category B	Ashanti
+Juaboso Senior High	Category B	Western North
+KNUST Senior High	Category B	Ashanti
+Kade Senior High/Tech.	Category B	Eastern
+Kajaji Senior High	Category B	Bono East
+Kalpohin Senior High	Category B	Northern
+Kanton Senior High	Category B	Upper West
+Keta Senior High/Tech .	Category B	Volta
+Kibi Senior High/Tech	Category B	Eastern
+Kofiase Adventist Senior High/Tech.	Category B	Ashanti
+Konadu Yiadom Catholic Senior High	Category B	Ashanti
+Kpando Senior High .	Category B	Volta
+Krobea Asante Technical & Vocational Inst.	Category B	Ashanti
+Kukuom Agric Senior High	Category B	Ahafo
+Kumasi Academy	Category B	Ashanti
+Kumasi Girls Senior High,	Category B	Ashanti
+Kumasi Wesley Girls High Sch	Category B	Ashanti
+Kusanaba Technical Institute	Category B	Upper East
+Kwabeng Anglican Senior High/Tech	Category B	Eastern
+Kwabre Senior High	Category B	Bono East
+Kwahu Ridge Senior High	Category B	Eastern
+Kwahu Tafo Senior High	Category B	Eastern
+Kwame Nkrumah Senior High	Category B	Western
+Labone Senior High	Category B	Greater Accra
+Lassie-Tuolu Senior High	Category B	Upper West
+Mabang Senior High/Tech	Category B	Ashanti
+Mafi-Kumasi Senior High/Tech	Category B	Volta
+Mansen Senior High	Category B	Bono
+Manya Krobo Senior High	Category B	Eastern
+Menji Senior High	Category B	Bono
+Methodist Girls Senior High, Mamfe	Category B	Eastern
+Methodist High School,Saltpond	Category B	Central
+Methodist Technincal Institute	Category B	Ashanti
+Mim Senior High	Category B	Ahafo
+Mozano Senior High	Category B	Central
+Mpasatia Senior High/Tech	Category B	Ashanti
+Mpohor Senior High	Category B	Western
+Mpraeso Senior High	Category B	Eastern
+Nafana Senior High	Category B	Bono
+New Edubiase Senior High	Category B	Ashanti
+New Juaben Senior High/Com	Category B	Eastern
+Nifa Senior High	Category B	Eastern
+Ningo Senior High	Category B	Greater Accra
+Nkawkaw Senior High	Category B	Eastern
+Nkoranman Senior High	Category B	Bono
+Nkoranza Senior High/Tech	Category B	Bono East
+Nkrankwanta Senior High/Tech	Category B	Bono
+Nkwatia Presby Senior High/Com	Category B	Eastern
+Nsaba Presby Senior High	Category B	Central
+Nsawkaw State Senior High	Category B	Bono
+Nsoatre Technical Institute	Category B	Bono
+Nsutaman Cath. Senior High	Category B	Ashanti
+Nungua Senior High	Category B	Greater Accra
+Nuru-Ameen Islamic Senior High, Asewase	Category B	Ashanti
+Nyakrom Senior High Tech	Category B	Central
+Oda Senior High	Category B	Eastern
+Odomaseman Senior High	Category B	Bono
+Odorgonno Senior High	Category B	Greater Accra
+Ofoase Kokoben Senior High	Category B	Ashanti
+Okadjakrom Senior High/Tech.	Category B	Oti
+Okomfo Anokye Senior High	Category B	Ashanti
+Oppong Mem. Senior High	Category B	Ashanti
+Osei Bonsu Senior High	Category B	Bono East
+Osei Kyeretwie Senior High	Category B	Ashanti
+Osei Tutu Senior High, Akropong	Category B	Ashanti
+Oti Boateng Senior High	Category B	Eastern
+Otumfuo Osei Tutu II College	Category B	Ashanti
+Our Lady of Fatima Technical Institute	Category B	Bono
+Our Lady of Mercy Senior High	Category B	Greater Accra
+Our Lady of Mount Carmel Girls Senior High	Category B	Bono East
+Oyoko Methodist Senior High	Category B	Eastern
+Peki Senior High	Category B	Volta
+Pentecost Senior High,Koforidua	Category B	Eastern
+Prampram Senior High	Category B	Greater Accra
+Prang Senior High	Category B	Bono East
+Presby Senior High, Begoro	Category B	Eastern
+Presby Senior High, Bompata	Category B	Ashanti
+Queen of Peace Senior High, Nadowli	Category B	Upper West
+S.D.A Senior High, Koforidua	Category B	Eastern
+S.D.A Senior High, Sunyani	Category B	Bono
+S.D.A. Senior High, Agona	Category B	Ashanti
+S.D.A. Senior High, Bekwai	Category B	Ashanti
+Sacred Heart Senior High, Nsoatre	Category B	Bono
+Sacred Heart Tech. Inst.	Category B	Greater Accra
+Sakafia Islamic Senior High	Category B	Ashanti
+Salvation Army Senior High	Category B	Bono
+Samuel Otu Presby Senior High.	Category B	Ahafo
+Sankore Senior High	Category B	Ahafo
+Saviour Senior High, Osiem	Category B	Eastern
+Sefwi Bekwai Senior High	Category B	Western North
+Sefwi-Wiawso Senior High	Category B	Western North
+Sefwi-Wiawso Senior High/Tech	Category B	Western North
+Sekondi Takoradi Technical Institute	Category B	Western
+Sekyedumase Senior High/Tech	Category B	Ashanti
+Serwaah Nyarko Girls' Snr. High	Category B	Ashanti
+Shama Senior High	Category B	Western
+Siddiq Senior High Sch.	Category B	Central
+Sogakofe Senior High	Category B	Volta
+St Anne's Vocational Training Institute	Category B	Upper West
+St. Ann's Girls Senior High, Sampa	Category B	Bono
+St. Basilides Voc./Tech. Inst.	Category B	Upper West
+St. Daniel Comboni Technical Institute	Category B	Volta
+St. Dominic's Senior High/Tech, Pepease	Category B	Eastern
+St. Francis Senior High/Tech	Category B	Eastern
+St. Hubert Sem/Senior High, Kumasi	Category B	Ashanti
+St. Jerome Senior High, Abofour	Category B	Ashanti
+St. John's Grammar Senior High	Category B	Greater Accra
+St. John's Voc. Tech. Institute	Category B	Upper West
+St. Joseph Senior High, Sefwi Wiawso	Category B	Western North
+St. Joseph Senior High/Tech, Ahwiren	Category B	Ashanti
+St. Joseph's Tech. Inst.	Category B	Eastern
+St. Joseph's Tech. Inst., Saboba	Category B	Northern
+St. Margaret Mary Snr.High/Tech	Category B	Greater Accra
+St. Martin's Senior High, Nsawam	Category B	Eastern
+St. Mary's Boys' Senior High, Apowa	Category B	Western
+St. Mary's Girl's Senior High, Konongo	Category B	Ashanti
+St. Mary's Sem.& Senior High School	Category B	Oti
+St. Michael's Senior High, Ahenkro	Category B	Ashanti
+St. Michael's Technical Institute	Category B	Ashanti
+St. Monica's Senior High, Mampong	Category B	Ashanti
+Suhum Senior High/Tech	Category B	Eastern
+Suhum Technical Institute	Category B	Eastern
+Sumaman Senior High	Category B	Bono
+Swedru Senior High	Category B	Central
+T. I. Ahmadiyya Girl's Senior High	Category B	Ashanti
+T. I. Ahmadiyya Senior High, Wa	Category B	Upper West
+Tamale Girls Senior High	Category B	Northern
+Tarkwa Senior High	Category B	Western
+Tarkwa Technical Institute	Category B	Western
+Tawheed Senior High.	Category B	Ashanti
+Techiman Senior High	Category B	Bono East
+Tepa Senior High	Category B	Ashanti
+Toase Senior High	Category B	Ashanti
+Tongor Senior High Tech.	Category B	Volta
+Tuobodom Senior High/Tech	Category B	Bono East
+Twene Amanfo Senior High/Tech.	Category B	Bono
+Tweneboa Kodua Senior High	Category B	Ashanti
+Twifo Hemang Senior High/Tech	Category B	Central
+Twifo Praso Senior High	Category B	Central
+University Practice Senior High	Category B	Central
+Vakpo Senior High	Category B	Volta
+W.B.M. Zion Senior High, Old Tafo	Category B	Eastern
+Wa Senior High .	Category B	Upper West
+Wamanafo Senior High/Tech	Category B	Bono
+Wenchi Meth. Senior High	Category B	Bono
+Wesley Grammar School	Category B	Greater Accra
+Wesley Senior High, Konongo .	Category B	Ashanti
+West Africa Senior High	Category B	Greater Accra
+Winneba Senior High	Category B	Central
+Yamfo Anglican Senior High School	Category B	Ahafo
+Yeboah Asuamah Senior High	Category B	Bono East
+Yeji Senior High/Tech	Category B	Bono East
+Yendi Senior High	Category B	Northern
+Zebilla Senior High/Tech	Category B	Upper East
+Abakrampa Senior High/Tech	Category C	Central
+Abeadze State College	Category C	Central
+Abeaseman Comm. Day Senior High	Category C	Bono East
+Abiriw Presby Technical Institute	Category C	Eastern
+Abor Senior High	Category C	Volta
+Abosamso Technical Institute	Category C	Ashanti
+Abrafi Senior High	Category C	Bono East
+Abura Technical Institute	Category C	Western
+Aburaman Senior High	Category C	Central
+Accra Wesley Girls High	Category C	Greater Accra
+Achiase Technical Institute	Category C	Ashanti
+Achinakrom Senior High	Category C	Ashanti
+Ada Senior High/Tech.	Category C	Greater Accra
+Adabokrom Comm. SHS	Category C	Western North
+Adaklu Senior High	Category C	Volta
+Adanwomase Senior High	Category C	Ashanti
+Adeiso Presby Senior High	Category C	Eastern
+Adidome Senior High	Category C	Volta
+Adjen Kotoku Senior High	Category C	Greater Accra
+Adjena Senior High/Tech.	Category C	Eastern
+Adjoafua Comm. Senior High	Category C	Western North
+Adobewora Comm. Senior High	Category C	Ashanti
+Adrobaa Technical Institute	Category C	Ahafo
+Adu Gyamfi Senior High	Category C	Ashanti
+Adugyama Comm. Senior High	Category C	Ashanti
+Adventist Girls Senior High, Ntonso	Category C	Ashanti
+Afadjato Senior High/Tech.	Category C	Volta
+Afife Senior High Tech.	Category C	Volta
+Afigya Senior High/Tech	Category C	Ashanti
+Afigyaman Senior High School	Category C	Ashanti
+Aflao Community SHTS	Category C	Volta
+Afoako Technical Institute	Category C	Ashanti
+Agogo State College	Category C	Ashanti
+Agomeda Technical Institute	Category C	Greater Accra
+Agona Fankobaa Senior High	Category C	Central
+Agona Namonwora Comm.Senior High	Category C	Central
+Agotime Senior High	Category C	Volta
+Agric Nzema Senior High, Kumasi	Category C	Ashanti
+Ahamansu Islamic Senior High School	Category C	Oti
+Ajumako-Afranse Technical Institute	Category C	Central
+Akatsi Senior High/Tech	Category C	Volta
+Akim Asafo Senior High	Category C	Eastern
+Akokoaso Senior High/Tech	Category C	Eastern
+Akome Senior High/Tech.	Category C	Volta
+Akpafu Senior High/Tech.	Category C	Oti
+Akramaman Senior High	Category C	Greater Accra
+Akro Senior High/Tech	Category C	Eastern
+Akrodie Technical Institute	Category C	Ahafo
+Akrofufu Technical Institute	Category C	Eastern
+Akroso Senior High/Tech	Category C	Eastern
+Akuapem Technical Institute	Category C	Eastern
+Akumadan Applied Technology Institute	Category C	Ashanti
+Akumadan Senior High	Category C	Ashanti
+Akuse Methodist Senior High/Tech	Category C	Eastern
+Akwesi Awobaa Senior High/Tech	Category C	Ashanti
+Akyin Senior High School	Category C	Central
+Alavanyo Senior High/Tech.	Category C	Volta
+Amaniampong Senior High	Category C	Ashanti
+Amasaman Senior High/Tech	Category C	Greater Accra
+Amedzofe Technical Institute	Category C	Volta
+Amoafo Technical Institute	Category C	Ashanti
+Amuana Praso Senior High	Category C	Eastern
+Anbariya Senior High Sch.	Category C	Northern
+Anfoega Senior High	Category C	Volta
+Anfoeta Technical Institute	Category C	Volta
+Anlo Afiadenyigba Senior High	Category C	Volta
+Anlo Awomefia Senior High	Category C	Volta
+Annor Adjaye Senior High	Category C	Western
+Antoa Senior High	Category C	Ashanti
+Anum Apapam Comm. Day	Category C	Eastern
+Anum Asamoah Senior High/Tech	Category C	Ashanti
+Anum Presby Senior High	Category C	Eastern
+Apagya Senior High	Category C	Ashanti
+Apedwa Presby Senior High	Category C	Eastern
+Apeguso Senior High	Category C	Eastern
+Aperade Senior High/Tech.	Category C	Eastern
+Apesua Comm. Senior High	Category C	Eastern
+Applied Technology Institute - Anyinam	Category C	Eastern
+Asafora Technical Institute	Category C	Central
+Asakraka Technical Institute	Category C	Eastern
+Asankrangwa Senior High	Category C	Western
+Asankrangwa Senior High/Tech	Category C	Western
+Asasetre Technical Institute	Category C	Western
+Asasewa Senior High/Tech	Category C	Eastern
+Ashiaman Senior High	Category C	Greater Accra
+Ashiaman Technical Institute	Category C	Greater Accra
+Assin Jakai Applied Technology Institute	Category C	Central
+Assin Manso Senior High	Category C	Central
+Assin North Senior High/Tech	Category C	Central
+Assin Nsuta Senior High School	Category C	Central
+Assin State College	Category C	Central
+Asukawkaw Senior High	Category C	Oti
+Asuom Senior High	Category C	Eastern
+Asuoso Comm. Senior High	Category C	Ashanti
+Atebubu Senior High	Category C	Bono East
+Atiavi Senior High/Tech	Category C	Volta
+Atorkor Technical Institute	Category C	Volta
+Atweaman Senior High	Category C	Eastern
+Atwima Kwanwoma Snr High/Tech	Category C	Ashanti
+Avatime Senior High	Category C	Volta
+Ave Senior High	Category C	Volta
+Ave Technical Institute	Category C	Volta
+Avenor Senior High	Category C	Volta
+Avenorpeme Technical Institute	Category C	Volta
+Avenui-Awudome Technical Institute	Category C	Volta
+Aveyime Battor Senior High/Tech.	Category C	Volta
+Awe Senior High/Tech.	Category C	Upper East
+Awutu Bawjiase Comm. Senior High School	Category C	Central
+Axim Girls Senior High	Category C	Western
+Ayanfuri Senior High	Category C	Central
+Ayirebi Senior High	Category C	Eastern
+Azeem-Namoa Senior High/Tech	Category C	Upper East
+Baidoo Bonso Senior High/Tech	Category C	Western
+Bamboi Comm. Senior High	Category C	Savannah
+Bandaman Senior High	Category C	Bono
+Banka Comm. Senior High	Category C	Ashanti
+Barekese Senior High School	Category C	Ashanti
+Bassa Community Senior High	Category C	Bono East
+Battor Senior High	Category C	Volta
+Bawku Senior High/Tech.	Category C	Upper East
+Baworo Technical Institute	Category C	Ashanti
+Bedeku Technical Institute	Category C	Greater Accra
+Benso Senior High/Tech	Category C	Western
+Bepoase Shts	Category C	Ashanti
+Bepong Senior High School	Category C	Eastern
+Biakoye Comm. School	Category C	Oti
+Bibiani Senior High/Tech.	Category C	Western North
+Bimbagu Senior High/Tech	Category C	North East
+Bimbilla Senior High	Category C	Northern
+Binduri Comm. Day Senior High	Category C	Upper East
+Birifo Technical Institute	Category C	Upper West
+Birifoh Senior High Sch.	Category C	Upper West
+Bisease Senior High School	Category C	Central
+Boanim Senior High/ Tech Sch	Category C	Ashanti
+Bodomase Senior High/Tech	Category C	Ashanti
+Bodwesango Senior High	Category C	Ashanti
+Bole Senior High	Category C	Savannah
+Bole Technical Institute	Category C	Savannah
+Bolga Sherigu Comm. Senior High	Category C	Upper East
+Bolgatanga Central Technical Institute	Category C	Upper East
+Bongo Senior High	Category C	Upper East
+Bongo Technical Institute	Category C	Upper East
+Bonso Nkwanta Technical Institute	Category C	Western North
+Bontrase Senior High Tech. Sch	Category C	Central
+Bonwire Senior High/Tech	Category C	Ashanti
+Bonzo-Kaku Senior High	Category C	Western
+Bortianor Senior High School	Category C	Greater Accra
+Bosomtwe Senior High/Tech	Category C	Ashanti
+Bosome Senior High/Tech.	Category C	Ashanti
+Bosomtwe Oyoko Comm. Senior High	Category C	Ashanti
+Bosomtwe Senior High/Tech	Category C	Ashanti
+Botoku Technical Insitute	Category C	Volta
+Bowiri Comm. Day Senior High/Tech.	Category C	Oti
+Brakwa Senior High/Tech	Category C	Central
+Breman Asikuma Technical Institute	Category C	Central
+Buipe Senior High	Category C	Savannah
+Buipe Technical Institute	Category C	Savannah
+Bunkpurugu Senior High/Tech	Category C	North East
+Business Secretarial and Technical Institute	Category C	Ashanti
+Business Senior High, Tamale	Category C	Northern
+Busunya Senior High	Category C	Bono East
+C.Y.O. Tech/Voc. Inst.	Category C	Volta
+Caring Sisters Technical Institute	Category C	Volta
+Catholic Technical Institute	Category C	Ashanti
+Chereponi Senior High/Tech.	Category C	North East
+Chiana Senior High	Category C	Upper East
+Chirano Comm. Day School	Category C	Western North
+Christian Methodist Senior High	Category C	Greater Accra
+Church Of Christ Senior High	Category C	Ashanti
+College of Music Senior High	Category C	Central
+Dabala Senior High/Tech.	Category C	Volta
+Daboya Comm. Day School	Category C	Savannah
+Dadease Agric Senior High	Category C	Ashanti
+Daffiamah Senior High	Category C	Upper West
+Dagbon State Senior High/Tech	Category C	Northern
+Dambai Technical Institute	Category C	Oti
+Damongo Senior High	Category C	Savannah
+Damongo Technical Institute	Category C	Savannah
+Danfa Technical Institute	Category C	Greater Accra
+Danso Agyei Senior high technical	Category C	Ahafo
+Denkyembour Technical Institute	Category C	Eastern
+Denyaseman Cath.Senior High	Category C	Ashanti
+Diabene Senior High/Tech	Category C	Western
+Diaspora Girls' Senior High	Category C	Eastern
+Dodi-Papase Senior High/Tech	Category C	Oti
+Dodowa Technical Institute	Category C	Greater Accra
+Dofor Senior High	Category C	Volta
+Donkorkrom Agric Senior High	Category C	Eastern
+Donkro- Nkwanta Senior High School	Category C	Bono East
+Dr. Hilla Limann Senior High School	Category C	Upper West
+Drobonso Senior High School	Category C	Ashanti
+Duadaso No. 1 Senior High/Tech.	Category C	Bono
+Dunkwa Senior High/Tech	Category C	Central
+Dwease-Praaso Technical Institute	Category C	Ashanti
+Dzodze Penyi Senior High	Category C	Volta
+Dzodze Technical Institute	Category C	Volta
+Dzolo Senior High	Category C	Volta
+E. P. Agric Senior High/Tech.	Category C	Northern
+E. P. Senior High	Category C	Volta
+E.P. Tech/Voc Inst	Category C	Volta
+Ebenezer Senior High	Category C	Greater Accra
+Effiduase Senior High/Com	Category C	Ashanti
+Effiduase Senior High/Tech	Category C	Ashanti
+Effiduase Technical Institute	Category C	Eastern
+Effutu Senior High/Tech	Category C	Central
+Eguafo-Abrem Senior High	Category C	Central
+Ejisuman Senior High	Category C	Ashanti
+Ejuraman Anglican Senior High	Category C	Ashanti
+Ejuraman Technical Institute	Category C	Ashanti
+Enyan Denkyira Senior High/Tech	Category C	Central
+Enyan Maim Comm. Day School	Category C	Central
+Eremon Senior High/Tech.	Category C	Upper West
+Esaase Bontefufuo Snr. High/Tech.	Category C	Ashanti
+Essipun Technical Institute	Category C	Western
+Fawohoyeden Technical Institute	Category C	Ahafo
+Fettehman Senior High	Category C	Central
+Feyiase Senior High School	Category C	Ashanti
+Fiaseman Senior High	Category C	Western
+Fodoa Comm. Senior High	Category C	Eastern
+Fr. Dogli Memorial Technical Institute	Category C	Oti
+Frafraha Comm. Senior High	Category C	Greater Accra
+Fumbisi Senior High	Category C	Upper East
+Funsi Senior High School	Category C	Upper West
+GRATIS Technical Institute, Bolga	Category C	Upper East
+GRATIS Technical Institute, Cape Coast	Category C	Central
+GRATIS Technical Institute, Tamale	Category C	Northern
+GRATIS Technical Institute, Wa	Category C	Upper West
+Gambaga Girls Senior High	Category C	North East
+Gambigo Comm. Day Senior High	Category C	Upper East
+Garu Comm. Day Senior High	Category C	Upper East
+Gbekor Senior High School	Category C	Volta
+Gbewa Technical Institute	Category C	Northern
+Gbintiri Senior High/Tech	Category C	North East
+Ghana Stem Technical School	Category C	Ashanti
+Gomoa Gyaman Senior High	Category C	Central
+Gomoa Senior High/Tech	Category C	Central
+Gowrie Senior High/Tech.	Category C	Upper East
+Guo Technical Insititute	Category C	Upper West
+Gushegu Senior High	Category C	Northern
+Gwiraman Comm.Senior High	Category C	Western
+Gyaama Pensan Senior High/Tech	Category C	Ashanti
+Gyaase Community Senior High	Category C	Central
+Gyarko Comm. Day Senior High	Category C	Bono East
+Gyedu Technical Institute	Category C	Ahafo
+H'Mount Sinai Senior High School	Category C	Eastern
+Han Senior High	Category C	Upper West
+Hemang Buoho Technical Institute	Category C	Ashanti
+Hidaayah Islamic Senior High School	Category C	Bono
+Ho -Lokoe Technical Institute	Category C	Volta
+Ho Technical Institute	Category C	Volta
+Holy Child Senior High School	Category C	Upper West
+Holy Family Senior High	Category C	Upper West
+Holy Trinity Senior High	Category C	Greater Accra
+Huni Valley Senior High	Category C	Western
+Ibadur Rahman Academy	Category C	Ashanti
+Islamic Mission Technical Institute	Category C	Ahafo
+Islamic Science Senior High, Tamale	Category C	Northern
+Islamic Senior High, Wa	Category C	Upper West
+Issa Technical Institute	Category C	Upper West
+J. A. Kufuor Senior High	Category C	Ashanti
+J.A. Kufour Stem Technical School	Category C	Ashanti
+J.E.A. Mills Senior High	Category C	Central
+J.G. Knol Technical Instititute	Category C	Eastern
+Jachie Technical Institute	Category C	Ashanti
+Jamiat Al-Hidaya Islamic Girls	Category C	Upper West
+Janga Senior High/Tech	Category C	North East
+Jim Bourton Mem Agric. Senior High	Category C	Volta
+Jirapa Senior High	Category C	Upper West
+Juaben Technical Institute	Category C	Ashanti
+Juaso Senior High/Tech	Category C	Ashanti
+Jubilee Senior High	Category C	Ashanti
+Jukwa Senior High/Tech	Category C	Central
+Kaakyi Technical Institute	Category C	Oti
+Kadjebi-Asato Senior High	Category C	Oti
+Kajaji Technical Institute	Category C	Bono East
+Kaleo Senior High/Tech	Category C	Upper West
+Kanda Technical Institute	Category C	Greater Accra
+Kaneshie Senior High/Tech.	Category C	Greater Accra
+Kanjarga Comm. Senior High	Category C	Upper East
+Karaga Senior High	Category C	Northern
+Kasuliyili Senior High	Category C	Northern
+Kedzi Technical Institute	Category C	Volta
+Kesse Basahyia Senior High School	Category C	Bono East
+Keta Business College	Category C	Volta
+Kete Krachi Senior High/Tech.	Category C	Oti
+Kinbu Senior High/Tech	Category C	Greater Accra
+Kintampo Senior High	Category C	Bono East
+Kintampo Technical Institute	Category C	Bono East
+Klefe Technical Institute	Category C	Volta
+Klikor Senior High/Tech.	Category C	Volta
+Klo-Agogo Senior High/Tech	Category C	Eastern
+Ko Senior High	Category C	Upper West
+Koase Senior High/Tech	Category C	Bono
+Kobina Ansah SHS	Category C	Central
+Kofi Adjei Senior High/Tech	Category C	Ashanti
+Kofi Annan Technical Institute	Category C	Northern
+Koforidua GRATIS Technical Institute	Category C	Eastern
+Kokoben Technical Institute	Category C	Ashanti
+Komenda Senior High/Tech.	Category C	Central
+Kongo Senior High	Category C	Upper East
+Konkoma Technical Institute	Category C	Ashanti
+Kpalwega Technical Institute	Category C	Upper East
+Kpandai Senior High	Category C	Northern
+Kpassa Senior High/Tech	Category C	Oti
+Kpedze Senior High	Category C	Volta
+Kpeve Senior High Tech	Category C	Volta
+Kpone Comm. Senior High	Category C	Greater Accra
+Kpong Technical Institute	Category C	Eastern
+Kraboa-Coaltar Presby Snr. High/Tech.	Category C	Eastern
+Krachi Senior High	Category C	Oti
+Krobo Comm.Senior High	Category C	Bono East
+Kumasi Senior High/Tech	Category C	Ashanti
+Kumawu Technical Institute	Category C	Ashanti
+Kumbungu Senior High	Category C	Northern
+Kumbungu Vocational Techncal Institute	Category C	Northern
+Kurofa Methodist Senior High Tech	Category C	Ashanti
+Kusanaba Senior High School	Category C	Upper East
+Kwabenya Comm. Senior High	Category C	Greater Accra
+Kwame Danso Senior High/Tech	Category C	Bono East
+Kwanyarko Senior High	Category C	Central
+Kwaobaah Nyanoa Comm. Senior High	Category C	Eastern
+Kwapong Technical Institute	Category C	Ahafo
+Kwarteng Ankomah Senior High	Category C	Bono East
+Kwegyir Aggrey Senior High	Category C	Central
+Kyabobo Girls' School	Category C	Oti
+Kyekyewere Comm. Senior High School	Category C	Central
+Kyem Amponsah Senior High School, Fiapre	Category C	Bono
+La Presby Senior High	Category C	Greater Accra
+Lamashegu Technical Institute	Category C	Northern
+Lambussie Comm. Senior High School	Category C	Upper West
+Langbinsi Senior High/Tech	Category C	North East
+Larabanga Senior High	Category C	Savannah
+Lashibi Comm. Day	Category C	Greater Accra
+Leklebi Senior High	Category C	Volta
+Libermann Technical Institute	Category C	Western
+Likpe Senior High	Category C	Oti
+Loagri Technical Institute	Category C	North East
+Loggu Comm. Day School	Category C	Upper West
+Lolobi Technical Institute	Category C	Oti
+Maame Krobo Comm. Senior High	Category C	Eastern
+Mampong/Akw Snr. High/Tech for the Deaf	Category C	Eastern
+Mancell Girls' Senior High/Tech.	Category C	Ashanti
+Mando Senior High/Tech.	Category C	Central
+Mangoase Senior High	Category C	Eastern
+Mankessim Senior High/Tech	Category C	Central
+Mankessim Technical Institute	Category C	Central
+Mankranso Senior High	Category C	Ashanti
+Manso-Adubia Senior High	Category C	Ashanti
+Manso-Amenfi Comm. Day School	Category C	Western North
+Manso-Amenfi Technical Institute	Category C	Western
+Mansoman Senior High	Category C	Ashanti
+Mem-Chemfre Comm. Senior High	Category C	Eastern
+Mepe St. Kizito Senior High/Tech.	Category C	Volta
+Mesu Akompi Technical Institute	Category C	Western
+Methodist Senior High, Sekondi	Category C	Western
+Methodist Senior High/Tech.,Biadan	Category C	Bono
+Mirigu Community Day Senior High	Category C	Upper East
+Mokwaa Senior High School	Category C	Central
+Moree Comm. Senior High	Category C	Central
+Morso Senior High/Tech	Category C	Ashanti
+Mpaha Comm. Senior High	Category C	Savannah
+Naa-Momori Technical Institute	Category C	Upper West
+Naab Azantilow Senior High/Tech.	Category C	Upper East
+Nabango Senior High Tech	Category C	Upper East
+Nabango Technical Institute	Category C	Upper East
+Nakori Chansa Technical Institute	Category C	Upper West
+Nakpanduri Senior High	Category C	North East
+Nalerigu Senior High	Category C	North East
+Nalerigu Technical Institute	Category C	North East
+Namalteng Technical Institute	Category C	Upper East
+Namong Senior High/Tech	Category C	Ashanti
+Nana Ampontua Technical Institute	Category C	Ashanti
+Nana Brentu Senior High/Tech	Category C	Western North
+Nanton Senior High/Tech	Category C	Northern
+Nasuan Senior High School	Category C	North East
+Navrongo Technical Institute	Category C	Upper East
+Nchumuruman Comm. Day Senior High	Category C	Oti
+Ndewura Jakpa Senior High/Tech.	Category C	Savannah
+Nerebehi Technical Institute	Category C	Ashanti
+New Abirem/Afosu Senior High	Category C	Eastern
+New Ebu Technical Institute	Category C	Central
+New Kokrompe Comm. Senior High	Category C	Bono East
+New Longoro Comm.School (Dega)	Category C	Bono East
+New Nsutam Senior High/Tech	Category C	Eastern
+Ngleshie Amanfro Senior High	Category C	Greater Accra
+Ngleshie Amanfro Technical Institute	Category C	Greater Accra
+Nima Technical Institute	Category C	Greater Accra
+Nkawie Senior High/Tech	Category C	Ashanti
+Nkenkansu Community Senior High	Category C	Ashanti
+Nkonya Senior High School	Category C	Oti
+Nkroful Agric. Senior High/Tech	Category C	Western
+Nkwabeng Technical Institute	Category C	Bono East
+Nkwanta Comm.Senior High/Tech	Category C	Oti
+Nkwanta Senior High	Category C	Oti
+Nkyeraa Senior High Sch.	Category C	Bono
+Northern School of Business	Category C	Northern
+Northern Star Senior High	Category C	Upper West
+Nsawam Senior High	Category C	Eastern
+Nsawora Edumafa Senior High School	Category C	Western North
+Ntruboman Senior High	Category C	Oti
+Nuriya Islamic Senior High, Tamale	Category C	Northern
+Nyankumasi Ahenkro Snr. High	Category C	Central
+Nyinahin Cath. Senior High	Category C	Ashanti
+Nyohini Community Technical Institute	Category C	Northern
+Nyong Technical Institute	Category C	Northern
+O'Reilly Senior High	Category C	Greater Accra
+O.L.L. Girls Senior High	Category C	Upper East
+Obiri Yeboah Senior High/Technical	Category C	Central
+Obrachire Senior High/Tech	Category C	Central
+Obuasi Senior High/Tech	Category C	Ashanti
+Odoben Senior High	Category C	Central
+Odupong Comm. Day School	Category C	Central
+Offinso Technical Institute	Category C	Ashanti
+Ofoase Senior High/Tech	Category C	Ashanti
+Oguaa Senior High/Tech	Category C	Central
+Ogyeedom Comm.Snr High/Tech	Category C	Central
+Onwe Senior High School	Category C	Ashanti
+Opoku Agyeman Senior High/Tech	Category C	Ashanti
+Opportunities Industralisation Technical Inst.	Category C	Western
+Opportunities Industrialization Tech. Inst.	Category C	Greater Accra
+Osei Adutwum Senior High	Category C	Ashanti
+Osino Presby Senior High/Tech.	Category C	Eastern
+Osudoku Senior High/Tech.	Category C	Greater Accra
+Otaakrom Technical Institute	Category C	Ashanti
+Oti Senior High/Tech Sch	Category C	Oti
+Owerriman Senior High/Tech	Category C	Ashanti
+Paga Senior High	Category C	Upper East
+Pakyi Applied Technology Institute	Category C	Ashanti
+Parkoso Comm. Senior High	Category C	Ashanti
+Peki Senior High/Technical	Category C	Volta
+Pentecost Senior High, Kumasi	Category C	Ashanti
+Piina Senior High	Category C	Upper West
+Pong-Tamale Senior High	Category C	Northern
+Potsin T.I. Ahm. Senior High	Category C	Central
+Prampram Technical Institute	Category C	Greater Accra
+Presby Boys Model Senior High	Category C	Eastern
+Presby Girls Senior High School	Category C	Ashanti
+Presby SHTS, Nankpanduri	Category C	North East
+Presby Senior High, Mampong Akwapim	Category C	Eastern
+Presby Senior High, Osu	Category C	Greater Accra
+Presby Senior High, Suhum	Category C	Eastern
+Presby Senior High, Tamale	Category C	Northern
+Presby Senior High, Tema	Category C	Greater Accra
+Presby Senior High, Teshie	Category C	Greater Accra
+Presby Senior High/Tech, Aburi	Category C	Eastern
+Presby Senior High/Tech, Adukrom	Category C	Eastern
+Presby Senior High/Tech, Kwamang	Category C	Ashanti
+Presby Senior High/Tech, Larteh	Category C	Eastern
+Prestea Senior High/Tech	Category C	Western
+Prince Of Peace Girls	Category C	Ashanti
+Pusiga Comm. Day Senior High Sch.	Category C	Upper East
+Queens Girls' Senior High, Sefwi Awhiaso	Category C	Western North
+Ramseyer Technical Institute	Category C	Ashanti
+S.D.A Senior High School, Gomoa Jukwa	Category C	Central
+S.D.A. Senior High. Akim Sekyere	Category C	Eastern
+Saboba E.P. Senior High	Category C	Northern
+Sabronum Methodist Senior High/Tech	Category C	Ashanti
+Sabrogu Senior High/Tech	Category C	North East
+Salaga Senior High	Category C	Savannah
+Salaga T.I. Ahmad Senior High	Category C	Savannah
+Salaga Technical Institute	Category C	Savannah
+Salvation Army Senior High, Akim Wenchi	Category C	Eastern
+Sandema Senior High	Category C	Upper East
+Sandema Technical Institute	Category C	Upper East
+Sang Comm. Day School	Category C	Northern
+Sankor Senior High School	Category C	Western
+Santa Esther Girls' Senior High	Category C	Volta
+Savelugu Senior High	Category C	Northern
+Savelugu Technical Institute	Category C	Northern
+Sawla Girls Vocational Institute	Category C	Savannah
+Sawla Senior High Sch.	Category C	Savannah
+Sekondi Technical Institute	Category C	Western
+Sekyere Kusi Senior High School	Category C	Ashanti
+Senya Senior High School	Category C	Central
+Shama Technical Institute	Category C	Western
+Shia Senior HighTechnical	Category C	Volta
+Simms Senior High/Com.	Category C	Ashanti
+Sirigu Senior High	Category C	Upper East
+Social Welfare Girls' Technical Institute	Category C	Central
+Social Welfare Technical Institute, Sunyani	Category C	Bono
+Sogakope Technial Institute	Category C	Volta
+Sokode Senior High/Tech	Category C	Volta
+Somanya Technical Institute	Category C	Eastern
+Sombo Senior High	Category C	Upper West
+Some Senior High	Category C	Volta
+South Labone Girls Technical Institute	Category C	Greater Accra
+Spiritan Senior High/Tech	Category C	Ashanti
+St Sebastian Cath. Senior High	Category C	Ashanti
+St Theresa's Technical Institute	Category C	Oti
+St. Ann's Technical Institute	Category C	Western
+St. Anthony of Padua Senior High/Tech	Category C	Savannah
+St. Augustine Senior High School	Category C	Bono
+St. Augustine Senior High/Tech, Saan Charikpong	Category C	Upper West
+St. Augustine's Senior High, Bogoso	Category C	Western
+St. Bernadettes Tech/Voc. Institute	Category C	Upper East
+St. Catherine Girls Senior High School	Category C	Volta
+St. Clare's Technical Institute	Category C	Upper West
+St. Fidelis Senior High/Tech	Category C	Eastern
+St. Francis Seminary Senior High, Buoyem	Category C	Bono East
+St. George's Senior High Tech.	Category C	Ashanti
+St. Gregory Catholic Senior High School	Category C	Central
+St. John's Integrated Snr. High/Tech	Category C	Upper East
+St. Joseph Sem/Senior High, Mampong	Category C	Ashanti
+St. Mary's Technical Institute,Tamale	Category C	Northern
+St. Mary's Voc./Tech. Inst.	Category C	Eastern
+St. Michael's Senior High, Akoase (Nkawkaw)	Category C	Eastern
+St. Paul's Senior High, Asakraka Kwahu	Category C	Eastern
+St. Paul's Senior High, Denu	Category C	Volta
+St. Stephen's Presby Snr. High/Tech, Asiakwa	Category C	Eastern
+St. Thomas Senior High/Tech	Category C	Eastern
+Suntreso Technical Institute	Category C	Ashanti
+Sunyani Methodist Technical Inst.	Category C	Bono
+Sunyani Technical Institute	Category C	Bono
+Swedru Sch. Of Business	Category C	Central
+TSC Technical Institute - Asankragwa	Category C	Western
+TSC Technical Institute - Bibiani	Category C	Western North
+TSC Technical Institute - Garu	Category C	Upper East
+TSC Technical Institute - Half Assini	Category C	Western
+TSC Technical Institute -Kassena Nankana	Category C	Upper East
+TSC Technical Institute, Asamankese	Category C	Eastern
+TSC Technical Institute, Assin Edubiase	Category C	Central
+TSC Technical Institute, Awutu Breku	Category C	Central
+TSC Technical Institute, Bechem	Category C	Ahafo
+TSC Technical Institute, Bekwai	Category C	Ashanti
+TSC Technical Institute, Donkorkrom	Category C	Eastern
+TSC Technical Institute, Dormaa Ahenkro	Category C	Bono
+TSC Technical Institute, Drobo	Category C	Bono
+TSC Technical Institute, Goaso	Category C	Ahafo
+TSC Technical Institute, Konongo	Category C	Ashanti
+TSC Technical Institute, Mampong	Category C	Ashanti
+TSC Technical Institute, Nadowli - Kaleo	Category C	Upper West
+TSC Technical Institute, Sekyere Kumawu	Category C	Ashanti
+Takoradi Community Technical Institute	Category C	Western
+Takoradi Senior High	Category C	Western
+Takpo Senior High Sch.	Category C	Upper West
+Takrowase Comm. Senior High	Category C	Eastern
+Takrowase Technical Institute	Category C	Eastern
+Tamale Technical Institute	Category C	Northern
+Tanyigbe Senior High	Category C	Volta
+Tapaman Senior High/Tech	Category C	Oti
+Tatale Technical Institute	Category C	Northern
+Taviefe Senior High	Category C	Volta
+Techiman Technical Institute	Category C	Bono East
+Tema Manhean Senior High/Tech	Category C	Greater Accra
+Tema Meth. Day Senior High	Category C	Greater Accra
+Tempane Senior High	Category C	Upper East
+Terchire Senior High	Category C	Ahafo
+Teshie Tech. Instittute	Category C	Greater Accra
+Tetrefu Technical Institute	Category C	Ashanti
+Three Town Senior High	Category C	Volta
+Tibani Technical Institute	Category C	Upper West
+Tijjaniya Senior High	Category C	Ashanti
+Toh-Kpalime Technical Institute	Category C	Volta
+Tolon Senior High	Category C	Northern
+Tongo Senior High/Tech	Category C	Upper East
+Tsiame Senior High	Category C	Volta
+Tsibu Technical Institute	Category C	Volta
+Tsito Senior High/Tech	Category C	Volta
+Tumu Senior High/Tech.	Category C	Upper West
+Tuna Senior High/Tech.	Category C	Savannah
+Tutu Methodist Technical Institute	Category C	Eastern
+Tweapease Senior High School	Category C	Ashanti
+Twedie Technical Institute	Category C	Ashanti
+Twereku Ampem Senior High School	Category C	Ahafo
+Ullo Senior High	Category C	Upper West
+Uthman Bin Affan Islamic SHS	Category C	Western
+Uthmaniya Senior High, Tafo	Category C	Ashanti
+Vakpo Senior High/Tech	Category C	Volta
+Ve Comm. Senior High	Category C	Volta
+Ve- Golokwati Technical Institute	Category C	Volta
+Vitting Senior High/Tech.	Category C	Northern
+Volo Comm. Senior High	Category C	Volta
+Volta Senior High School	Category C	Volta
+Volta Tech Inst	Category C	Volta
+Wa Senior High/Tech.	Category C	Upper West
+Walewale Senior High	Category C	North East
+Walewale Technical Institute	Category C	North East
+Wapuli Comm. Senior High	Category C	Northern
+Wesley High School, Bekwai	Category C	Ashanti
+Weta Senior High/Tech.	Category C	Volta
+Wiafe Akenten Presby Senior High	Category C	Ashanti
+Wiaga Comm. Senior High	Category C	Upper East
+Wioso SHS	Category C	Ashanti
+Woe Technical Institute	Category C	Volta
+Worawora Senior High	Category C	Oti
+Wovenu Senior High Technical	Category C	Volta
+Wulensi Senior High	Category C	Northern
+Wulugu Senior High	Category C	North East
+Yaa Pokua Technical Institute	Category C	Ashanti
+Yabram Comm. Day School	Category C	Oti
+Yagaba Senior High School	Category C	North East
+Yilo Krobo Senior High/Com	Category C	Eastern
+Yizesi Senior High School	Category C	North East
+Yunyoo Senior High School	Category C	North East
+Zabzugu Senior High	Category C	Northern
+Zabzugu Technical Institute	Category C	Northern
+Zamse Senior High/Tech	Category C	Upper East
+Ziavi Senior High/Tech	Category C	Volta
+Zion Senior High	Category C	Volta
+Ziope Senior High Sch.	Category C	Volta
+Zorkor Senior High	Category C	Upper East
+Zuarungu Senior High	Category C	Upper East
+Zugu Dabogni Technical Institute	Category C	Northern
