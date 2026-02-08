@@ -5,6 +5,8 @@ import connectDB from './config/db.js'
 import studentRoutes from './routes/studentRoutes.js'
 import schoolRoutes from './routes/schoolRoutes.js'
 import placementRoutes from './routes/placementRoutes.js'
+import syncRoutes from './routes/syncRoutes.js'
+import notificationRoutes from './routes/notificationRoutes.js'
 
 dotenv.config()
 
@@ -24,6 +26,8 @@ connectDB()
 app.use('/api/students', studentRoutes)
 app.use('/api/schools', schoolRoutes)
 app.use('/api/placements', placementRoutes)
+app.use('/api/sync', syncRoutes)
+app.use('/api/notifications', notificationRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => {
