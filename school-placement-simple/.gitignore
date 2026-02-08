@@ -1,3 +1,8 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
 # Logs
 logs
 *.log
@@ -7,10 +12,14 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
 dist
 dist-ssr
 *.local
+
+# Vercel
+.vercel
 
 # Editor directories and files
 .vscode/*
