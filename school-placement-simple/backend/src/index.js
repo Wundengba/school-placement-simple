@@ -22,6 +22,15 @@ app.use(cors({
 // Connect to MongoDB
 connectDB()
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ message: 'School Placement API - Running on Vercel', version: '1.0.0' })
+})
+
+app.get('/api', (req, res) => {
+  res.json({ message: 'School Placement API', endpoints: ['/api/health', '/api/students', '/api/schools', '/api/placements', '/api/sync', '/api/notifications'] })
+})
+
 // Routes
 app.use('/api/students', studentRoutes)
 app.use('/api/schools', schoolRoutes)
@@ -45,9 +54,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal server error', error: err.message })
 })
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-  console.log(`Environment: ${process.env.NODE_ENV}`)
-})
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+    console.log(`Environment: ${process.env.NODE_ENV}`)
+  })
+}
 
 export default app
