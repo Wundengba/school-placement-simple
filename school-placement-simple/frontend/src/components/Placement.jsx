@@ -139,6 +139,18 @@ export default function Placement() {
     // Update localStorage with placed students
     localStorage.setItem('registeredStudents', JSON.stringify(updatedStudents))
 
+    // Save placement results for sync
+    const placementResults = updatedStudents.map(s => ({
+      id: s.id,
+      indexNumber: s.indexNumber,
+      fullName: s.fullName,
+      placedSchool: s.placedSchool || null,
+      status: s.status || null,
+      placementCategory: s.placementCategory || null,
+      timestamp: new Date().toISOString()
+    }))
+    localStorage.setItem('placementResults', JSON.stringify(placementResults))
+
     // Persist debug info to help troubleshooting
     try {
       const debug = updatedStudents.map(s => ({

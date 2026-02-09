@@ -97,39 +97,129 @@ async function upload(payload) {
 }
 
 function getLocalData() {
+  // Get core data
   const students = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
   const scores = JSON.parse(localStorage.getItem('testScores') || '[]')
-  const preferences = JSON.parse(localStorage.getItem('schoolSelections') || '[]')
+  const schools = JSON.parse(localStorage.getItem('schools') || '[]')
+  
+  // Gather per-student selections from individual localStorage keys
+  const allSelections = []
+  students.forEach(student => {
+    if (student.id) {
+      const selectionKey = `schoolSelections_${student.id}`
+      const selection = JSON.parse(localStorage.getItem(selectionKey) || 'null')
+      if (selection) {
+        allSelections.push({
+          studentId: student.id,
+          indexNumber: student.indexNumber,
+          ...selection
+        })
+      }
+    }
+  })
+  
+  // Get placement results
+  const placementResults = JSON.parse(localStorage.getItem('placementResults') || '[]')
+  
+  // Get analytics data
+  const analyticsData = JSON.parse(localStorage.getItem('analyticsSnapshot') || 'null')
+  
   console.log('[SYNC] getLocalData() retrieved:', {
     studentsCount: students?.length || 0,
     scoresCount: scores?.length || 0,
-    preferencesCount: preferences?.length || 0
+    schoolsCount: schools?.length || 0,
+    selectionsCount: allSelections?.length || 0,
+    placementCount: placementResults?.length || 0,
+    hasAnalytics: !!analyticsData
   })
   console.log('[SYNC] Sample student:', students?.[0])
   console.log('[SYNC] Sample score:', scores?.[0])
-  return { students, scores, preferences }
+  console.log('[SYNC] Sample selection:', allSelections?.[0])
+  console.log('[SYNC] Sample placement result:', placementResults?.[0])
+  
+  return { 
+    students, 
+    scores, 
+    schools,
+    preferences: allSelections,
+    placementResults,
+    analytics: analyticsData
+  }
 }
 
-function saveLocalData({ students, scores }) {
+function saveLocalData({ students, scores, schools, preferences, placementResults, analytics }) {
   if (Array.isArray(students)) localStorage.setItem('registeredStudents', JSON.stringify(students))
   if (Array.isArray(scores)) localStorage.setItem('testScores', JSON.stringify(scores))
+  if (Array.isArray(schools)) localStorage.setItem('schools', JSON.stringify(schools))
+  
+  // Save preferences (schoolSelections) per-student
+  if (Array.isArray(preferences)) {
+    preferences.forEach(pref => {
+      if (pref.studentId) {
+        const selectionKey = `schoolSelections_${pref.studentId}`
+        const cleanPref = { ...pref }
+        delete cleanPref.studentId
+        delete cleanPref.indexNumber
+        localStorage.setItem(selectionKey, JSON.stringify(cleanPref))
+      }
+    })
+  }
+  
+  if (Array.isArray(placementResults)) localStorage.setItem('placementResults', JSON.stringify(placementResults))
+  if (analytics) localStorage.setItem('analyticsSnapshot', JSON.stringify(analytics))
 }
 
-// Simple merge: server wins on conflicts (by indexNumber)
+// Simple merge: server wins on conflicts (by indexNumber for students/scores, by id for schools/placement)
 function mergeServerIntoLocal(server) {
   const local = getLocalData()
+  
+  // Merge students (by indexNumber)
   const studentMap = {}
   local.students.forEach(s => { if (s.indexNumber) studentMap[s.indexNumber] = s })
   ;(server.students || []).forEach(s => { if (s.indexNumber) studentMap[s.indexNumber] = s })
   const mergedStudents = Object.values(studentMap)
 
+  // Merge scores (by indexNumber)
   const scoreMap = {}
   local.scores.forEach(s => { if (s.indexNumber) scoreMap[s.indexNumber] = s })
   ;(server.scores || []).forEach(s => { if (s.indexNumber) scoreMap[s.indexNumber] = s })
   const mergedScores = Object.values(scoreMap)
 
-  saveLocalData({ students: mergedStudents, scores: mergedScores })
-  return { students: mergedStudents, scores: mergedScores }
+  // Merge schools (by id, but prefer local if both exist to maintain user edits)
+  const schoolMap = {}
+  ;(server.schools || []).forEach(s => { if (s.id) schoolMap[s.id] = s })
+  local.schools.forEach(s => { if (s.id) schoolMap[s.id] = s })  // Local overwrites server
+  const mergedSchools = Object.values(schoolMap)
+
+  // Merge preferences (by studentId, prefer server but include local additions)
+  const prefMap = {}
+  ;(server.preferences || []).forEach(p => { if (p.studentId) prefMap[p.studentId] = p })
+  local.preferences.forEach(p => { if (p.studentId && !prefMap[p.studentId]) prefMap[p.studentId] = p })
+  const mergedPreferences = Object.values(prefMap)
+
+  // Merge placement results (prefer server as source of truth)
+  const mergedPlacementResults = server.placementResults || local.placementResults || []
+
+  // Merge analytics (prefer server, keep local if server doesn't have it)
+  const mergedAnalytics = server.analytics || local.analytics || null
+
+  saveLocalData({ 
+    students: mergedStudents, 
+    scores: mergedScores,
+    schools: mergedSchools,
+    preferences: mergedPreferences,
+    placementResults: mergedPlacementResults,
+    analytics: mergedAnalytics
+  })
+  
+  return { 
+    students: mergedStudents, 
+    scores: mergedScores,
+    schools: mergedSchools,
+    preferences: mergedPreferences,
+    placementResults: mergedPlacementResults,
+    analytics: mergedAnalytics
+  }
 }
 
 let _intervalId = null
@@ -154,9 +244,11 @@ async function syncNow() {
       schools: payload.schools?.length || 0,
       students: payload.students?.length || 0,
       scores: payload.scores?.length || 0,
-      preferences: payload.preferences?.length || 0
+      preferences: payload.preferences?.length || 0,
+      placementResults: payload.placementResults?.length || 0,
+      analytics: !!payload.analytics
     })
-    console.log('[SYNC] Full payload:', payload)
+    console.log('[SYNC] Full payload keys:', Object.keys(payload))
     const uploadResult = await upload(payload)
     console.log('[SYNC] upload() returned:', uploadResult)
     

@@ -131,13 +131,31 @@ export default function Analytics() {
       .sort((a, b) => b.demand - a.demand)
       .slice(0, 5) // Top 5 schools
 
-    setAnalytics(prev => ({
-      ...prev,
+    const analyticsData = {
       placementRate,
       averageScore,
       totalStudents,
-      schoolDemand: schoolDemandArray
+      schoolDemand: schoolDemandArray,
+      gradeDistribution: newGradeDist,
+      placementByStatus: {
+        placed,
+        pending,
+        unplaced
+      },
+      timestamp: new Date().toISOString()
+    }
+
+    setAnalytics(prev => ({
+      ...prev,
+      ...analyticsData
     }))
+    
+    // Save analytics snapshot to localStorage for sync
+    try {
+      localStorage.setItem('analyticsSnapshot', JSON.stringify(analyticsData))
+    } catch (e) {
+      console.warn('[ANALYTICS] Failed to save analytics to localStorage:', e)
+    }
   }, [])
 
   const handleGenerateReport = () => {

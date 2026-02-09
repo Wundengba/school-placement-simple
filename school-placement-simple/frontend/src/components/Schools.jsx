@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import '../styles/Schools.css'
 import { IoSearch, IoClose, IoSchool } from 'react-icons/io5'
 import schools from '../data/schools'
@@ -7,6 +7,16 @@ export default function Schools() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedRegion, setSelectedRegion] = useState('all')
+
+  // Save schools to localStorage on component mount for sync
+  useEffect(() => {
+    try {
+      localStorage.setItem('schools', JSON.stringify(schools))
+      console.log('[SCHOOLS] Saved', schools.length, 'schools to localStorage')
+    } catch (error) {
+      console.error('[SCHOOLS] Failed to save schools to localStorage:', error)
+    }
+  }, [])
 
   // Extract unique regions
   const regions = useMemo(() => {
