@@ -9,7 +9,12 @@ const router = express.Router()
 // Upload data to database (upsert)
 router.post('/upload', async (req, res) => {
   try {
+    const mongoose = await import('mongoose').then(m => m.default)
+    const dbState = mongoose.connection.readyState
+    const dbStates = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' }
+    
     const { schools, students, scores, preferences, placementResults, analytics } = req.body
+    console.log('[SYNC-UPLOAD] DB State:', dbStates[dbState] || 'unknown', '(', dbState, ')')
     console.log('[SYNC-UPLOAD] Starting upload with:', {
       schoolsCount: schools?.length || 0,
       studentsCount: students?.length || 0,
@@ -85,8 +90,13 @@ router.post('/upload', async (req, res) => {
     // Execute all operations in parallel
     if (operations.length > 0) {
       console.log('[SYNC-UPLOAD] Executing', operations.length, 'parallel operations...')
-      await Promise.all(operations)
-      console.log('[SYNC-UPLOAD] All operations completed')
+      const results = await Promise.allSettled(operations)
+      const failed = results.filter(r => r.status === 'rejected').length
+      const succeeded = results.filter(r => r.status === 'fulfilled').length
+      console.log('[SYNC-UPLOAD] Results: succeeded=', succeeded, ', failed=', failed)
+      if (failed > 0) {
+        console.log('[SYNC-UPLOAD] Failed operations:', results.filter(r => r.status === 'rejected').map(r => r.reason.message).slice(0, 5))
+      }
     }
 
     res.json({
