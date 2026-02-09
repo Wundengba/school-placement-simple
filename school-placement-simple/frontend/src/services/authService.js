@@ -3,9 +3,34 @@
  * Handles login, register, token management, and user verification
  */
 
-const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : '/api'
+// Function to get the correct API base
+function getAPIBase() {
+  // First, try to get from environment variable
+  let apiBase = (import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : null
+  
+  // If not set, determine based on environment
+  if (!apiBase) {
+    if (import.meta.env.PROD && typeof window !== 'undefined') {
+      // In production (Vercel), use the hardcoded backend URL
+      apiBase = 'https://backend-seven-ashen-18.vercel.app/api'
+    } else {
+      // In development, use relative path
+      apiBase = '/api'
+    }
+  }
+  
+  // Ensure /api is always in the path
+  if (apiBase && !apiBase.endsWith('/api') && !apiBase.includes('/api/')) {
+    apiBase = apiBase.replace(/\/$/, '') + '/api'
+  }
+  
+  return apiBase
+}
+
+const API_BASE = getAPIBase()
 
 console.log('[AUTH Service] API_BASE configured as:', API_BASE)
+console.log('[AUTH Service] Environment:', import.meta.env.PROD ? 'production' : 'development')
 
 class AuthService {
   constructor() {
