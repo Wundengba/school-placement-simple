@@ -19,6 +19,7 @@ function getInitialTab() {
 export default function App() {
   const [activeTab, setActiveTab] = useState(getInitialTab())
   const [lastSync, setLastSync] = useState(null)
+  const [syncError, setSyncError] = useState(null)
 
   // Save active tab to localStorage whenever it changes
   useEffect(() => {
@@ -30,10 +31,16 @@ export default function App() {
     let mounted = true
     ;(async () => {
       try {
-        await syncService.syncNow()
-        if (mounted) setLastSync(new Date().toISOString())
+        console.log('Starting initial sync...')
+        const result = await syncService.syncNow()
+        if (mounted) {
+          setLastSync(new Date().toISOString())
+          setSyncError(null)
+          console.log('Initial sync completed:', result)
+        }
       } catch (e) {
-        console.warn('Initial sync failed', e)
+        console.error('Initial sync failed:', e)
+        if (mounted) setSyncError(e.message)
       }
       syncService.startAutoSync(60000)
     })()

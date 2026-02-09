@@ -1,19 +1,43 @@
 const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : '/api'
 
 async function download() {
-  const res = await fetch(`${API_BASE}/sync/download`)
-  if (!res.ok) throw new Error(`Download failed: ${res.status}`)
-  return res.json()
+  try {
+    console.log('Downloading from:', API_BASE)
+    const res = await fetch(`${API_BASE}/sync/download`)
+    console.log('Download response status:', res.status)
+    if (!res.ok) {
+      const errorText = await res.text()
+      throw new Error(`Download failed: HTTP ${res.status} - ${errorText}`)
+    }
+    const data = await res.json()
+    console.log('Download successful, received:', data)
+    return data
+  } catch (error) {
+    console.error('Download error:', error)
+    throw error
+  }
 }
 
 async function upload(payload) {
-  const res = await fetch(`${API_BASE}/sync/upload`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  if (!res.ok) throw new Error(`Upload failed: ${res.status}`)
-  return res.json()
+  try {
+    console.log('Uploading to:', API_BASE)
+    const res = await fetch(`${API_BASE}/sync/upload`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    console.log('Upload response status:', res.status)
+    if (!res.ok) {
+      const errorText = await res.text()
+      throw new Error(`Upload failed: HTTP ${res.status} - ${errorText}`)
+    }
+    const data = await res.json()
+    console.log('Upload successful:', data)
+    return data
+  } catch (error) {
+    console.error('Upload error:', error)
+    throw error
+  }
 }
 
 function getLocalData() {
@@ -48,21 +72,37 @@ function mergeServerIntoLocal(server) {
 let _intervalId = null
 
 async function syncNow() {
-  // download server snapshot
-  const server = await download()
-  if (server && server.success && server.data) {
-    mergeServerIntoLocal(server.data)
+  try {
+    console.log('Starting sync...')
+    // download server snapshot
+    const server = await download()
+    console.log('Downloaded server data:', server)
+    
+    if (server && server.success && server.data) {
+      console.log('Merging server data into local...')
+      mergeServerIntoLocal(server.data)
+    }
+    
+    // then upload local changes (best-effort)
+    console.log('Uploading local changes...')
+    const payload = getLocalData()
+    const uploadResult = await upload(payload)
+    console.log('Upload result:', uploadResult)
+    
+    return { ok: true, message: 'Sync completed successfully' }
+  } catch (error) {
+    console.error('Sync error:', error)
+    throw error
   }
-  // then upload local changes (best-effort)
-  const payload = getLocalData()
-  await upload(payload)
-  return { ok: true }
 }
 
 function startAutoSync(intervalMs = 60000) {
   if (_intervalId) return
+  console.log('Starting auto-sync with interval:', intervalMs)
   _intervalId = setInterval(() => {
-    syncNow().catch(() => {})
+    syncNow().catch((err) => {
+      console.error('Auto-sync failed:', err)
+    })
   }, intervalMs)
 }
 
