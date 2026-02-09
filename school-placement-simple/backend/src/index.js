@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import connectDB from './config/db.js'
+import mongoose from 'mongoose'
 import authRoutes from './routes/authRoutes.js'
 import studentRoutes from './routes/studentRoutes.js'
 import schoolRoutes from './routes/schoolRoutes.js'
@@ -44,54 +45,27 @@ app.use((req, res, next) => {
   next()
 })
 
-// Log all errors that happen in the request
-app.use((req, res, next) => {
-  const originalSend = res.send
-  res.send = function(data) {
-    if (res.statusCode >= 400) {
-      console.log(`[${new Date().toISOString()}] Response ${res.statusCode} for ${req.method} ${req.path}`)
-    }
-    return originalSend.call(this, data)
-  }
-  next()
-})
-
 // Health check - MUST be before MongoDB connection
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date() })
 })
 
-// MongoDB connection status check
-app.get('/api/db-status', (req, res) => {
-  try {
-    const mongooseConnection = mongoose.connection
-    res.json({
-      status: 'endpoint working',
-      mongoDBReadyState: mongooseConnection.readyState,
-      readyStateNames: {
-        0: 'disconnected',
-        1: 'connected',
-        2: 'connecting',
-        3: 'disconnecting'
-      },
-      currentState: ['disconnected', 'connected', 'connecting', 'disconnecting'][mongooseConnection.readyState],
-      mongoDBHost: mongooseConnection.host || 'not set'
-    })
-  } catch (error) {
-    res.status(500).json({ 
-      status: 'error checking db',
-      error: error.message
-    })
-  }
+// Connect to MongoDB (async, don't block server startup)
+connectDB().catch(err => {
+  console.error('Failed to connect to MongoDB:', err && err.message)
+  // Continue running even if DB connection fails
 })
 
-// Connect to MongoDB (async, don't block server startup)
-console.log('[SERVER] Initiating MongoDB connection...')
-connectDB().then(() => {
-  console.log('[SERVER] ✅ MongoDB connection successful')
-}).catch(err => {
-  console.error('[SERVER] ❌ Failed to connect to MongoDB:', err.message)
-  // Continue running even if DB connection fails
+// DB status endpoint
+app.get('/api/db-status', (req, res) => {
+  const readyState = mongoose.connection && mongoose.connection.readyState
+  const states = ['disconnected', 'connected', 'connecting', 'disconnecting']
+  res.json({
+    success: true,
+    readyState,
+    state: states[readyState] || 'unknown',
+    host: mongoose.connection && mongoose.connection.host
+  })
 })
 
 // Debug route to check if routes are loaded
