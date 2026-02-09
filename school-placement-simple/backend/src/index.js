@@ -8,6 +8,8 @@ import schoolRoutes from './routes/schoolRoutes.js'
 import placementRoutes from './routes/placementRoutes.js'
 import syncRoutes from './routes/syncRoutes.js'
 
+console.log('[INDEX] Auth Routes Imported:', !!authRoutes)
+
 dotenv.config()
 
 const app = express()
