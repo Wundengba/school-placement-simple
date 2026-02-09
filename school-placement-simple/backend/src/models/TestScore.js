@@ -7,16 +7,12 @@ const testScoreSchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
-  fullName: {
-    type: String,
-    trim: true
-  },
-  english: {
+  maths: {
     type: Number,
     min: 0,
     max: 100
   },
-  mathematics: {
+  english: {
     type: Number,
     min: 0,
     max: 100
@@ -26,52 +22,6 @@ const testScoreSchema = new mongoose.Schema({
     min: 0,
     max: 100
   },
-  socialStudies: {
-    type: Number,
-    min: 0,
-    max: 100
-  },
-  computing: {
-    type: Number,
-    min: 0,
-    max: 100
-  },
-  religious: {
-    type: Number,
-    min: 0,
-    max: 100
-  },
-  careerTech: {
-    type: Number,
-    min: 0,
-    max: 100
-  },
-  creativeArts: {
-    type: Number,
-    min: 0,
-    max: 100
-  },
-  ghanaianLanguage: {
-    type: Number,
-    min: 0,
-    max: 100
-  },
-  french: {
-    type: Number,
-    min: 0,
-    max: 100
-  },
-  aggregate: {
-    type: Number
-  },
-  placement: {
-    type: String,
-    enum: ['Not Qualified', 'A', 'B', 'C'],
-    default: 'Not Qualified'
-  },
-  average: {
-    type: Number
-  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -80,6 +30,6 @@ const testScoreSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-}, { timestamps: true })
+})
 
 export default mongoose.model('TestScore', testScoreSchema)

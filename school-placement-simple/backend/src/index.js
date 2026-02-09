@@ -6,7 +6,6 @@ import studentRoutes from './routes/studentRoutes.js'
 import schoolRoutes from './routes/schoolRoutes.js'
 import placementRoutes from './routes/placementRoutes.js'
 import syncRoutes from './routes/syncRoutes.js'
-import notificationRoutes from './routes/notificationRoutes.js'
 
 dotenv.config()
 
@@ -22,21 +21,11 @@ app.use(cors({
 // Connect to MongoDB
 connectDB()
 
-// Root route
-app.get('/', (req, res) => {
-  res.json({ message: 'School Placement API - Running on Vercel', version: '1.0.0' })
-})
-
-app.get('/api', (req, res) => {
-  res.json({ message: 'School Placement API', endpoints: ['/api/health', '/api/students', '/api/schools', '/api/placements', '/api/sync', '/api/notifications'] })
-})
-
 // Routes
 app.use('/api/students', studentRoutes)
 app.use('/api/schools', schoolRoutes)
 app.use('/api/placements', placementRoutes)
 app.use('/api/sync', syncRoutes)
-app.use('/api/notifications', notificationRoutes)
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -54,12 +43,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal server error', error: err.message })
 })
 
-// For local development
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-    console.log(`Environment: ${process.env.NODE_ENV}`)
-  })
-}
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+  console.log(`Environment: ${process.env.NODE_ENV}`)
+})
 
 export default app
