@@ -79,20 +79,34 @@ router.post('/login', async (req, res) => {
     }
 
     // Find user by username or email
+    console.log('[AUTH] Login attempt for:', username)
     const user = await User.findOne({
       $or: [{ username }, { email: username }]
     })
 
     if (!user) {
+      console.log('[AUTH] User not found for:', username)
       return res.status(401).json({ success: false, message: 'Invalid credentials' })
     }
+
+    console.log('[AUTH] User found:', user.username)
 
     // Check password
-    const isPasswordValid = await bcrypt.compare(password, user.password)
+    console.log('[AUTH] Comparing passwords...')
+    let isPasswordValid
+    try {
+      isPasswordValid = await bcrypt.compare(password, user.password)
+    } catch (bcryptError) {
+      console.error('[AUTH] bcrypt compare error:', bcryptError.message)
+      return res.status(500).json({ success: false, message: 'Password verification failed', error: bcryptError.message })
+    }
 
     if (!isPasswordValid) {
+      console.log('[AUTH] Invalid password for user:', username)
       return res.status(401).json({ success: false, message: 'Invalid credentials' })
     }
+
+    console.log('[AUTH] Password valid, creating token...')
 
     // Create token (simple JWT-like token: base64 encoded user data)
     const token = Buffer.from(JSON.stringify({
@@ -119,9 +133,16 @@ router.post('/login', async (req, res) => {
       user: userResponse
     })
   } catch (error) {
-    console.error('[AUTH] Login error:', error.message)
+    console.error('[AUTH] Login error at:', new Date().toISOString())
+    console.error('[AUTH] Error name:', error.name)
+    console.error('[AUTH] Error message:', error.message)
     console.error('[AUTH] Error stack:', error.stack)
-    res.status(500).json({ success: false, message: 'Login failed', error: error.message })
+    res.status(500).json({ 
+      success: false, 
+      message: 'Login failed', 
+      error: error.message,
+      errorName: error.name
+    })
   }
 })
 
@@ -162,10 +183,14 @@ router.get('/me', (req, res) => {
 // Create demo user (for testing) - only creates if it doesn't exist
 router.post('/seed-demo', async (req, res) => {
   try {
+    console.log('[AUTH] Seed demo user request received')
+    
     // Check if demo user already exists
+    console.log('[AUTH] Checking if demo user exists...')
     let demoUser = await User.findOne({ username: 'demo' })
     
     if (demoUser) {
+      console.log('[AUTH] Demo user already exists')
       return res.json({
         success: true,
         message: 'Demo user already exists',
@@ -177,7 +202,11 @@ router.post('/seed-demo', async (req, res) => {
     }
     
     // Create demo user
+    console.log('[AUTH] Demo user not found, creating...')
+    console.log('[AUTH] Hashing password...')
     const hashedPassword = await bcrypt.hash('demo123', 10)
+    console.log('[AUTH] Password hashed, creating user object...')
+    
     demoUser = new User({
       username: 'demo',
       email: 'demo@example.com',
@@ -186,6 +215,7 @@ router.post('/seed-demo', async (req, res) => {
       role: 'admin'
     })
     
+    console.log('[AUTH] Saving demo user to database...')
     await demoUser.save()
     
     console.log('[AUTH] Demo user created successfully')
@@ -200,8 +230,15 @@ router.post('/seed-demo', async (req, res) => {
       }
     })
   } catch (error) {
-    console.error('[AUTH] Seed demo user error:', error.message)
-    res.status(500).json({ success: false, message: 'Failed to create demo user', error: error.message })
+    console.error('[AUTH] Seed demo user error:', error.name)
+    console.error('[AUTH] Seed demo user error message:', error.message)
+    console.error('[AUTH] Seed demo user error stack:', error.stack)
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to create demo user', 
+      error: error.message,
+      errorName: error.name
+    })
   }
 })
 
