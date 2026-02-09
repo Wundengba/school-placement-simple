@@ -111,7 +111,7 @@ export default function SchoolSelection() {
     try {
       const profileKey = `studentProfile_${currentStudent.id}`
       const existing = JSON.parse(localStorage.getItem(profileKey) || 'null') || {}
-      const allTestScores = JSON.parse(localStorage.getItem('allTestScores') || '[]')
+      const allTestScores = JSON.parse(localStorage.getItem('testScores') || '[]')
       const ts = allTestScores.find(ts => ((ts.indexNumber || '').toString().trim().toUpperCase()) === ((currentStudent.indexNumber || '').toString().trim().toUpperCase())) || null
 
       const profile = {

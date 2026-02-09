@@ -16,7 +16,7 @@ export default function Students() {
   const loadStudents = () => {
     // Load only registered students from localStorage
     const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
-    const allTestScores = JSON.parse(localStorage.getItem('allTestScores') || '[]')
+    const allTestScores = JSON.parse(localStorage.getItem('testScores') || '[]')
     
     // Enhance registered students with test score data and placement info
     const enhancedRegisteredStudents = registeredStudents.map(student => {

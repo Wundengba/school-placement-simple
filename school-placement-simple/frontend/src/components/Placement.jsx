@@ -17,7 +17,7 @@ export default function Placement() {
 
   const loadPlacementData = () => {
     const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
-    const allTestScores = JSON.parse(localStorage.getItem('allTestScores') || '[]')
+    const allTestScores = JSON.parse(localStorage.getItem('testScores') || '[]')
     
     // Combine student info with their test scores and placement (case-insensitive index match)
     const studentsWithPlacement = registeredStudents.map(student => {
@@ -39,7 +39,7 @@ export default function Placement() {
     
     // Get all registered students and their test scores
     const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
-    const allTestScores = JSON.parse(localStorage.getItem('allTestScores') || '[]')
+    const allTestScores = JSON.parse(localStorage.getItem('testScores') || '[]')
     
     if (registeredStudents.length === 0) {
       alert('No registered students found!')
@@ -168,7 +168,7 @@ export default function Placement() {
 
   const handleGenerateProfiles = () => {
     const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
-    const allTestScores = JSON.parse(localStorage.getItem('allTestScores') || '[]')
+    const allTestScores = JSON.parse(localStorage.getItem('testScores') || '[]')
     const profiles = registeredStudents.map(student => {
       const ts = allTestScores.find(ts => ((ts.indexNumber || '').toString().trim().toUpperCase()) === ((student.indexNumber || '').toString().trim().toUpperCase())) || null
       const selections = JSON.parse(localStorage.getItem(`schoolSelections_${student.id}`) || 'null') || { catA: '', catB: [], catC: [] }
@@ -246,7 +246,7 @@ export default function Placement() {
     if (!profile) {
       // build one from current stores
       const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
-      const allTestScores = JSON.parse(localStorage.getItem('allTestScores') || '[]')
+      const allTestScores = JSON.parse(localStorage.getItem('testScores') || '[]')
       const student = registeredStudents.find(s => s.id === studentId)
       if (!student) return alert('Student profile not found')
       const ts = allTestScores.find(ts => ((ts.indexNumber || '').toString().trim().toUpperCase()) === ((student.indexNumber || '').toString().trim().toUpperCase())) || null
@@ -269,7 +269,7 @@ export default function Placement() {
 
     // Always fetch fresh test scores to ensure they're up-to-date
     try {
-      const allTestScores = JSON.parse(localStorage.getItem('allTestScores') || '[]')
+      const allTestScores = JSON.parse(localStorage.getItem('testScores') || '[]')
       const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
       const student = registeredStudents.find(s => s.id === studentId)
       
