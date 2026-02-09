@@ -1,15 +1,26 @@
 import mongoose from 'mongoose'
 
 let cachedConnection = null
+let connectionAttemptInProgress = false
 
 const connectDB = async () => {
   // Return cached connection if it exists and is connected
-  if (cachedConnection && cachedConnection.connection.readyState === 1) {
+  if (cachedConnection && cachedConnection.connection && cachedConnection.connection.readyState === 1) {
     console.log('[DB] Using cached MongoDB connection')
     return cachedConnection
   }
+  
+  // Prevent multiple simultaneous connection attempts
+  if (connectionAttemptInProgress) {
+    console.log('[DB] Connection attempt already in progress, waiting...')
+    // Wait a bit and retry
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    return connectDB()
+  }
 
   try {
+    connectionAttemptInProgress = true
+    console.log('[DB] Starting MongoDB connection attempt...')
     // Clean MongoDB URI (remove newlines/whitespace from env var)
     let mongoUri = (process.env.MONGO_URI || '')
       .trim()
@@ -26,29 +37,48 @@ const connectDB = async () => {
       mongoUri = 'mongodb+srv://Tankpe:Mr.Wund3f@cluster0.apk1lfg.mongodb.net/?appName=Cluster0'
     }
     
-    console.log(`[DB] Attempting MongoDB connection to: ${mongoUri.substring(0, 50)}...`)
+    // Add connection string parameters for serverless
+    // Append serverSelectionTimeoutMS to connection string if not already there
+    if (!mongoUri.includes('serverSelectionTimeoutMS')) {
+      mongoUri += mongoUri.includes('?') ? '&' : '?'
+      mongoUri += 'serverSelectionTimeoutMS=120000&connectTimeoutMS=120000'
+    }
+    
+    console.log(`[DB] Final connection URI: ${mongoUri.substring(0, 80)}...`)
+    console.log(`[DB] Connection options:`, {
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 120000,
+      connectTimeoutMS: 120000,
+      socketTimeoutMS: 120000,
+      maxPoolSize: 1
+    })
     
     const conn = await mongoose.connect(mongoUri, {
-      // Very long timeouts for serverless with IP whitelist delays
-      serverSelectionTimeoutMS: 60000,
-      connectTimeoutMS: 60000,
-      socketTimeoutMS: 60000,
-      // Simplified pooling for serverless
+      // Disable buffering completely to fail fast instead of queuing
+      bufferCommands: false,
+      // Very aggressive timeouts
+      serverSelectionTimeoutMS: 120000,
+      connectTimeoutMS: 120000,
+      socketTimeoutMS: 120000,
+      // Simplified pooling
       maxPoolSize: 1,
       minPoolSize: 0,
-      // Avoid reconnect buffering in serverless
+      // Connection options
       retryWrites: true,
-      family: 4, // Use IPv4
-      // Connection string options
-      retryAttempts: 10,
-      waitQueueTimeoutMS: 60000
+      family: 4,
+      retryAttempts: 15,
+      waitQueueTimeoutMS: 120000,
+      // New connection strategy
+      maxIdleTimeMS: 60000
     })
     
     // Cache connection for serverless
     cachedConnection = conn
+    connectionAttemptInProgress = false
     console.log(`[DB] MongoDB Connected: ${conn.connection.host}`)
     return conn
   } catch (error) {
+    connectionAttemptInProgress = false
     console.error(`[DB] Error connecting to MongoDB: ${error.message}`)
     console.error('[DB] IMPORTANT: Ensure MongoDB Atlas IP whitelist includes 0.0.0.0/0')
     // Don't exit - serverless should keep running
