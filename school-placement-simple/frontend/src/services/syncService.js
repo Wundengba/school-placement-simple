@@ -1,22 +1,38 @@
-const API_BASE = ((import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : '/api')
-  .trim()  // Remove any leading/trailing whitespace or newlines
-  .replace(/[\r\n]+/g, '')  // Remove any remaining newline characters
+// Use hardcoded production URL as fallback for deployment
+const PRODUCTION_API_BASE = 'https://backend-seven-ashen-18.vercel.app'
+
+const API_BASE = (() => {
+  // Try to use environment variable first
+  const envBase = (import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : null
+  if (envBase && envBase.trim().length > 0) {
+    return envBase.trim().replace(/[\r\n]+/g, '')
+  }
+  
+  // In development, use relative path; in production use the hardcoded URL
+  const isDevelopment = !window.location.hostname.includes('vercel')
+  return isDevelopment ? '/api' : PRODUCTION_API_BASE
+})()
 
 async function download() {
   try {
-    const url = `${API_BASE}/sync/download`.trim()  // Ensure URL is clean
-    console.log('Downloading from:', url)
+    const url = `${API_BASE}/sync/download`.trim()
+    console.log('[SYNC] API_BASE:', API_BASE)
+    console.log('[SYNC] Downloading from:', url)
+    console.log('[SYNC] Is Development:', !window.location.hostname.includes('vercel'))
+    console.log('[SYNC] Hostname:', window.location.hostname)
+    
     const res = await fetch(url)
-    console.log('Download response status:', res.status)
+    console.log('[SYNC] Download response status:', res.status)
+    
     if (!res.ok) {
       const errorText = await res.text()
       throw new Error(`Download failed: HTTP ${res.status} - ${errorText}`)
     }
     const data = await res.json()
-    console.log('Download successful, received:', data)
+    console.log('[SYNC] Download successful, received:', data)
     return data
   } catch (error) {
-    console.error('Download error:', error)
+    console.error('[SYNC] Download error:', error)
     throw error
   }
 }
@@ -24,22 +40,22 @@ async function download() {
 async function upload(payload) {
   try {
     const url = `${API_BASE}/sync/upload`.trim()  // Ensure URL is clean
-    console.log('Uploading to:', url)
+    console.log('[SYNC] Uploading to:', url)
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
-    console.log('Upload response status:', res.status)
+    console.log('[SYNC] Upload response status:', res.status)
     if (!res.ok) {
       const errorText = await res.text()
       throw new Error(`Upload failed: HTTP ${res.status} - ${errorText}`)
     }
     const data = await res.json()
-    console.log('Upload successful:', data)
+    console.log('[SYNC] Upload successful:', data)
     return data
   } catch (error) {
-    console.error('Upload error:', error)
+    console.error('[SYNC] Upload error:', error)
     throw error
   }
 }

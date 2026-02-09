@@ -20,6 +20,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState(getInitialTab())
   const [lastSync, setLastSync] = useState(null)
   const [syncError, setSyncError] = useState(null)
+  const apiBase = (import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : '/api'
 
   // Save active tab to localStorage whenever it changes
   useEffect(() => {
