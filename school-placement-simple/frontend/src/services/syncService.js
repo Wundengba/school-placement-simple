@@ -156,12 +156,22 @@ async function syncNow() {
   }
 }
 
-function startAutoSync(intervalMs = 60000) {
-  if (_intervalId) return
-  console.log('Starting auto-sync with interval:', intervalMs)
+function startAutoSync(intervalMs = 30000) {
+  if (_intervalId) {
+    console.log('[SYNC] Auto-sync already running, skipping restart')
+    return
+  }
+  console.log('[SYNC] === Starting auto-sync with interval:', intervalMs, 'ms ===')
   _intervalId = setInterval(() => {
-    syncNow().catch((err) => {
-      console.error('Auto-sync failed:', err)
+    const now = new Date().toLocaleTimeString()
+    console.log(`[SYNC] [${now}] Auto-sync tick - executing syncNow()...`)
+    syncNow().then(() => {
+      const newTime = new Date().toISOString()
+      console.log(`[SYNC] [${new Date().toLocaleTimeString()}] ✅ Auto-sync completed`)
+      // Dispatch event so UI can update
+      window.dispatchEvent(new CustomEvent('syncCompleted', { detail: { timestamp: newTime } }))
+    }).catch((err) => {
+      console.error(`[SYNC] [${new Date().toLocaleTimeString()}] ❌ Auto-sync failed:`, err.message)
     })
   }, intervalMs)
 }

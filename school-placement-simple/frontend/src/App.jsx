@@ -32,20 +32,40 @@ export default function App() {
     let mounted = true
     ;(async () => {
       try {
-        console.log('Starting initial sync...')
+        console.log('[APP] Starting initial sync on app load...')
         const result = await syncService.syncNow()
         if (mounted) {
-          setLastSync(new Date().toISOString())
+          const timestamp = new Date().toISOString()
+          setLastSync(timestamp)
           setSyncError(null)
-          console.log('Initial sync completed:', result)
+          console.log('[APP] ✅ Initial sync completed at:', timestamp)
         }
       } catch (e) {
-        console.error('Initial sync failed:', e)
+        console.error('[APP] ❌ Initial sync failed:', e.message)
         if (mounted) setSyncError(e.message)
       }
-      syncService.startAutoSync(60000)
+      
+      // Start auto-sync every 30 seconds
+      console.log('[APP] Starting auto-sync interval (every 30s)...')
+      syncService.startAutoSync(30000)
     })()
-    return () => { mounted = false; syncService.stopAutoSync() }
+    
+    return () => { 
+      console.log('[APP] Cleaning up: stopping auto-sync and unmounting')
+      mounted = false
+      syncService.stopAutoSync() 
+    }
+  }, [])
+
+  // Listen for auto-sync completions and update UI
+  useEffect(() => {
+    const handleSyncCompleted = (event) => {
+      console.log('[APP] Received syncCompleted event')
+      setLastSync(event.detail.timestamp)
+    }
+    
+    window.addEventListener('syncCompleted', handleSyncCompleted)
+    return () => window.removeEventListener('syncCompleted', handleSyncCompleted)
   }, [])
 
   // Listen for tab change events from components
