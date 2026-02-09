@@ -56,11 +56,13 @@ const connectDB = async () => {
     const conn = await mongoose.connect(mongoUri, {
       // Keep bufferCommands true to queue operations during connection
       bufferCommands: true,
+      // Increase operation buffer timeout to match connection timeout
+      bufferCmdsMaxMsUnsupported: 120000,
       // Very aggressive timeouts
       serverSelectionTimeoutMS: 120000,
       connectTimeoutMS: 120000,
       socketTimeoutMS: 120000,
-      // Simplified pooling
+      // Allow operations to wait for connection
       maxPoolSize: 1,
       minPoolSize: 0,
       // Connection options
@@ -70,16 +72,21 @@ const connectDB = async () => {
       waitQueueTimeoutMS: 120000,
       maxIdleTimeMS: 60000
     })
-    
     // Cache connection for serverless
     cachedConnection = conn
     connectionAttemptInProgress = false
-    console.log(`[DB] MongoDB Connected: ${conn.connection.host}`)
+    console.log(`[DB] ✅ MongoDB Connected: ${conn.connection.host}`)
+    console.log(`[DB] Connection state: ${conn.connection.readyState} (1 = connected)`)
     return conn
   } catch (error) {
     connectionAttemptInProgress = false
-    console.error(`[DB] Error connecting to MongoDB: ${error.message}`)
-    console.error('[DB] IMPORTANT: Ensure MongoDB Atlas IP whitelist includes 0.0.0.0/0')
+    console.error(`[DB] ❌ FAILED to connect to MongoDB`)
+    console.error(`[DB] Error message: ${error.message}`)
+    console.error('[DB] IMPORTANT: Verify MongoDB Atlas:')
+    console.error('[DB] 1. IP Whitelist includes 0.0.0.0/0 (Network Access)')
+    console.error('[DB] 2. MONGO_URI environment variable is set correctly')
+    console.error('[DB] 3. Database user credentials are correct')
+    console.error('[DB] 4. Check Atlas cluster is running')
     // Don't exit - serverless should keep running
     console.error('[DB] Database connection warning - some features may not work')
     throw error

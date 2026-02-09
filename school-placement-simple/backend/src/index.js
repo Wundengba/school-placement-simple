@@ -61,9 +61,36 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date() })
 })
 
+// MongoDB connection status check
+app.get('/api/db-status', (req, res) => {
+  try {
+    const mongooseConnection = mongoose.connection
+    res.json({
+      status: 'endpoint working',
+      mongoDBReadyState: mongooseConnection.readyState,
+      readyStateNames: {
+        0: 'disconnected',
+        1: 'connected',
+        2: 'connecting',
+        3: 'disconnecting'
+      },
+      currentState: ['disconnected', 'connected', 'connecting', 'disconnecting'][mongooseConnection.readyState],
+      mongoDBHost: mongooseConnection.host || 'not set'
+    })
+  } catch (error) {
+    res.status(500).json({ 
+      status: 'error checking db',
+      error: error.message
+    })
+  }
+})
+
 // Connect to MongoDB (async, don't block server startup)
-connectDB().catch(err => {
-  console.error('Failed to connect to MongoDB:', err.message)
+console.log('[SERVER] Initiating MongoDB connection...')
+connectDB().then(() => {
+  console.log('[SERVER] ✅ MongoDB connection successful')
+}).catch(err => {
+  console.error('[SERVER] ❌ Failed to connect to MongoDB:', err.message)
   // Continue running even if DB connection fails
 })
 
