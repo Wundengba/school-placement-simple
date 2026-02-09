@@ -20,8 +20,11 @@ const connectDB = async () => {
     
     console.log(`Attempting MongoDB connection to: ${mongoUri.substring(0, 50)}...`)
     const conn = await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 5000,
-      connectTimeoutMS: 5000
+      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+      minPoolSize: 2
     })
     console.log(`MongoDB Connected: ${conn.connection.host}`)
     return conn

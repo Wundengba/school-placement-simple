@@ -65,21 +65,27 @@ router.post('/upload', async (req, res) => {
 // Download database snapshot
 router.get('/download', async (req, res) => {
   try {
-    // Use maxTimeMS to set a longer timeout for the operation
-    const options = { maxTimeMS: 30000 }
-    
+    // Execute queries in parallel with timeout handling
     const [schools, students, scores] = await Promise.all([
-      School.find().lean().maxTimeMS(30000),
-      Student.find().lean().maxTimeMS(30000),
-      TestScore.find().lean().maxTimeMS(30000)
-    ])
+      School.find().lean().exec(),
+      Student.find().lean().exec(),
+      TestScore.find().lean().exec()
+    ]).then(results => results)
+      .catch(error => {
+        // Handle timeout error
+        if (error.message.includes('buffering timed out')) {
+          console.warn('Database query timeout, returning empty datasets')
+          return [[], [], []]
+        }
+        throw error
+      })
 
     res.json({
       success: true,
       data: {
-        schools,
-        students,
-        scores,
+        schools: schools || [],
+        students: students || [],
+        scores: scores || [],
         timestamp: new Date()
       }
     })
