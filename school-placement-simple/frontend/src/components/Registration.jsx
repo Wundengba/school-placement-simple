@@ -94,7 +94,7 @@ export default function Registration() {
       dateOfBirth: formData.dateOfBirth,
       guardianName: formData.guardianName,
       guardianPhone: formData.guardianPhone,
-      status: 'registered',
+      status: 'pending',  // Changed from 'registered' to match backend enum
       placedSchool: 'Not yet placed',
       registeredAt: new Date().toISOString()
     }
