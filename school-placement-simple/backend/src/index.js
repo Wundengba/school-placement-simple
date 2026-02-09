@@ -7,7 +7,9 @@ import authRoutes from './routes/authRoutes.js'
 import studentRoutes from './routes/studentRoutes.js'
 import schoolRoutes from './routes/schoolRoutes.js'
 import placementRoutes from './routes/placementRoutes.js'
+import notificationRoutes from './routes/notificationRoutes.js'
 import syncRoutes from './routes/syncRoutes.js'
+import dashboardRoutes from './routes/dashboardRoutes.js'
 
 console.log('[INDEX] Auth Routes Imported:', !!authRoutes)
 
@@ -76,7 +78,8 @@ app.get('/api/debug/routes', (req, res) => {
     studentRoutesImported: !!studentRoutes,
     schoolRoutesImported: !!schoolRoutes,
     placementRoutesImported: !!placementRoutes,
-    syncRoutesImported: !!syncRoutes
+    syncRoutesImported: !!syncRoutes,
+    dashboardRoutesImported: !!dashboardRoutes
   })
 })
 
@@ -85,7 +88,9 @@ app.use('/api/auth', authRoutes)
 app.use('/api/students', studentRoutes)
 app.use('/api/schools', schoolRoutes)
 app.use('/api/placements', placementRoutes)
+app.use('/api/notifications', notificationRoutes)
 app.use('/api/sync', syncRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 
 // 404 handler
 app.use((req, res) => {

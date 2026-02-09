@@ -1,122 +1,289 @@
 import { useState, useEffect } from 'react'
 import '../styles/Dashboard.css'
-import { IoPeople, IoSchool, IoCheckmarkDone, IoTime } from 'react-icons/io5'
-import schools from '../data/schools'
 
-export default function Dashboard() {
-  const [stats, setStats] = useState({
-    totalStudents: 0,
-    totalSchools: 0,
-    placedStudents: 0,
-    pendingStudents: 0
-  })
+export default function Dashboard({ user }) {
+  const [dashboardData, setDashboardData] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  const API_BASE = import.meta.env.VITE_API_BASE || '/api'
 
   useEffect(() => {
-    // Load stats from localStorage
-    const loadStats = () => {
-      const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
-      const placedStudentsData = registeredStudents.filter(s => s.placedSchool !== undefined && s.placedSchool !== null)
-      
-      setStats({
-        totalStudents: registeredStudents.length,
-        totalSchools: schools.length,
-        placedStudents: placedStudentsData.length,
-        pendingStudents: registeredStudents.length - placedStudentsData.length
+    fetchDashboardData()
+  }, [user?.role])
+
+  const fetchDashboardData = async () => {
+    setIsLoading(true)
+    setError('')
+    
+    try {
+      let endpoint = ''
+      const params = new URLSearchParams()
+
+      switch (user?.role) {
+        case 'admin':
+          endpoint = '/dashboard/admin'
+          params.append('role', 'admin')
+          break
+        case 'school':
+          endpoint = '/dashboard/school'
+          params.append('schoolId', user?.schoolId || '')
+          break
+        case 'student':
+          endpoint = '/dashboard/student'
+          params.append('studentId', user?.studentId || '')
+          break
+        default:
+          return
+      }
+
+      const response = await fetch(`${API_BASE}${endpoint}?${params}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
       })
-    }
 
-    loadStats()
+      const data = await response.json()
 
-    // Listen for sync completion to refresh stats
-    const handleSyncCompleted = (event) => {
-      console.log('[DASHBOARD] Sync completed, refreshing stats...')
-      loadStats()
-    }
-    
-    window.addEventListener('syncCompleted', handleSyncCompleted)
-    
-    return () => {
-      window.removeEventListener('syncCompleted', handleSyncCompleted)
-    }
-  }, [])
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch dashboard data')
+      }
 
-  const handleGenerateReport = () => {
-    const report = `DASHBOARD REPORT\nGenerated: ${new Date().toLocaleString()}\n\nSTATISTICS:\n- Total Students: ${stats.totalStudents}\n- Total Schools: ${stats.totalSchools}\n- Placed Students: ${stats.placedStudents}\n- Pending: ${stats.pendingStudents}\n- Placement Rate: ${Math.round((stats.placedStudents/stats.totalStudents)*100)}%`
-    
-    const blob = new Blob([report], { type: 'text/plain' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `dashboard-report-${new Date().getTime()}.txt`
-    a.click()
-    window.URL.revokeObjectURL(url)
-    alert('Report generated and downloaded successfully!')
+      setDashboardData(data)
+    } catch (err) {
+      setError(err.message)
+      console.error('Dashboard error:', err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleExportCSV = () => {
-    const rows = [
-      ['Metric', 'Value'],
-      ['Total Students', stats.totalStudents],
-      ['Total Schools', stats.totalSchools],
-      ['Placed Students', stats.placedStudents],
-      ['Pending Students', stats.pendingStudents],
-      ['Placement Rate (%)', Math.round((stats.placedStudents/stats.totalStudents)*100)]
-    ]
-    
-    const csvData = rows.map(row => row.join(',')).join('\n')
-    
-    const blob = new Blob([csvData], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `dashboard-export-${new Date().getTime()}.csv`
-    a.click()
-    window.URL.revokeObjectURL(url)
-    alert('Dashboard data exported to CSV successfully!')
+  if (isLoading) {
+    return <div className="dashboard-loading">Loading dashboard...</div>
+  }
+
+  if (error) {
+    return (
+      <div className="dashboard-error">
+        <p>Error: {error}</p>
+        <button onClick={fetchDashboardData} className="btn btn-primary">Retry</button>
+      </div>
+    )
   }
 
   return (
     <div className="dashboard-container">
-      <h2>Dashboard</h2>
-      
+      <div className="dashboard-header">
+        <h1>Dashboard</h1>
+        <p>Role: {user?.role?.toUpperCase()}</p>
+      </div>
+
+      {user?.role === 'admin' && <AdminDashboard data={dashboardData} />}
+      {user?.role === 'school' && <SchoolDashboard data={dashboardData} />}
+      {user?.role === 'student' && <StudentDashboard data={dashboardData} />}
+    </div>
+  )
+}
+
+function AdminDashboard({ data }) {
+  return (
+    <div className="dashboard-content">
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon"><IoPeople className="app-icon" /></div>
-          <div className="stat-info">
-            <div className="stat-number">{stats.totalStudents}</div>
-            <div className="stat-label">Total Students</div>
-          </div>
+          <h3>Total Students</h3>
+          <p className="stat-number">{data?.stats?.totalStudents || 0}</p>
         </div>
-
         <div className="stat-card">
-          <div className="stat-icon"><IoSchool className="app-icon" /></div>
-          <div className="stat-info">
-            <div className="stat-number">{stats.totalSchools}</div>
-            <div className="stat-label">Schools</div>
-          </div>
+          <h3>Total Schools</h3>
+          <p className="stat-number">{data?.stats?.totalSchools || 0}</p>
         </div>
-
         <div className="stat-card">
-          <div className="stat-icon"><IoCheckmarkDone className="app-icon" /></div>
-          <div className="stat-info">
-            <div className="stat-number">{stats.placedStudents}</div>
-            <div className="stat-label">Placed Students</div>
-          </div>
+          <h3>Total Placements</h3>
+          <p className="stat-number">{data?.stats?.totalPlacements || 0}</p>
         </div>
-
         <div className="stat-card">
-          <div className="stat-icon"><IoTime className="app-icon" /></div>
-          <div className="stat-info">
-            <div className="stat-number">{stats.pendingStudents}</div>
-            <div className="stat-label">Pending</div>
-          </div>
+          <h3>Placement Rate</h3>
+          <p className="stat-number">{data?.stats?.placementRate || '0%'}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Placed Students</h3>
+          <p className="stat-number">{data?.stats?.placedStudents || 0}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Pending</h3>
+          <p className="stat-number">{data?.stats?.pendingPlacements || 0}</p>
         </div>
       </div>
 
-      <div className="dashboard-actions">
-        <button className="btn btn-success" onClick={handleGenerateReport}>Generate Report</button>
-        <button className="btn btn-info" onClick={handleExportCSV}>Export CSV</button>
+      {data?.recentActivity && data.recentActivity.length > 0 && (
+        <div className="dashboard-section">
+          <h2>Recent Activity</h2>
+          <table className="activity-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Action</th>
+                <th>Entity</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.recentActivity.map((log, idx) => (
+                <tr key={idx}>
+                  <td>{log.username}</td>
+                  <td>{log.action}</td>
+                  <td>{log.entityName || log.entityType}</td>
+                  <td>{new Date(log.createdAt).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SchoolDashboard({ data }) {
+  return (
+    <div className="dashboard-content">
+      {data?.school && (
+        <div className="dashboard-header-info">
+          <h2>{data.school.name}</h2>
+          <p>Location: {data.school.location}</p>
+        </div>
+      )}
+
+      <div className="stats-grid">
+        <div className="stat-card">
+          <h3>Total Applications</h3>
+          <p className="stat-number">{data?.stats?.total || 0}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Accepted</h3>
+          <p className="stat-number">{data?.stats?.accepted || 0}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Pending</h3>
+          <p className="stat-number">{data?.stats?.pending || 0}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Rejected</h3>
+          <p className="stat-number">{data?.stats?.rejected || 0}</p>
+        </div>
       </div>
+
+      {data?.placements && data.placements.length > 0 && (
+        <div className="dashboard-section">
+          <h2>Student Applications</h2>
+          <table className="placements-table">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Applied Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.placements.map((placement, idx) => (
+                <tr key={idx}>
+                  <td>{placement.studentId?.name || 'N/A'}</td>
+                  <td>{placement.studentId?.email || 'N/A'}</td>
+                  <td><span className={`status-${placement.status}`}>{placement.status}</span></td>
+                  <td>{new Date(placement.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function StudentDashboard({ data }) {
+  return (
+    <div className="dashboard-content">
+      {data?.currentPlacement ? (
+        <div className="placement-status-card success">
+          <h2>✓ Placed Successfully!</h2>
+          <div className="placement-info">
+            <h3>{data.currentPlacement.schoolId?.name}</h3>
+            <p>Location: {data.currentPlacement.schoolId?.location}</p>
+            <p>Sector: {data.currentPlacement.schoolId?.sector}</p>
+          </div>
+        </div>
+      ) : (
+        <div className="placement-status-card pending">
+          <h2>Placement Status: Pending</h2>
+          <p>You have applied to {data?.stats?.total || 0} school(s).</p>
+        </div>
+      )}
+
+      <div className="stats-grid">
+        <div className="stat-card">
+          <h3>Total Applications</h3>
+          <p className="stat-number">{data?.stats?.total || 0}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Accepted</h3>
+          <p className="stat-number">{data?.stats?.accepted || 0}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Pending</h3>
+          <p className="stat-number">{data?.stats?.pending || 0}</p>
+        </div>
+        <div className="stat-card">
+          <h3>Rejected</h3>
+          <p className="stat-number">{data?.stats?.rejected || 0}</p>
+        </div>
+      </div>
+
+      {data?.history && data.history.length > 0 && (
+        <div className="dashboard-section">
+          <h2>Placement Timeline</h2>
+          <div className="timeline">
+            {data.history.map((event, idx) => (
+              <div key={idx} className="timeline-item">
+                <div className="timeline-marker"></div>
+                <div className="timeline-content">
+                  <h4>{event.event}</h4>
+                  <p>{event.notes || 'Status updated'}</p>
+                  <small>{new Date(event.createdAt).toLocaleString()}</small>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {data?.allPlacements && data.allPlacements.length > 0 && (
+        <div className="dashboard-section">
+          <h2>My Applications</h2>
+          <table className="placements-table">
+            <thead>
+              <tr>
+                <th>School</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Applied Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.allPlacements.map((placement, idx) => (
+                <tr key={idx}>
+                  <td>{placement.schoolId?.name || 'N/A'}</td>
+                  <td>{placement.schoolId?.location || 'N/A'}</td>
+                  <td><span className={`status-${placement.status}`}>{placement.status}</span></td>
+                  <td>{new Date(placement.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

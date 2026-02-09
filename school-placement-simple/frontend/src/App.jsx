@@ -186,7 +186,7 @@ export default function App() {
       </nav>
 
       <main className="tab-content">
-        {activeTab === 'dashboard' && <Dashboard />}
+        {activeTab === 'dashboard' && <Dashboard user={currentUser} />}
         {activeTab === 'registration' && <Registration />}
         {activeTab === 'students' && <Students />}
         {activeTab === 'testscores' && <TestScores />}
