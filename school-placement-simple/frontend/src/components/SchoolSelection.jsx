@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import '../styles/SchoolSelection.css'
 import { IoSchool, IoCheckmarkCircle, IoSearch } from 'react-icons/io5'
 import schools from '../data/schools'
+import syncService from '../services/syncService'
 
 export default function SchoolSelection() {
   // load schools from external data file
@@ -103,6 +104,9 @@ export default function SchoolSelection() {
     // Save selections with student ID
     const selections = { catA, catB, catC }
     localStorage.setItem(`schoolSelections_${currentStudent.id}`, JSON.stringify(selections))
+    
+    // Trigger real-time sync for preferences
+    syncService.notifyDataChange('schoolSelections')
     
     setSubmitted(true)
     console.log('School selections saved:', { student: currentStudent, ...selections })

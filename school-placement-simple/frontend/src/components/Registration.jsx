@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import '../styles/Registration.css'
 import { IoCamera, IoCheckmarkCircle } from 'react-icons/io5'
+import syncService from '../services/syncService'
 
 export default function Registration() {
   const [formData, setFormData] = useState({
@@ -99,6 +100,9 @@ export default function Registration() {
     }
     existingStudents.push(newStudent)
     localStorage.setItem('registeredStudents', JSON.stringify(existingStudents))
+    
+    // Trigger real-time sync
+    syncService.notifyDataChange('registeredStudents')
     
     setSubmitted(true)
     console.log('Registered:', formData)

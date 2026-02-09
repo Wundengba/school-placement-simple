@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import '../styles/Placement.css'
 import { IoCheckmarkCircle, IoCloseCircle, IoSearch, IoPlay } from 'react-icons/io5'
 import schools from '../data/schools'
+import syncService from '../services/syncService'
 
 export default function Placement() {
   const [students, setStudents] = useState([])
@@ -150,6 +151,9 @@ export default function Placement() {
       timestamp: new Date().toISOString()
     }))
     localStorage.setItem('placementResults', JSON.stringify(placementResults))
+
+    // Trigger real-time sync for placement results
+    syncService.notifyDataChange('placementResults')
 
     // Persist debug info to help troubleshooting
     try {

@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import '../styles/TestScores.css'
 import { IoCloudUpload } from 'react-icons/io5'
+import syncService from '../services/syncService'
 
 export default function TestScores() {
   // Mock students for lookup (would normally come from backend)
@@ -201,6 +202,9 @@ export default function TestScores() {
       allTestScores.push(newEntry)
     }
     localStorage.setItem('testScores', JSON.stringify(allTestScores))
+
+    // Trigger real-time sync
+    syncService.notifyDataChange('testScores')
 
     // Persist/update student profile if student is registered
     try {

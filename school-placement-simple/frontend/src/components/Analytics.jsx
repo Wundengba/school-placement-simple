@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import '../styles/Analytics.css'
 import { IoDocumentText, IoCloudDownload, IoDownload } from 'react-icons/io5'
 import schools from '../data/schools'
+import syncService from '../services/syncService'
 
 export default function Analytics() {
   const [analytics, setAnalytics] = useState({
@@ -153,6 +154,8 @@ export default function Analytics() {
     // Save analytics snapshot to localStorage for sync
     try {
       localStorage.setItem('analyticsSnapshot', JSON.stringify(analyticsData))
+      // Trigger real-time sync for analytics
+      syncService.notifyDataChange('analyticsSnapshot')
     } catch (e) {
       console.warn('[ANALYTICS] Failed to save analytics to localStorage:', e)
     }

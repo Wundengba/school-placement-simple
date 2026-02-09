@@ -223,9 +223,72 @@ function mergeServerIntoLocal(server) {
 }
 
 let _intervalId = null
+let _pendingSyncTimer = null
+let _lastSyncTime = 0
+const _syncDebounceMs = 2000  // Wait 2 seconds before syncing after a change to batch updates
+
+// Track localStorage keys that should trigger real-time sync
+const _realtimeSyncKeys = [
+  'registeredStudents',
+  'testScores',
+  'schools',
+  'placementResults',
+  'analyticsSnapshot'
+]
+
+function _scheduleDebouncedSync() {
+  // Clear any pending sync
+  if (_pendingSyncTimer) {
+    clearTimeout(_pendingSyncTimer)
+  }
+
+  // Schedule a new sync in 2 seconds (debounced)
+  _pendingSyncTimer = setTimeout(() => {
+    const now = Date.now()
+    const timeSinceLastSync = now - _lastSyncTime
+    
+    // Don't sync if we just synced less than 3 seconds ago
+    if (timeSinceLastSync < 3000) {
+      console.log('[SYNC] Skipping sync, synced', timeSinceLastSync, 'ms ago')
+      return
+    }
+    
+    console.log('[SYNC] Real-time sync triggered by data change')
+    syncNow().catch(err => {
+      console.error('[SYNC] Real-time sync failed:', err.message)
+    })
+  }, _syncDebounceMs)
+}
+
+function setupRealtimeSync() {
+  // Listen for storage changes (local and cross-tab)
+  window.addEventListener('storage', (event) => {
+    if (_realtimeSyncKeys.includes(event.key)) {
+      console.log('[SYNC] Storage change detected for key:', event.key)
+      _scheduleDebouncedSync()
+    }
+  })
+
+  // Custom event for in-tab data changes (when we modify localStorage directly)
+  window.addEventListener('dataChanged', (event) => {
+    console.log('[SYNC] dataChanged event detected:', event.detail?.key)
+    _scheduleDebouncedSync()
+  })
+
+  console.log('[SYNC] Real-time sync listeners setup complete')
+}
+
+// Utility function for components to trigger a data change
+function notifyDataChange(key) {
+  console.log('[SYNC] notifyDataChange called for:', key)
+  if (_realtimeSyncKeys.includes(key)) {
+    _scheduleDebouncedSync()
+  }
+}
 
 async function syncNow() {
   try {
+    _lastSyncTime = Date.now()
     console.log('[SYNC] === syncNow() started ===')
     console.log('[SYNC] Calling download()...')
     // download server snapshot
@@ -253,6 +316,11 @@ async function syncNow() {
     console.log('[SYNC] upload() returned:', uploadResult)
     
     console.log('[SYNC] === syncNow() completed successfully ===')
+    
+    // Dispatch completion event with timestamp
+    const newTime = new Date().toISOString()
+    window.dispatchEvent(new CustomEvent('syncCompleted', { detail: { timestamp: newTime } }))
+    
     return { ok: true, message: 'Sync completed successfully' }
   } catch (error) {
     console.error('[SYNC] === syncNow() failed ===')
@@ -262,24 +330,31 @@ async function syncNow() {
   }
 }
 
-function startAutoSync(intervalMs = 30000) {
+function startAutoSync(intervalMs = 10000) {
+  // Setup real-time sync listeners on first auto sync start
+  if (!window._realtimeSyncSetup) {
+    setupRealtimeSync()
+    window._realtimeSyncSetup = true
+  }
+
   if (_intervalId) {
     console.log('[SYNC] Auto-sync already running, skipping restart')
     return
   }
-  console.log('[SYNC] === Starting auto-sync with interval:', intervalMs, 'ms ===')
+  
+  // Default to 10 seconds for faster auto-sync (real-time on changes + periodic backup)
+  const finalInterval = intervalMs || 10000
+  console.log('[SYNC] === Starting auto-sync with interval:', finalInterval, 'ms + real-time event triggers ===')
+  
   _intervalId = setInterval(() => {
     const now = new Date().toLocaleTimeString()
-    console.log(`[SYNC] [${now}] Auto-sync tick - executing syncNow()...`)
+    console.log(`[SYNC] [${now}] Periodic auto-sync tick - executing syncNow()...`)
     syncNow().then(() => {
-      const newTime = new Date().toISOString()
-      console.log(`[SYNC] [${new Date().toLocaleTimeString()}] ✅ Auto-sync completed`)
-      // Dispatch event so UI can update
-      window.dispatchEvent(new CustomEvent('syncCompleted', { detail: { timestamp: newTime } }))
+      console.log(`[SYNC] [${new Date().toLocaleTimeString()}] ✅ Periodic auto-sync completed`)
     }).catch((err) => {
-      console.error(`[SYNC] [${new Date().toLocaleTimeString()}] ❌ Auto-sync failed:`, err.message)
+      console.error(`[SYNC] [${new Date().toLocaleTimeString()}] ❌ Periodic auto-sync failed:`, err.message)
     })
-  }, intervalMs)
+  }, finalInterval)
 }
 
 function stopAutoSync() {
@@ -288,4 +363,4 @@ function stopAutoSync() {
   _intervalId = null
 }
 
-export default { download, upload, syncNow, startAutoSync, stopAutoSync }
+export default { download, upload, syncNow, startAutoSync, stopAutoSync, notifyDataChange, setupRealtimeSync }

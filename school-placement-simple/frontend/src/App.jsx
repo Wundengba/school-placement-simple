@@ -45,9 +45,9 @@ export default function App() {
         if (mounted) setSyncError(e.message)
       }
       
-      // Start auto-sync every 30 seconds
-      console.log('[APP] Starting auto-sync interval (every 30s)...')
-      syncService.startAutoSync(30000)
+      // Start auto-sync every 10 seconds (with real-time event-driven syncs on data changes)
+      console.log('[APP] Starting auto-sync interval (every 10s) with real-time event triggers...')
+      syncService.startAutoSync(10000)
     })()
     
     return () => { 
