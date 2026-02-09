@@ -132,6 +132,34 @@ export default function Login({ onLoginSuccess }) {
     }
   }
 
+  // Developer bypass (shown when URL has ?bypass=1 or in dev)
+  const canBypass = (typeof window !== 'undefined' && new URL(window.location.href).searchParams.get('bypass') === '1') || (import.meta.env && import.meta.env.DEV)
+
+  const handleBypass = () => {
+    try {
+      const token = btoa(JSON.stringify({ id: 'bypass', username: 'demo', email: 'demo@example.com', role: 'admin', timestamp: Date.now() }))
+      const user = {
+        id: 'bypass',
+        username: 'demo',
+        email: 'demo@example.com',
+        fullName: 'Demo User',
+        role: 'admin',
+        token
+      }
+      localStorage.setItem('authToken', token)
+      localStorage.setItem('currentUser', JSON.stringify(user))
+      console.log('[AUTH] Bypass login applied (dev)')
+      if (typeof onLoginSuccess === 'function') {
+        onLoginSuccess(user)
+      } else {
+        window.location.reload()
+      }
+    } catch (err) {
+      console.error('[AUTH] Bypass failed:', err)
+      setError('Bypass failed: ' + (err.message || err))
+    }
+  }
+
   return (
     <div className="login-container">
       <div className="login-card">
@@ -317,6 +345,12 @@ export default function Login({ onLoginSuccess }) {
           <p><strong>Demo Credentials:</strong></p>
           <p>Username: <code>demo</code></p>
           <p>Password: <code>demo123</code></p>
+          {canBypass && (
+            <div className="bypass-section">
+              <p className="bypass-note">Dev bypass enabled (query ?bypass=1 or dev).</p>
+              <button type="button" className="btn btn-secondary" onClick={handleBypass}>Bypass Login (Dev)</button>
+            </div>
+          )}
         </div>
       </div>
     </div>
