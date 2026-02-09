@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import syncService from './services/syncService'
 import './App.css'
 import Dashboard from './components/Dashboard'
 import Registration from './components/Registration'
@@ -23,6 +24,22 @@ export default function App() {
     localStorage.setItem('activeTab', activeTab)
   }, [activeTab])
 
+  // Sync on startup and start auto-sync
+  const [lastSync, setLastSync] = useState(null)
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        await syncService.syncNow()
+        if (mounted) setLastSync(new Date().toISOString())
+      } catch (e) {
+        console.warn('Initial sync failed', e)
+      }
+      syncService.startAutoSync(60000)
+    })()
+    return () => { mounted = false; syncService.stopAutoSync() }
+  }, [])
+
   // Listen for tab change events from components
   useEffect(() => {
     const handleTabChange = () => {
@@ -42,9 +59,15 @@ export default function App() {
         <div className="header-left">
           <h1>Tankpe School Management & Placement System</h1>
         </div>
-        <button className="btn btn-logout" onClick={() => setActiveTab('dashboard')}>
-          Home
-        </button>
+        <div style={{display:'flex',gap:8,alignItems:'center'}}>
+          <button className="btn btn-logout" onClick={() => setActiveTab('dashboard')}>
+            Home
+          </button>
+          <button className="btn" onClick={async () => { try { await syncService.syncNow(); setLastSync(new Date().toISOString()); alert('Sync complete') } catch(e) { alert('Sync failed: '+e.message) } }}>
+            Sync Now
+          </button>
+          <div style={{fontSize:12,color:'#666'}}>{lastSync ? `Last sync: ${new Date(lastSync).toLocaleString()}` : 'Not yet synced'}</div>
+        </div>
       </header>
 
       <nav className="tabs-nav">
