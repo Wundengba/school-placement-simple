@@ -36,7 +36,10 @@ app.use(cors({
 }))
 
 // Connect to MongoDB
-connectDB()
+connectDB().catch(err => {
+  console.error('Failed to connect to MongoDB:', err.message)
+  // Continue running even if DB connection fails
+})
 
 // Debug route to check if routes are loaded
 app.get('/api/debug/routes', (req, res) => {
