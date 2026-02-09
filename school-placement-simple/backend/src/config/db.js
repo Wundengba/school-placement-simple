@@ -46,7 +46,7 @@ const connectDB = async () => {
     
     console.log(`[DB] Final connection URI: ${mongoUri.substring(0, 80)}...`)
     console.log(`[DB] Connection options:`, {
-      bufferCommands: false,
+      bufferCommands: true,
       serverSelectionTimeoutMS: 120000,
       connectTimeoutMS: 120000,
       socketTimeoutMS: 120000,
@@ -54,8 +54,8 @@ const connectDB = async () => {
     })
     
     const conn = await mongoose.connect(mongoUri, {
-      // Disable buffering completely to fail fast instead of queuing
-      bufferCommands: false,
+      // Keep bufferCommands true to queue operations during connection
+      bufferCommands: true,
       // Very aggressive timeouts
       serverSelectionTimeoutMS: 120000,
       connectTimeoutMS: 120000,
@@ -68,7 +68,6 @@ const connectDB = async () => {
       family: 4,
       retryAttempts: 15,
       waitQueueTimeoutMS: 120000,
-      // New connection strategy
       maxIdleTimeMS: 60000
     })
     
