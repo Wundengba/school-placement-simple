@@ -9,39 +9,65 @@ const router = express.Router()
 router.post('/upload', async (req, res) => {
   try {
     const { schools, students, scores, preferences } = req.body
-    const timeoutMs = 30000
+    console.log('[SYNC-UPLOAD] Starting upload with:', {
+      schoolsCount: schools?.length || 0,
+      studentsCount: students?.length || 0,
+      scoresCount: scores?.length || 0
+    })
 
-    // Upsert schools
-    if (schools && Array.isArray(schools)) {
-      for (const school of schools) {
-        await School.updateOne(
+    // Use Promise.all for parallel batch operations
+    const operations = []
+
+    // Batch upsert schools
+    if (schools && Array.isArray(schools) && schools.length > 0) {
+      const schoolOps = schools.map(school =>
+        School.updateOne(
           { externalId: school.externalId },
           { $set: school },
-          { upsert: true, maxTimeMS: timeoutMs }
-        )
-      }
+          { upsert: true }
+        ).catch(err => {
+          console.error('[SYNC-UPLOAD] School upsert error:', err.message)
+          return { error: err.message, type: 'school' }
+        })
+      )
+      operations.push(...schoolOps)
     }
 
-    // Upsert students
-    if (students && Array.isArray(students)) {
-      for (const student of students) {
-        await Student.updateOne(
+    // Batch upsert students
+    if (students && Array.isArray(students) && students.length > 0) {
+      const studentOps = students.map(student =>
+        Student.updateOne(
           { indexNumber: student.indexNumber },
           { $set: student },
-          { upsert: true, maxTimeMS: timeoutMs }
-        )
-      }
+          { upsert: true }
+        ).catch(err => {
+          console.error('[SYNC-UPLOAD] Student upsert error:', err.message)
+          return { error: err.message, type: 'student' }
+        })
+      )
+      operations.push(...studentOps)
     }
 
-    // Upsert test scores
-    if (scores && Array.isArray(scores)) {
-      for (const score of scores) {
-        await TestScore.updateOne(
+    // Batch upsert test scores
+    if (scores && Array.isArray(scores) && scores.length > 0) {
+      const scoreOps = scores.map(score =>
+        TestScore.updateOne(
           { indexNumber: score.indexNumber },
           { $set: score },
-          { upsert: true, maxTimeMS: timeoutMs }
-        )
-      }
+          { upsert: true }
+        ).catch(err => {
+          console.error('[SYNC-UPLOAD] Score upsert error:', err.message)
+          return { error: err.message, type: 'score' }
+        })
+      )
+      operations.push(...scoreOps)
+    }
+
+    // Execute all operations in parallel
+    if (operations.length > 0) {
+      console.log('[SYNC-UPLOAD] Executing', operations.length, 'parallel operations...')
+      await Promise.all(operations)
+      console.log('[SYNC-UPLOAD] All operations completed')
     }
 
     res.json({
@@ -54,7 +80,7 @@ router.post('/upload', async (req, res) => {
       }
     })
   } catch (error) {
-    console.error('Sync upload error:', error)
+    console.error('[SYNC-UPLOAD] Upload error:', error.message)
     res.status(500).json({
       success: false,
       error: error.message
@@ -65,6 +91,8 @@ router.post('/upload', async (req, res) => {
 // Download database snapshot
 router.get('/download', async (req, res) => {
   try {
+    console.log('[SYNC-DOWNLOAD] Starting download of all collections...')
+    
     // Execute queries in parallel with timeout handling
     const [schools, students, scores] = await Promise.all([
       School.find().lean().exec(),
@@ -74,11 +102,17 @@ router.get('/download', async (req, res) => {
       .catch(error => {
         // Handle timeout error
         if (error.message.includes('buffering timed out')) {
-          console.warn('Database query timeout, returning empty datasets')
+          console.warn('[SYNC-DOWNLOAD] Database query timeout, returning empty datasets')
           return [[], [], []]
         }
         throw error
       })
+
+    console.log('[SYNC-DOWNLOAD] Retrieved:', {
+      schoolsCount: schools?.length || 0,
+      studentsCount: students?.length || 0,
+      scoresCount: scores?.length || 0
+    })
 
     res.json({
       success: true,
@@ -90,7 +124,7 @@ router.get('/download', async (req, res) => {
       }
     })
   } catch (error) {
-    console.error('Sync download error:', error)
+    console.error('[SYNC-DOWNLOAD] Error:', error.message)
     res.status(500).json({
       success: false,
       error: error.message
