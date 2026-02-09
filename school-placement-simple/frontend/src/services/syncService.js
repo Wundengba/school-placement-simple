@@ -4,6 +4,9 @@ const PRODUCTION_API_BASE = 'https://backend-seven-ashen-18.vercel.app/api'
 // Determine API base immediately
 let API_BASE = '/api'  // Default fallback
 
+// Track last successful sync time for cross-device sync
+let _lastServerSyncTime = localStorage.getItem('_lastServerSyncTime') ? new Date(localStorage.getItem('_lastServerSyncTime')) : null
+
 // Try environment variable first
 if (import.meta.env && import.meta.env.VITE_API_BASE) {
   const envBase = String(import.meta.env.VITE_API_BASE).trim()
@@ -31,12 +34,14 @@ console.log('[SYNC] Final API_BASE:', API_BASE)
 
 async function download() {
   try {
-    const url = `${API_BASE}/sync/download`
-    console.log('[SYNC] download() called')
-    console.log('[SYNC] API_BASE value:', API_BASE)
+    // Build URL with lastSyncTime for incremental sync
+    let url = `${API_BASE}/sync/download`
+    if (_lastServerSyncTime) {
+      url += `?lastSyncTime=${encodeURIComponent(_lastServerSyncTime.toISOString())}`
+    }
+    
+    console.log('[SYNC] download() called, incremental:', !!_lastServerSyncTime)
     console.log('[SYNC] Full URL:', url)
-    console.log('[SYNC] URL is HTTPS?', url.startsWith('https'))
-    console.log('[SYNC] URL length:', url.length)
     
     const fetchOptions = {
       method: 'GET',
@@ -44,8 +49,6 @@ async function download() {
         'Accept': 'application/json'
       }
     }
-    console.log('[SYNC] Fetch options:', fetchOptions)
-    console.log('[SYNC] About to call fetch() with URL:', url)
     
     const res = await fetch(url, fetchOptions)
     console.log('[SYNC] Fetch completed, status:', res.status, res.statusText)
@@ -57,7 +60,7 @@ async function download() {
     }
     
     const data = await res.json()
-    console.log('[SYNC] Parsed JSON data:', data)
+    console.log('[SYNC] Parsed JSON data, incremental:', data.data?.incremental)
     return data
   } catch (error) {
     console.error('[SYNC] download() error:', error)
@@ -295,9 +298,28 @@ async function syncNow() {
     const server = await download()
     console.log('[SYNC] download() returned:', server)
     
+    // Check if there are changes from other devices
+    let hasRemoteChanges = false
     if (server && server.success && server.data) {
+      const hasData = 
+        (server.data.schools && server.data.schools.length > 0) ||
+        (server.data.students && server.data.students.length > 0) ||
+        (server.data.scores && server.data.scores.length > 0) ||
+        (server.data.placementResults && server.data.placementResults.length > 0)
+      
+      if (hasData) {
+        hasRemoteChanges = true
+        console.log('[SYNC] Remote changes detected from other devices!')
+      }
+      
       console.log('[SYNC] Merging server data into local...')
       mergeServerIntoLocal(server.data)
+      
+      // Update last server sync time for next incremental sync
+      if (server.data.timestamp) {
+        _lastServerSyncTime = new Date(server.data.timestamp)
+        localStorage.setItem('_lastServerSyncTime', _lastServerSyncTime.toISOString())
+      }
     }
     
     // then upload local changes (best-effort)
@@ -319,9 +341,14 @@ async function syncNow() {
     
     // Dispatch completion event with timestamp
     const newTime = new Date().toISOString()
-    window.dispatchEvent(new CustomEvent('syncCompleted', { detail: { timestamp: newTime } }))
+    window.dispatchEvent(new CustomEvent('syncCompleted', { 
+      detail: { 
+        timestamp: newTime,
+        hasRemoteChanges: hasRemoteChanges 
+      } 
+    }))
     
-    return { ok: true, message: 'Sync completed successfully' }
+    return { ok: true, message: 'Sync completed successfully', hasRemoteChanges }
   } catch (error) {
     console.error('[SYNC] === syncNow() failed ===')
     console.error('[SYNC] Error:', error)
@@ -330,7 +357,7 @@ async function syncNow() {
   }
 }
 
-function startAutoSync(intervalMs = 10000) {
+function startAutoSync(intervalMs = 5000) {
   // Setup real-time sync listeners on first auto sync start
   if (!window._realtimeSyncSetup) {
     setupRealtimeSync()
@@ -342,15 +369,15 @@ function startAutoSync(intervalMs = 10000) {
     return
   }
   
-  // Default to 10 seconds for faster auto-sync (real-time on changes + periodic backup)
-  const finalInterval = intervalMs || 10000
-  console.log('[SYNC] === Starting auto-sync with interval:', finalInterval, 'ms + real-time event triggers ===')
+  // Default to 5 seconds for cross-device sync (real-time on changes + 5s periodic backup)
+  const finalInterval = intervalMs || 5000
+  console.log('[SYNC] === Starting auto-sync with interval:', finalInterval, 'ms + real-time event triggers for cross-device sync ===')
   
   _intervalId = setInterval(() => {
     const now = new Date().toLocaleTimeString()
     console.log(`[SYNC] [${now}] Periodic auto-sync tick - executing syncNow()...`)
-    syncNow().then(() => {
-      console.log(`[SYNC] [${new Date().toLocaleTimeString()}] ✅ Periodic auto-sync completed`)
+    syncNow().then((result) => {
+      console.log(`[SYNC] [${new Date().toLocaleTimeString()}] ✅ Periodic auto-sync completed`, result?.hasRemoteChanges ? '(remote changes)' : '')
     }).catch((err) => {
       console.error(`[SYNC] [${new Date().toLocaleTimeString()}] ❌ Periodic auto-sync failed:`, err.message)
     })

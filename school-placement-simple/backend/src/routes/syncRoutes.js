@@ -27,7 +27,7 @@ router.post('/upload', async (req, res) => {
       const schoolOps = schools.map(school =>
         School.updateOne(
           { externalId: school.externalId },
-          { $set: school },
+          { $set: { ...school, updatedAt: new Date() } },
           { upsert: true }
         ).catch(err => {
           console.error('[SYNC-UPLOAD] School upsert error:', err.message)
@@ -42,7 +42,7 @@ router.post('/upload', async (req, res) => {
       const studentOps = students.map(student =>
         Student.updateOne(
           { indexNumber: student.indexNumber },
-          { $set: student },
+          { $set: { ...student, updatedAt: new Date() } },
           { upsert: true }
         ).catch(err => {
           console.error('[SYNC-UPLOAD] Student upsert error:', err.message)
@@ -57,7 +57,7 @@ router.post('/upload', async (req, res) => {
       const scoreOps = scores.map(score =>
         TestScore.updateOne(
           { indexNumber: score.indexNumber },
-          { $set: score },
+          { $set: { ...score, updatedAt: new Date() } },
           { upsert: true }
         ).catch(err => {
           console.error('[SYNC-UPLOAD] Score upsert error:', err.message)
@@ -72,7 +72,7 @@ router.post('/upload', async (req, res) => {
       const placementOps = placementResults.map(result =>
         Placement.updateOne(
           { indexNumber: result.indexNumber },
-          { $set: result },
+          { $set: { ...result, updatedAt: new Date() } },
           { upsert: true }
         ).catch(err => {
           console.error('[SYNC-UPLOAD] Placement result upsert error:', err.message)
@@ -113,14 +113,24 @@ router.post('/upload', async (req, res) => {
 // Download database snapshot
 router.get('/download', async (req, res) => {
   try {
+    // Support lastSyncTime for incremental sync across devices
+    const lastSyncTime = req.query.lastSyncTime ? new Date(req.query.lastSyncTime) : null
+    
     console.log('[SYNC-DOWNLOAD] Starting download of all collections...')
+    console.log('[SYNC-DOWNLOAD] LastSyncTime:', lastSyncTime)
+    
+    // Build query filters for incremental sync
+    const schoolQuery = lastSyncTime ? { updatedAt: { $gt: lastSyncTime } } : {}
+    const studentQuery = lastSyncTime ? { updatedAt: { $gt: lastSyncTime } } : {}
+    const scoreQuery = lastSyncTime ? { updatedAt: { $gt: lastSyncTime } } : {}
+    const placementQuery = lastSyncTime ? { updatedAt: { $gt: lastSyncTime } } : {}
     
     // Execute queries in parallel with timeout handling
     const [schools, students, scores, placementResults] = await Promise.all([
-      School.find().lean().exec(),
-      Student.find().lean().exec(),
-      TestScore.find().lean().exec(),
-      Placement.find().lean().exec()
+      School.find(schoolQuery).lean().exec(),
+      Student.find(studentQuery).lean().exec(),
+      TestScore.find(scoreQuery).lean().exec(),
+      Placement.find(placementQuery).lean().exec()
     ]).then(results => results)
       .catch(error => {
         // Handle timeout error
@@ -135,9 +145,11 @@ router.get('/download', async (req, res) => {
       schoolsCount: schools?.length || 0,
       studentsCount: students?.length || 0,
       scoresCount: scores?.length || 0,
-      placementResultsCount: placementResults?.length || 0
+      placementResultsCount: placementResults?.length || 0,
+      incremental: !!lastSyncTime
     })
 
+    const responseTime = new Date().toISOString()
     res.json({
       success: true,
       data: {
@@ -145,7 +157,8 @@ router.get('/download', async (req, res) => {
         students: students || [],
         scores: scores || [],
         placementResults: placementResults || [],
-        timestamp: new Date()
+        timestamp: responseTime,
+        incremental: !!lastSyncTime
       }
     })
   } catch (error) {

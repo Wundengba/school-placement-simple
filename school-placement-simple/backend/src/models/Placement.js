@@ -25,7 +25,13 @@ const placementSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  algorithm: String
+  algorithm: String,
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
 })
-
-export default mongoose.model('Placement', placementSchema)
