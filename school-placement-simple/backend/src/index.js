@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import connectDB from './config/db.js'
+import authRoutes from './routes/authRoutes.js'
 import studentRoutes from './routes/studentRoutes.js'
 import schoolRoutes from './routes/schoolRoutes.js'
 import placementRoutes from './routes/placementRoutes.js'
@@ -64,6 +65,7 @@ app.get('/api/debug/routes', (req, res) => {
 })
 
 // Routes
+app.use('/api/auth', authRoutes)
 app.use('/api/students', studentRoutes)
 app.use('/api/schools', schoolRoutes)
 app.use('/api/placements', placementRoutes)
