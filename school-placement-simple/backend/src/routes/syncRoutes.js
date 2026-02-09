@@ -96,7 +96,6 @@ router.post('/upload', async (req, res) => {
         schools: schools?.length || 0,
         students: students?.length || 0,
         scores: scores?.length || 0,
-        preferences: preferences?.length || 0,
         placementResults: placementResults?.length || 0,
         analytics: !!analytics
       }

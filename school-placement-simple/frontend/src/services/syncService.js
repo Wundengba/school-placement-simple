@@ -105,46 +105,25 @@ function getLocalData() {
   const scores = JSON.parse(localStorage.getItem('testScores') || '[]')
   const schools = JSON.parse(localStorage.getItem('schools') || '[]')
   
-  // Gather per-student selections from individual localStorage keys
-  const allSelections = []
-  students.forEach(student => {
-    if (student.id) {
-      const selectionKey = `schoolSelections_${student.id}`
-      const selection = JSON.parse(localStorage.getItem(selectionKey) || 'null')
-      if (selection) {
-        allSelections.push({
-          studentId: student.id,
-          indexNumber: student.indexNumber,
-          ...selection
-        })
-      }
-    }
-  })
-  
   // Get placement results
   const placementResults = JSON.parse(localStorage.getItem('placementResults') || '[]')
   
   // Get analytics data
   const analyticsData = JSON.parse(localStorage.getItem('analyticsSnapshot') || 'null')
   
-  console.log('[SYNC] getLocalData() retrieved:', {
+  console.log('[SYNC] LOCAL DATA SNAPSHOT:', {
     studentsCount: students?.length || 0,
     scoresCount: scores?.length || 0,
     schoolsCount: schools?.length || 0,
-    selectionsCount: allSelections?.length || 0,
     placementCount: placementResults?.length || 0,
-    hasAnalytics: !!analyticsData
+    hasAnalytics: !!analyticsData,
+    studentIndexNumbers: students.map(s => s.indexNumber).join(', ')
   })
-  console.log('[SYNC] Sample student:', students?.[0])
-  console.log('[SYNC] Sample score:', scores?.[0])
-  console.log('[SYNC] Sample selection:', allSelections?.[0])
-  console.log('[SYNC] Sample placement result:', placementResults?.[0])
   
   return { 
     students, 
     scores, 
     schools,
-    preferences: allSelections,
     placementResults,
     analytics: analyticsData
   }
