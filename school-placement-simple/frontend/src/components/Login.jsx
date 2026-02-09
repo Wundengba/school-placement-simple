@@ -133,7 +133,7 @@ export default function Login({ onLoginSuccess }) {
   }
 
   // Developer bypass (shown when URL has ?bypass=1 or in dev)
-  const canBypass = (typeof window !== 'undefined' && new URL(window.location.href).searchParams.get('bypass') === '1') || (import.meta.env && import.meta.env.DEV)
+  const canBypass = (typeof window !== 'undefined' && new URL(window.location.href).searchParams.get('bypass') === '1') || (import.meta.env && (import.meta.env.DEV || import.meta.env.VITE_ENABLE_BYPASS === '1'))
 
   const handleBypass = () => {
     try {
