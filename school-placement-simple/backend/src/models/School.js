@@ -7,6 +7,12 @@ const schoolSchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
+  externalId: {
+    type: String,
+    trim: true,
+    index: true,
+    sparse: true
+  },
   type: {
     type: String,
     enum: ['Federal', 'State', 'Private'],
