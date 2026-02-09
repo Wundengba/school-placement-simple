@@ -44,6 +44,18 @@ app.use((req, res, next) => {
   next()
 })
 
+// Log all errors that happen in the request
+app.use((req, res, next) => {
+  const originalSend = res.send
+  res.send = function(data) {
+    if (res.statusCode >= 400) {
+      console.log(`[${new Date().toISOString()}] Response ${res.statusCode} for ${req.method} ${req.path}`)
+    }
+    return originalSend.call(this, data)
+  }
+  next()
+})
+
 // Health check - MUST be before MongoDB connection
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date() })

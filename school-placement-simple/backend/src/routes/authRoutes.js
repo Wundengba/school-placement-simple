@@ -120,6 +120,7 @@ router.post('/login', async (req, res) => {
     })
   } catch (error) {
     console.error('[AUTH] Login error:', error.message)
+    console.error('[AUTH] Error stack:', error.stack)
     res.status(500).json({ success: false, message: 'Login failed', error: error.message })
   }
 })
@@ -155,6 +156,52 @@ router.get('/me', (req, res) => {
   } catch (error) {
     console.error('[AUTH] Verify token error:', error.message)
     res.status(401).json({ success: false, message: 'Invalid token' })
+  }
+})
+
+// Create demo user (for testing) - only creates if it doesn't exist
+router.post('/seed-demo', async (req, res) => {
+  try {
+    // Check if demo user already exists
+    let demoUser = await User.findOne({ username: 'demo' })
+    
+    if (demoUser) {
+      return res.json({
+        success: true,
+        message: 'Demo user already exists',
+        user: {
+          username: demoUser.username,
+          email: demoUser.email
+        }
+      })
+    }
+    
+    // Create demo user
+    const hashedPassword = await bcrypt.hash('demo123', 10)
+    demoUser = new User({
+      username: 'demo',
+      email: 'demo@example.com',
+      password: hashedPassword,
+      fullName: 'Demo User',
+      role: 'admin'
+    })
+    
+    await demoUser.save()
+    
+    console.log('[AUTH] Demo user created successfully')
+    res.status(201).json({
+      success: true,
+      message: 'Demo user created successfully',
+      user: {
+        username: demoUser.username,
+        email: demoUser.email,
+        fullName: demoUser.fullName,
+        role: demoUser.role
+      }
+    })
+  } catch (error) {
+    console.error('[AUTH] Seed demo user error:', error.message)
+    res.status(500).json({ success: false, message: 'Failed to create demo user', error: error.message })
   }
 })
 
