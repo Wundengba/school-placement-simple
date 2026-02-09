@@ -14,8 +14,12 @@ const PORT = process.env.PORT || 5000
 
 // Middleware
 app.use(express.json())
+
+// Clean CORS_ORIGIN (remove newlines/whitespace from env var)
+const corsOrigin = (process.env.CORS_ORIGIN || 'http://localhost:5173').trim()
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173'
+  origin: corsOrigin
 }))
 
 // Connect to MongoDB
