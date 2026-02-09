@@ -24,6 +24,33 @@ export default function Login({ onLoginSuccess }) {
     role: 'staff'
   })
 
+  // Bypass support (DEV/testing): env flag or ?bypass=1 in URL
+  const bypassFlag = (import.meta.env && import.meta.env.VITE_ENABLE_BYPASS)
+    ? (import.meta.env.VITE_ENABLE_BYPASS === '1' || import.meta.env.VITE_ENABLE_BYPASS === 'true')
+    : false
+  const urlBypass = (typeof window !== 'undefined') && new URLSearchParams(window.location.search).get('bypass') === '1'
+  const canBypass = bypassFlag || urlBypass
+
+  const handleBypass = () => {
+    const demoUser = { id: 'demo', username: 'demo', email: 'demo@example.com', role: 'admin' }
+    const token = btoa(JSON.stringify({ ...demoUser, timestamp: Date.now() }))
+    localStorage.setItem('authToken', token)
+    localStorage.setItem('currentUser', JSON.stringify(demoUser))
+    if (onLoginSuccess && typeof onLoginSuccess === 'function') {
+      onLoginSuccess(demoUser)
+    }
+  }
+
+  useEffect(() => {
+    if (canBypass) {
+      // Auto-run bypass briefly after mount when enabled
+      const t = setTimeout(() => {
+        handleBypass()
+      }, 60)
+      return () => clearTimeout(t)
+    }
+  }, [canBypass])
+
   // Handle login form change
   const handleLoginChange = (e) => {
     const { name, value } = e.target
