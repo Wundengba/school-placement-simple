@@ -11,6 +11,18 @@ export default function Students() {
 
   useEffect(() => {
     loadStudents()
+
+    // Listen for sync completion to refresh students
+    const handleSyncCompleted = (event) => {
+      console.log('[STUDENTS] Sync completed, refreshing students...')
+      loadStudents()
+    }
+    
+    window.addEventListener('syncCompleted', handleSyncCompleted)
+    
+    return () => {
+      window.removeEventListener('syncCompleted', handleSyncCompleted)
+    }
   }, [])
 
   const loadStudents = () => {

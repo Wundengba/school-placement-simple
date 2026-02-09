@@ -13,15 +13,31 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Load stats from localStorage
-    const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
-    const placedStudentsData = registeredStudents.filter(s => s.placedSchool !== undefined && s.placedSchool !== null)
+    const loadStats = () => {
+      const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
+      const placedStudentsData = registeredStudents.filter(s => s.placedSchool !== undefined && s.placedSchool !== null)
+      
+      setStats({
+        totalStudents: registeredStudents.length,
+        totalSchools: schools.length,
+        placedStudents: placedStudentsData.length,
+        pendingStudents: registeredStudents.length - placedStudentsData.length
+      })
+    }
+
+    loadStats()
+
+    // Listen for sync completion to refresh stats
+    const handleSyncCompleted = (event) => {
+      console.log('[DASHBOARD] Sync completed, refreshing stats...')
+      loadStats()
+    }
     
-    setStats({
-      totalStudents: registeredStudents.length,
-      totalSchools: schools.length,
-      placedStudents: placedStudentsData.length,
-      pendingStudents: registeredStudents.length - placedStudentsData.length
-    })
+    window.addEventListener('syncCompleted', handleSyncCompleted)
+    
+    return () => {
+      window.removeEventListener('syncCompleted', handleSyncCompleted)
+    }
   }, [])
 
   const handleGenerateReport = () => {

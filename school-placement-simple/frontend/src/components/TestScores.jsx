@@ -73,9 +73,25 @@ export default function TestScores() {
 
   // Load existing test scores from localStorage on component mount
   useEffect(() => {
-    const storedScores = JSON.parse(localStorage.getItem('testScores') || '[]')
-    if (storedScores && storedScores.length > 0) {
-      setScores(storedScores)
+    const loadScores = () => {
+      const storedScores = JSON.parse(localStorage.getItem('testScores') || '[]')
+      if (storedScores && storedScores.length > 0) {
+        setScores(storedScores)
+      }
+    }
+
+    loadScores()
+
+    // Listen for sync completion to refresh scores
+    const handleSyncCompleted = (event) => {
+      console.log('[TESTSCORES] Sync completed, refreshing scores...')
+      loadScores()
+    }
+    
+    window.addEventListener('syncCompleted', handleSyncCompleted)
+    
+    return () => {
+      window.removeEventListener('syncCompleted', handleSyncCompleted)
     }
   }, [])
 

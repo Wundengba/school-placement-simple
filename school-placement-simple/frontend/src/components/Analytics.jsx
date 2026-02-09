@@ -32,132 +32,148 @@ export default function Analytics() {
 
   // Load actual school demand from student selections
   useEffect(() => {
-    const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
-    const allTestScores = JSON.parse(localStorage.getItem('testScores') || '[]')
-    const schoolDemandMap = {}
-    
-    // Calculate placement breakdown
-    let placed = 0
-    let pending = 0
-    let unplaced = 0
-
-    // Calculate average score
-    let totalScore = 0
-    const scoredStudents = allTestScores.length
-
-    // Count selections for each school and placement status
-    registeredStudents.forEach(student => {
-      const selections = JSON.parse(localStorage.getItem(`schoolSelections_${student.id}`) || 'null')
+    const loadAnalytics = () => {
+      const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
+      const allTestScores = JSON.parse(localStorage.getItem('testScores') || '[]')
+      const schoolDemandMap = {}
       
-      // Check placement status
-      if (student.placedSchool && student.placedSchool !== null && student.placedSchool !== undefined) {
-        placed++
-      } else if (selections) {
-        // Has selections but not placed yet = pending
-        pending++
+      // Calculate placement breakdown
+      let placed = 0
+      let pending = 0
+      let unplaced = 0
+
+      // Calculate average score
+      let totalScore = 0
+      const scoredStudents = allTestScores.length
+
+      // Count selections for each school and placement status
+      registeredStudents.forEach(student => {
+        const selections = JSON.parse(localStorage.getItem(`schoolSelections_${student.id}`) || 'null')
         
-        // Count selections
-        if (selections.catA) {
-          const schoolName = selections.catA
-          schoolDemandMap[schoolName] = (schoolDemandMap[schoolName] || 0) + 1
+        // Check placement status
+        if (student.placedSchool && student.placedSchool !== null && student.placedSchool !== undefined) {
+          placed++
+        } else if (selections) {
+          // Has selections but not placed yet = pending
+          pending++
+          
+          // Count selections
+          if (selections.catA) {
+            const schoolName = selections.catA
+            schoolDemandMap[schoolName] = (schoolDemandMap[schoolName] || 0) + 1
+          }
+          if (selections.catB && Array.isArray(selections.catB)) {
+            selections.catB.forEach(school => {
+              if (school) {
+                schoolDemandMap[school] = (schoolDemandMap[school] || 0) + 1
+              }
+            })
+          }
+          if (selections.catC && Array.isArray(selections.catC)) {
+            selections.catC.forEach(school => {
+              if (school) {
+                schoolDemandMap[school] = (schoolDemandMap[school] || 0) + 1
+              }
+            })
+          }
+        } else {
+          unplaced++
         }
-        if (selections.catB && Array.isArray(selections.catB)) {
-          selections.catB.forEach(school => {
-            if (school) {
-              schoolDemandMap[school] = (schoolDemandMap[school] || 0) + 1
-            }
-          })
+      })
+
+      // Calculate average score from test scores
+      allTestScores.forEach(score => {
+        if (score.average) {
+          totalScore += score.average
         }
-        if (selections.catC && Array.isArray(selections.catC)) {
-          selections.catC.forEach(school => {
-            if (school) {
-              schoolDemandMap[school] = (schoolDemandMap[school] || 0) + 1
-            }
-          })
+      })
+      const averageScore = scoredStudents > 0 ? Math.round(totalScore / scoredStudents) : 0
+
+      // Compute grade distribution from actual test averages
+      const computeGrade = (avg) => {
+        const s = Number(avg)
+        if (s >= 90 && s <= 100) return 1
+        if (s >= 80 && s <= 89) return 2
+        if (s >= 75 && s <= 79) return 3
+        if (s >= 70 && s <= 74) return 4
+        if (s >= 65 && s <= 69) return 5
+        if (s >= 60 && s <= 64) return 6
+        if (s >= 55 && s <= 59) return 7
+        if (s >= 50 && s <= 54) return 8
+        return 9
+      }
+
+      const newGradeDist = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0}
+      allTestScores.forEach(s => {
+        if (s && (s.average !== null && s.average !== undefined)) {
+          const g = computeGrade(s.average)
+          newGradeDist[g] = (newGradeDist[g] || 0) + 1
         }
-      } else {
-        unplaced++
-      }
-    })
+      })
+      setGradeDistribution(newGradeDist)
 
-    // Calculate average score from test scores
-    allTestScores.forEach(score => {
-      if (score.average) {
-        totalScore += score.average
-      }
-    })
-    const averageScore = scoredStudents > 0 ? Math.round(totalScore / scoredStudents) : 0
+      // Calculate placement rate
+      const totalStudents = registeredStudents.length
+      const placementRate = totalStudents > 0 ? Math.round((placed / totalStudents) * 100) : 0
 
-    // Compute grade distribution from actual test averages
-    const computeGrade = (avg) => {
-      const s = Number(avg)
-      if (s >= 90 && s <= 100) return 1
-      if (s >= 80 && s <= 89) return 2
-      if (s >= 75 && s <= 79) return 3
-      if (s >= 70 && s <= 74) return 4
-      if (s >= 65 && s <= 69) return 5
-      if (s >= 60 && s <= 64) return 6
-      if (s >= 55 && s <= 59) return 7
-      if (s >= 50 && s <= 54) return 8
-      return 9
-    }
-
-    const newGradeDist = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0}
-    allTestScores.forEach(s => {
-      if (s && (s.average !== null && s.average !== undefined)) {
-        const g = computeGrade(s.average)
-        newGradeDist[g] = (newGradeDist[g] || 0) + 1
-      }
-    })
-    setGradeDistribution(newGradeDist)
-
-    // Calculate placement rate
-    const totalStudents = registeredStudents.length
-    const placementRate = totalStudents > 0 ? Math.round((placed / totalStudents) * 100) : 0
-
-    // Update placement breakdown
-    setPlacementByStatus({
-      placed,
-      pending,
-      unplaced
-    })
-
-    // Convert to array and sort by demand
-    const schoolDemandArray = Object.entries(schoolDemandMap)
-      .map(([name, demand]) => ({ 
-        name, 
-        demand,
-        capacity: 100 // Default capacity
-      }))
-      .sort((a, b) => b.demand - a.demand)
-      .slice(0, 5) // Top 5 schools
-
-    const analyticsData = {
-      placementRate,
-      averageScore,
-      totalStudents,
-      schoolDemand: schoolDemandArray,
-      gradeDistribution: newGradeDist,
-      placementByStatus: {
+      // Update placement breakdown
+      setPlacementByStatus({
         placed,
         pending,
         unplaced
-      },
-      timestamp: new Date().toISOString()
+      })
+
+      // Convert to array and sort by demand
+      const schoolDemandArray = Object.entries(schoolDemandMap)
+        .map(([name, demand]) => ({ 
+          name, 
+          demand,
+          capacity: 100 // Default capacity
+        }))
+        .sort((a, b) => b.demand - a.demand)
+        .slice(0, 5) // Top 5 schools
+
+      const analyticsData = {
+        placementRate,
+        averageScore,
+        totalStudents,
+        schoolDemand: schoolDemandArray,
+        gradeDistribution: newGradeDist,
+        placementByStatus: {
+          placed,
+          pending,
+          unplaced
+        },
+        timestamp: new Date().toISOString()
+      }
+
+      setAnalytics(prev => ({
+        ...prev,
+        ...analyticsData
+      }))
+      
+      // Save analytics snapshot to localStorage for sync
+      try {
+        localStorage.setItem('analyticsSnapshot', JSON.stringify(analyticsData))
+        // Trigger real-time sync for analytics
+        syncService.notifyDataChange('analyticsSnapshot')
+      } catch (e) {
+        console.warn('[ANALYTICS] Failed to save analytics to localStorage:', e)
+      }
     }
 
-    setAnalytics(prev => ({
-      ...prev,
-      ...analyticsData
-    }))
+    loadAnalytics()
+
+    // Listen for sync completion to refresh analytics
+    const handleSyncCompleted = (event) => {
+      console.log('[ANALYTICS] Sync completed, refreshing analytics...')
+      loadAnalytics()
+    }
     
-    // Save analytics snapshot to localStorage for sync
-    try {
-      localStorage.setItem('analyticsSnapshot', JSON.stringify(analyticsData))
-      // Trigger real-time sync for analytics
-      syncService.notifyDataChange('analyticsSnapshot')
-    } catch (e) {
-      console.warn('[ANALYTICS] Failed to save analytics to localStorage:', e)
+    window.addEventListener('syncCompleted', handleSyncCompleted)
+    
+    return () => {
+      window.removeEventListener('syncCompleted', handleSyncCompleted)
     }
   }, [])
 

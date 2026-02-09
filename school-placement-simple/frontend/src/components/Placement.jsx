@@ -14,6 +14,18 @@ export default function Placement() {
 
   useEffect(() => {
     loadPlacementData()
+
+    // Listen for sync completion to refresh placement data
+    const handleSyncCompleted = (event) => {
+      console.log('[PLACEMENT] Sync completed, refreshing placement data...')
+      loadPlacementData()
+    }
+    
+    window.addEventListener('syncCompleted', handleSyncCompleted)
+    
+    return () => {
+      window.removeEventListener('syncCompleted', handleSyncCompleted)
+    }
   }, [])
 
   const loadPlacementData = () => {
