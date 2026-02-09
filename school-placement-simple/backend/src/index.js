@@ -38,6 +38,17 @@ app.use(cors({
 // Connect to MongoDB
 connectDB()
 
+// Debug route to check if routes are loaded
+app.get('/api/debug/routes', (req, res) => {
+  res.json({
+    message: 'Routes test',
+    studentRoutesImported: !!studentRoutes,
+    schoolRoutesImported: !!schoolRoutes,
+    placementRoutesImported: !!placementRoutes,
+    syncRoutesImported: !!syncRoutes
+  })
+})
+
 // Routes
 app.use('/api/students', studentRoutes)
 app.use('/api/schools', schoolRoutes)
