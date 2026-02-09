@@ -160,6 +160,22 @@ export default function Login({ onLoginSuccess }) {
     }
   }
 
+  // Auto-trigger bypass when URL has ?bypass=1 or VITE_ENABLE_BYPASS is enabled
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return
+      const params = new URL(window.location.href).searchParams
+      const auto = params.get('bypass') === '1'
+      if ((auto || (import.meta.env && import.meta.env.VITE_ENABLE_BYPASS === '1')) && canBypass) {
+        console.log('[AUTH] Auto-bypass triggered')
+        handleBypass()
+      }
+    } catch (e) {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className="login-container">
       <div className="login-card">
