@@ -35,7 +35,18 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
-// Connect to MongoDB
+// Add a simple request logger
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`)
+  next()
+})
+
+// Health check - MUST be before MongoDB connection
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'Server is running', timestamp: new Date() })
+})
+
+// Connect to MongoDB (async, don't block server startup)
 connectDB().catch(err => {
   console.error('Failed to connect to MongoDB:', err.message)
   // Continue running even if DB connection fails
@@ -57,11 +68,6 @@ app.use('/api/students', studentRoutes)
 app.use('/api/schools', schoolRoutes)
 app.use('/api/placements', placementRoutes)
 app.use('/api/sync', syncRoutes)
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'Server is running', timestamp: new Date() })
-})
 
 // 404 handler
 app.use((req, res) => {
