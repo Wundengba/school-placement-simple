@@ -3,7 +3,6 @@ import Student from '../models/Student.js'
 import School from '../models/School.js'
 import TestScore from '../models/TestScore.js'
 import Placement from '../models/Placement.js'
-import Preference from '../models/Preference.js'
 
 const router = express.Router()
 
@@ -68,21 +67,6 @@ router.post('/upload', async (req, res) => {
       operations.push(...scoreOps)
     }
 
-    // Batch upsert preferences (school selections)
-    if (preferences && Array.isArray(preferences) && preferences.length > 0) {
-      const prefOps = preferences.map(pref =>
-        Preference.updateOne(
-          { studentId: pref.studentId },
-          { $set: { ...pref, updatedAt: new Date() } },
-          { upsert: true }
-        ).catch(err => {
-          console.error('[SYNC-UPLOAD] Preference upsert error:', err.message)
-          return { error: err.message, type: 'preference' }
-        })
-      )
-      operations.push(...prefOps)
-    }
-
     // Batch upsert placement results
     if (placementResults && Array.isArray(placementResults) && placementResults.length > 0) {
       const placementOps = placementResults.map(result =>
@@ -139,22 +123,20 @@ router.get('/download', async (req, res) => {
     const schoolQuery = lastSyncTime ? { updatedAt: { $gt: lastSyncTime } } : {}
     const studentQuery = lastSyncTime ? { updatedAt: { $gt: lastSyncTime } } : {}
     const scoreQuery = lastSyncTime ? { updatedAt: { $gt: lastSyncTime } } : {}
-    const prefQuery = lastSyncTime ? { updatedAt: { $gt: lastSyncTime } } : {}
     const placementQuery = lastSyncTime ? { updatedAt: { $gt: lastSyncTime } } : {}
     
     // Execute queries in parallel with timeout handling
-    const [schools, students, scores, preferences, placementResults] = await Promise.all([
+    const [schools, students, scores, placementResults] = await Promise.all([
       School.find(schoolQuery).lean().exec(),
       Student.find(studentQuery).lean().exec(),
       TestScore.find(scoreQuery).lean().exec(),
-      Preference.find(prefQuery).lean().exec(),
       Placement.find(placementQuery).lean().exec()
     ]).then(results => results)
       .catch(error => {
         // Handle timeout error
         if (error.message.includes('buffering timed out')) {
           console.warn('[SYNC-DOWNLOAD] Database query timeout, returning empty datasets')
-          return [[], [], [], [], []]
+          return [[], [], [], []]
         }
         throw error
       })
@@ -163,7 +145,6 @@ router.get('/download', async (req, res) => {
       schoolsCount: schools?.length || 0,
       studentsCount: students?.length || 0,
       scoresCount: scores?.length || 0,
-      preferencesCount: preferences?.length || 0,
       placementResultsCount: placementResults?.length || 0,
       incremental: !!lastSyncTime
     })
@@ -175,7 +156,6 @@ router.get('/download', async (req, res) => {
         schools: schools || [],
         students: students || [],
         scores: scores || [],
-        preferences: preferences || [],
         placementResults: placementResults || [],
         timestamp: responseTime,
         incremental: !!lastSyncTime

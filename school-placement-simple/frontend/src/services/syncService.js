@@ -155,18 +155,8 @@ function saveLocalData({ students, scores, schools, preferences, placementResult
   if (Array.isArray(scores)) localStorage.setItem('testScores', JSON.stringify(scores))
   if (Array.isArray(schools)) localStorage.setItem('schools', JSON.stringify(schools))
   
-  // Save preferences (schoolSelections) per-student
-  if (Array.isArray(preferences)) {
-    preferences.forEach(pref => {
-      if (pref.studentId) {
-        const selectionKey = `schoolSelections_${pref.studentId}`
-        const cleanPref = { ...pref }
-        delete cleanPref.studentId
-        delete cleanPref.indexNumber
-        localStorage.setItem(selectionKey, JSON.stringify(cleanPref))
-      }
-    })
-  }
+  // Note: Preferences/schoolSelections are stored per-student in individual keys
+  // They are not synced via backend yet - only stored locally
   
   if (Array.isArray(placementResults)) localStorage.setItem('placementResults', JSON.stringify(placementResults))
   if (analytics) localStorage.setItem('analyticsSnapshot', JSON.stringify(analytics))
@@ -194,12 +184,6 @@ function mergeServerIntoLocal(server) {
   local.schools.forEach(s => { if (s.id) schoolMap[s.id] = s })  // Local overwrites server
   const mergedSchools = Object.values(schoolMap)
 
-  // Merge preferences (by studentId, prefer server but include local additions)
-  const prefMap = {}
-  ;(server.preferences || []).forEach(p => { if (p.studentId) prefMap[p.studentId] = p })
-  local.preferences.forEach(p => { if (p.studentId && !prefMap[p.studentId]) prefMap[p.studentId] = p })
-  const mergedPreferences = Object.values(prefMap)
-
   // Merge placement results (prefer server as source of truth)
   const mergedPlacementResults = server.placementResults || local.placementResults || []
 
@@ -210,7 +194,6 @@ function mergeServerIntoLocal(server) {
     students: mergedStudents, 
     scores: mergedScores,
     schools: mergedSchools,
-    preferences: mergedPreferences,
     placementResults: mergedPlacementResults,
     analytics: mergedAnalytics
   })
@@ -219,7 +202,6 @@ function mergeServerIntoLocal(server) {
     students: mergedStudents, 
     scores: mergedScores,
     schools: mergedSchools,
-    preferences: mergedPreferences,
     placementResults: mergedPlacementResults,
     analytics: mergedAnalytics
   }
@@ -325,16 +307,23 @@ async function syncNow() {
     // then upload local changes (best-effort)
     console.log('[SYNC] Calling upload()...')
     const payload = getLocalData()
+    // Don't send preferences to backend yet - they're only stored locally
+    const uploadPayload = {
+      schools: payload.schools,
+      students: payload.students,
+      scores: payload.scores,
+      placementResults: payload.placementResults,
+      analytics: payload.analytics
+    }
     console.log('[SYNC] Payload to upload:', {
-      schools: payload.schools?.length || 0,
-      students: payload.students?.length || 0,
-      scores: payload.scores?.length || 0,
-      preferences: payload.preferences?.length || 0,
-      placementResults: payload.placementResults?.length || 0,
-      analytics: !!payload.analytics
+      schools: uploadPayload.schools?.length || 0,
+      students: uploadPayload.students?.length || 0,
+      scores: uploadPayload.scores?.length || 0,
+      placementResults: uploadPayload.placementResults?.length || 0,
+      analytics: !!uploadPayload.analytics
     })
-    console.log('[SYNC] Full payload keys:', Object.keys(payload))
-    const uploadResult = await upload(payload)
+    console.log('[SYNC] Full payload keys:', Object.keys(uploadPayload))
+    const uploadResult = await upload(uploadPayload)
     console.log('[SYNC] upload() returned:', uploadResult)
     
     console.log('[SYNC] === syncNow() completed successfully ===')
