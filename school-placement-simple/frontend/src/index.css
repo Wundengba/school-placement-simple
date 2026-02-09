@@ -17,6 +17,7 @@
 html, body {
   width: 100%;
   height: 100%;
+  height: 100dvh; /* Fallback for dynamic viewport height on mobile */
   margin: 0;
   padding: 0;
 }
@@ -25,8 +26,13 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  min-height: 100dvh;
   background: #f5f7fa;
   overflow-x: hidden;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 #root {
