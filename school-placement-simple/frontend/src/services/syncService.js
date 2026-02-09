@@ -1,5 +1,5 @@
 // Use hardcoded production URL as fallback for deployment
-const PRODUCTION_API_BASE = 'https://backend-seven-ashen-18.vercel.app'
+const PRODUCTION_API_BASE = 'https://backend-seven-ashen-18.vercel.app/api'
 
 // Determine API base immediately
 let API_BASE = '/api'  // Default fallback
@@ -8,7 +8,9 @@ let API_BASE = '/api'  // Default fallback
 if (import.meta.env && import.meta.env.VITE_API_BASE) {
   const envBase = String(import.meta.env.VITE_API_BASE).trim()
   if (envBase && envBase.length > 10) {
-    API_BASE = envBase
+    // Ensure /api is included if not already
+    const baseUrl = envBase.endsWith('/api') ? envBase : `${envBase}/api`
+    API_BASE = baseUrl
     console.log('[SYNC] Using env var VITE_API_BASE:', API_BASE)
   }
 }
