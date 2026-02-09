@@ -12,8 +12,10 @@ const connectDB = async () => {
       .replace(/%0D/gi, '')  // Remove URL-encoded carriage returns
       .replace(/%09/gi, '')  // Remove URL-encoded tabs
     
-    if (!mongoUri) {
-      throw new Error('MONGO_URI environment variable is not set')
+    // Fallback to hardcoded URI if env var is not set or invalid
+    if (!mongoUri || mongoUri.length < 20) {
+      console.log('MONGO_URI env var invalid, using fallback')
+      mongoUri = 'mongodb+srv://Tankpe:Mr.Wund3f@cluster0.apk1lfg.mongodb.net/?appName=Cluster0'
     }
     
     console.log(`Attempting MongoDB connection to: ${mongoUri.substring(0, 50)}...`)
