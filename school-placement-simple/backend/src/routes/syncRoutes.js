@@ -9,6 +9,7 @@ const router = express.Router()
 router.post('/upload', async (req, res) => {
   try {
     const { schools, students, scores, preferences } = req.body
+    const timeoutMs = 30000
 
     // Upsert schools
     if (schools && Array.isArray(schools)) {
@@ -16,7 +17,7 @@ router.post('/upload', async (req, res) => {
         await School.updateOne(
           { externalId: school.externalId },
           { $set: school },
-          { upsert: true }
+          { upsert: true, maxTimeMS: timeoutMs }
         )
       }
     }
@@ -27,7 +28,7 @@ router.post('/upload', async (req, res) => {
         await Student.updateOne(
           { indexNumber: student.indexNumber },
           { $set: student },
-          { upsert: true }
+          { upsert: true, maxTimeMS: timeoutMs }
         )
       }
     }
@@ -38,7 +39,7 @@ router.post('/upload', async (req, res) => {
         await TestScore.updateOne(
           { indexNumber: score.indexNumber },
           { $set: score },
-          { upsert: true }
+          { upsert: true, maxTimeMS: timeoutMs }
         )
       }
     }
@@ -53,6 +54,7 @@ router.post('/upload', async (req, res) => {
       }
     })
   } catch (error) {
+    console.error('Sync upload error:', error)
     res.status(500).json({
       success: false,
       error: error.message
@@ -63,9 +65,14 @@ router.post('/upload', async (req, res) => {
 // Download database snapshot
 router.get('/download', async (req, res) => {
   try {
-    const schools = await School.find().lean()
-    const students = await Student.find().lean()
-    const scores = await TestScore.find().lean()
+    // Use maxTimeMS to set a longer timeout for the operation
+    const options = { maxTimeMS: 30000 }
+    
+    const [schools, students, scores] = await Promise.all([
+      School.find().lean().maxTimeMS(30000),
+      Student.find().lean().maxTimeMS(30000),
+      TestScore.find().lean().maxTimeMS(30000)
+    ])
 
     res.json({
       success: true,
@@ -77,6 +84,7 @@ router.get('/download', async (req, res) => {
       }
     })
   } catch (error) {
+    console.error('Sync download error:', error)
     res.status(500).json({
       success: false,
       error: error.message
