@@ -70,6 +70,18 @@ app.get('/api/db-status', (req, res) => {
   })
 })
 
+// Test DB connection endpoint (invokes connectDB and returns diagnostic info)
+app.get('/api/db-test', async (req, res) => {
+  try {
+    const conn = await connectDB()
+    if (!conn) return res.status(500).json({ success: false, message: 'connectDB returned null' })
+    res.json({ success: true, host: conn.connection.host, readyState: mongoose.connection.readyState })
+  } catch (err) {
+    console.error('[DB-TEST] Error during connect:', err && err.message)
+    res.status(500).json({ success: false, error: err && err.message })
+  }
+})
+
 // Debug route to check if routes are loaded
 app.get('/api/debug/routes', (req, res) => {
   res.json({
