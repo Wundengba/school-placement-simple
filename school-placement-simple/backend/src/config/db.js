@@ -29,10 +29,10 @@ const connectDB = async () => {
     console.log(`[DB] Attempting MongoDB connection to: ${mongoUri.substring(0, 50)}...`)
     
     const conn = await mongoose.connect(mongoUri, {
-      // Increased timeouts for serverless
-      serverSelectionTimeoutMS: 30000,
-      connectTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
+      // Very long timeouts for serverless with IP whitelist delays
+      serverSelectionTimeoutMS: 60000,
+      connectTimeoutMS: 60000,
+      socketTimeoutMS: 60000,
       // Simplified pooling for serverless
       maxPoolSize: 1,
       minPoolSize: 0,
@@ -40,7 +40,8 @@ const connectDB = async () => {
       retryWrites: true,
       family: 4, // Use IPv4
       // Connection string options
-      retryAttempts: 5
+      retryAttempts: 10,
+      waitQueueTimeoutMS: 60000
     })
     
     // Cache connection for serverless
