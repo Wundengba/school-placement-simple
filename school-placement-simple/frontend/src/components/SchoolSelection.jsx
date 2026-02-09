@@ -168,6 +168,7 @@ export default function SchoolSelection() {
 
         <div className="student-lookup-section">
           <div className="lookup-input-group">
+            <label style={{marginRight:8, fontWeight:600}}>Student Index Number</label>
             <input
               type="text"
               value={studentIndexInput}
