@@ -7,6 +7,8 @@ export default function Dashboard({ user }) {
   const [error, setError] = useState('')
 
   const API_BASE = import.meta.env.VITE_API_BASE || '/api'
+  // Fallback backend URL for production when frontend /api is not proxied to backend
+  const BACKEND_FALLBACK = import.meta.env.VITE_BACKEND_FALLBACK || 'https://backend-seven-ashen-18.vercel.app'
 
   useEffect(() => {
     fetchDashboardData()
@@ -37,17 +39,31 @@ export default function Dashboard({ user }) {
           return
       }
 
-      const response = await fetch(`${API_BASE}${endpoint}?${params}`, {
+      // Try relative API base first (works when proxied). If it returns 404,
+      // retry against explicit backend fallback (useful on Vercel where frontend and backend are separate).
+      let response = await fetch(`${API_BASE}${endpoint}?${params}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
       })
 
+      if (response.status === 404) {
+        // Retry with explicit backend host
+        const fallbackUrl = `${BACKEND_FALLBACK.replace(/\/$/, '')}/api${endpoint}?${params}`
+        console.warn('Primary API returned 404 — retrying with fallback backend:', fallbackUrl)
+        response = await fetch(fallbackUrl, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        })
+      }
+
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch dashboard data')
+        throw new Error(data.message || `Failed to fetch dashboard data (status ${response.status})`)
       }
 
       setDashboardData(data)
