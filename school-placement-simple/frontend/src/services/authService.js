@@ -5,6 +5,8 @@
 
 const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : '/api'
 
+console.log('[AUTH Service] API_BASE configured as:', API_BASE)
+
 class AuthService {
   constructor() {
     this.token = localStorage.getItem('authToken')
@@ -40,7 +42,10 @@ class AuthService {
    */
   async register(username, email, password, confirmPassword, fullName = '', role = 'staff') {
     try {
-      const response = await fetch(`${API_BASE}/auth/register`, {
+      const url = `${API_BASE}/auth/register`
+      console.log('[AUTH] Registering at:', url)
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -74,7 +79,10 @@ class AuthService {
    */
   async login(username, password) {
     try {
-      const response = await fetch(`${API_BASE}/auth/login`, {
+      const url = `${API_BASE}/auth/login`
+      console.log('[AUTH] Logging in at:', url)
+      
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
