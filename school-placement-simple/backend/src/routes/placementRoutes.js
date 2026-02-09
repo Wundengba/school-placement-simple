@@ -14,3 +14,5 @@ router.post('/run-algorithm', runPlacementAlgorithm)
 router.get('/stats', getPlacementStats)
 
 export default router
+
+export default router
