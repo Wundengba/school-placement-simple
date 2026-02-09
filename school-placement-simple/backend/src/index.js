@@ -57,6 +57,7 @@ connectDB().catch(err => {
 app.get('/api/debug/routes', (req, res) => {
   res.json({
     message: 'Routes test',
+    authRoutesImported: !!authRoutes,
     studentRoutesImported: !!studentRoutes,
     schoolRoutesImported: !!schoolRoutes,
     placementRoutesImported: !!placementRoutes,
