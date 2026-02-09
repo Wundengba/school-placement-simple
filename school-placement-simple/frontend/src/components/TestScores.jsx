@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import '../styles/TestScores.css'
 import { IoCloudUpload } from 'react-icons/io5'
 
@@ -68,6 +68,14 @@ export default function TestScores() {
       }
     })
     return map
+  }, [])
+
+  // Load existing test scores from localStorage on component mount
+  useEffect(() => {
+    const storedScores = JSON.parse(localStorage.getItem('testScores') || '[]')
+    if (storedScores && storedScores.length > 0) {
+      setScores(storedScores)
+    }
   }, [])
 
   const handleBulkUpload = (e) => {
@@ -184,15 +192,15 @@ export default function TestScores() {
 
     setScores(prev => [newEntry, ...prev])
     
-    // Save to localStorage for persistence and placement algorithm
-    const allTestScores = JSON.parse(localStorage.getItem('allTestScores') || '[]')
+    // Save to localStorage for persistence and placement algorithm (use 'testScores' for sync compatibility)
+    const allTestScores = JSON.parse(localStorage.getItem('testScores') || '[]')
     const existingIndex = allTestScores.findIndex(s => s.indexNumber === form.indexNumber)
     if (existingIndex >= 0) {
       allTestScores[existingIndex] = newEntry
     } else {
       allTestScores.push(newEntry)
     }
-    localStorage.setItem('allTestScores', JSON.stringify(allTestScores))
+    localStorage.setItem('testScores', JSON.stringify(allTestScores))
 
     // Persist/update student profile if student is registered
     try {
