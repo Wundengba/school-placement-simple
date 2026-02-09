@@ -121,6 +121,9 @@ export default function App() {
         </div>
         <div style={{display:'flex',gap:8,alignItems:'center',flexWrap:'wrap',justifyContent:'flex-end'}}>
           <span style={{fontSize:12,color:'#666'}}>Welcome, <strong>{currentUser?.fullName || currentUser?.username}</strong></span>
+          <button className="btn" onClick={() => setActiveTab('dashboard')} title="Go to Dashboard">
+            <IoHome style={{marginRight:6}} /> Home
+          </button>
           <button className="btn" onClick={async () => { try { await syncService.syncNow(); setLastSync(new Date().toISOString()); alert('Sync complete') } catch(e) { alert('Sync failed: '+e.message) } }}>
             Sync Now
           </button>
