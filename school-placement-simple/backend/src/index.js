@@ -16,10 +16,13 @@ const PORT = process.env.PORT || 5000
 app.use(express.json())
 
 // Clean CORS_ORIGIN (remove newlines/whitespace from env var)
-const corsOrigin = (process.env.CORS_ORIGIN || 'http://localhost:5173').trim()
+const corsOrigin = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+  .trim()
+  .split('\n')[0]  // Take only the first line if multiple lines exist
+  .replace(/[^\x20-\x7E]/g, '')  // Remove all non-printable ASCII characters
 
 app.use(cors({
-  origin: corsOrigin
+  origin: corsOrigin || 'http://localhost:5173'
 }))
 
 // Connect to MongoDB
