@@ -100,6 +100,13 @@ function getLocalData() {
   const students = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
   const scores = JSON.parse(localStorage.getItem('testScores') || '[]')
   const preferences = JSON.parse(localStorage.getItem('schoolSelections') || '[]')
+  console.log('[SYNC] getLocalData() retrieved:', {
+    studentsCount: students?.length || 0,
+    scoresCount: scores?.length || 0,
+    preferencesCount: preferences?.length || 0
+  })
+  console.log('[SYNC] Sample student:', students?.[0])
+  console.log('[SYNC] Sample score:', scores?.[0])
   return { students, scores, preferences }
 }
 
@@ -143,6 +150,13 @@ async function syncNow() {
     // then upload local changes (best-effort)
     console.log('[SYNC] Calling upload()...')
     const payload = getLocalData()
+    console.log('[SYNC] Payload to upload:', {
+      schools: payload.schools?.length || 0,
+      students: payload.students?.length || 0,
+      scores: payload.scores?.length || 0,
+      preferences: payload.preferences?.length || 0
+    })
+    console.log('[SYNC] Full payload:', payload)
     const uploadResult = await upload(payload)
     console.log('[SYNC] upload() returned:', uploadResult)
     
