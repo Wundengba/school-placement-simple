@@ -1,61 +1,95 @@
 // Use hardcoded production URL as fallback for deployment
 const PRODUCTION_API_BASE = 'https://backend-seven-ashen-18.vercel.app'
 
-const API_BASE = (() => {
-  // Try to use environment variable first
-  const envBase = (import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : null
-  if (envBase && envBase.trim().length > 0) {
-    return envBase.trim().replace(/[\r\n]+/g, '')
+// Determine API base immediately
+let API_BASE = '/api'  // Default fallback
+
+// Try environment variable first
+if (import.meta.env && import.meta.env.VITE_API_BASE) {
+  const envBase = String(import.meta.env.VITE_API_BASE).trim()
+  if (envBase && envBase.length > 10) {
+    API_BASE = envBase
+    console.log('[SYNC] Using env var VITE_API_BASE:', API_BASE)
   }
-  
-  // In development, use relative path; in production use the hardcoded URL
-  const isDevelopment = !window.location.hostname.includes('vercel')
-  return isDevelopment ? '/api' : PRODUCTION_API_BASE
-})()
+}
+
+// Check if running in production (on vercel.app domain)
+if (!API_BASE.startsWith('http') && typeof window !== 'undefined') {
+  if (window.location.hostname.includes('vercel.app')) {
+    API_BASE = PRODUCTION_API_BASE
+    console.log('[SYNC] Auto-detected production, using PRODUCTION_API_BASE:', API_BASE)
+  } else if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    // Production-like but not vercel (e.g., custom domain)
+    API_BASE = PRODUCTION_API_BASE
+    console.log('[SYNC] Non-localhost detected, using PRODUCTION_API_BASE:', API_BASE)
+  }
+}
+
+console.log('[SYNC] Final API_BASE:', API_BASE)
 
 async function download() {
   try {
-    const url = `${API_BASE}/sync/download`.trim()
-    console.log('[SYNC] API_BASE:', API_BASE)
-    console.log('[SYNC] Downloading from:', url)
-    console.log('[SYNC] Is Development:', !window.location.hostname.includes('vercel'))
-    console.log('[SYNC] Hostname:', window.location.hostname)
+    const url = `${API_BASE}/sync/download`
+    console.log('[SYNC] download() called')
+    console.log('[SYNC] API_BASE value:', API_BASE)
+    console.log('[SYNC] Full URL:', url)
+    console.log('[SYNC] URL is HTTPS?', url.startsWith('https'))
+    console.log('[SYNC] URL length:', url.length)
     
-    const res = await fetch(url)
-    console.log('[SYNC] Download response status:', res.status)
+    const fetchOptions = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    }
+    console.log('[SYNC] Fetch options:', fetchOptions)
+    console.log('[SYNC] About to call fetch() with URL:', url)
+    
+    const res = await fetch(url, fetchOptions)
+    console.log('[SYNC] Fetch completed, status:', res.status, res.statusText)
     
     if (!res.ok) {
       const errorText = await res.text()
+      console.error('[SYNC] Response not OK. Status:', res.status, 'Body:', errorText)
       throw new Error(`Download failed: HTTP ${res.status} - ${errorText}`)
     }
+    
     const data = await res.json()
-    console.log('[SYNC] Download successful, received:', data)
+    console.log('[SYNC] Parsed JSON data:', data)
     return data
   } catch (error) {
-    console.error('[SYNC] Download error:', error)
+    console.error('[SYNC] download() error:', error)
+    console.error('[SYNC] Error stack:', error.stack)
     throw error
   }
 }
 
 async function upload(payload) {
   try {
-    const url = `${API_BASE}/sync/upload`.trim()  // Ensure URL is clean
-    console.log('[SYNC] Uploading to:', url)
+    const url = `${API_BASE}/sync/upload`
+    console.log('[SYNC] upload() called')
+    console.log('[SYNC] API_BASE value:', API_BASE)
+    console.log('[SYNC] Full URL:', url)
+    console.log('[SYNC] Payload size:', JSON.stringify(payload).length, 'bytes')
+    
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
-    console.log('[SYNC] Upload response status:', res.status)
+    console.log('[SYNC] Upload fetch completed, status:', res.status, res.statusText)
+    
     if (!res.ok) {
       const errorText = await res.text()
+      console.error('[SYNC] Upload response not OK. Status:', res.status, 'Body:', errorText)
       throw new Error(`Upload failed: HTTP ${res.status} - ${errorText}`)
     }
     const data = await res.json()
     console.log('[SYNC] Upload successful:', data)
     return data
   } catch (error) {
-    console.error('[SYNC] Upload error:', error)
+    console.error('[SYNC] upload() error:', error)
+    console.error('[SYNC] Error stack:', error.stack)
     throw error
   }
 }
@@ -93,25 +127,29 @@ let _intervalId = null
 
 async function syncNow() {
   try {
-    console.log('Starting sync...')
+    console.log('[SYNC] === syncNow() started ===')
+    console.log('[SYNC] Calling download()...')
     // download server snapshot
     const server = await download()
-    console.log('Downloaded server data:', server)
+    console.log('[SYNC] download() returned:', server)
     
     if (server && server.success && server.data) {
-      console.log('Merging server data into local...')
+      console.log('[SYNC] Merging server data into local...')
       mergeServerIntoLocal(server.data)
     }
     
     // then upload local changes (best-effort)
-    console.log('Uploading local changes...')
+    console.log('[SYNC] Calling upload()...')
     const payload = getLocalData()
     const uploadResult = await upload(payload)
-    console.log('Upload result:', uploadResult)
+    console.log('[SYNC] upload() returned:', uploadResult)
     
+    console.log('[SYNC] === syncNow() completed successfully ===')
     return { ok: true, message: 'Sync completed successfully' }
   } catch (error) {
-    console.error('Sync error:', error)
+    console.error('[SYNC] === syncNow() failed ===')
+    console.error('[SYNC] Error:', error)
+    console.error('[SYNC] Error message:', error.message)
     throw error
   }
 }
