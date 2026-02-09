@@ -17,6 +17,11 @@ const connectDB = async () => {
   }
 
   const mongoUri = cleanUri(process.env.MONGO_URI || '')
+  
+  // Debug logging
+  console.log('[DB] MONGO_URI env var present:', !!process.env.MONGO_URI)
+  console.log('[DB] MONGO_URI length after clean:', mongoUri.length)
+  console.log('[DB] MONGO_URI masked:', mongoUri ? mongoUri.substring(0, 30) + '...' + mongoUri.substring(mongoUri.length - 20) : 'EMPTY')
 
   if (!mongoUri || mongoUri.length < 20) {
     console.error('MONGO_URI is missing or invalid. Set MONGO_URI in environment and redeploy.')
