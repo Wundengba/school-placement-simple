@@ -1,9 +1,12 @@
-const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : '/api'
+const API_BASE = ((import.meta.env && import.meta.env.VITE_API_BASE) ? import.meta.env.VITE_API_BASE : '/api')
+  .trim()  // Remove any leading/trailing whitespace or newlines
+  .replace(/[\r\n]+/g, '')  // Remove any remaining newline characters
 
 async function download() {
   try {
-    console.log('Downloading from:', API_BASE)
-    const res = await fetch(`${API_BASE}/sync/download`)
+    const url = `${API_BASE}/sync/download`.trim()  // Ensure URL is clean
+    console.log('Downloading from:', url)
+    const res = await fetch(url)
     console.log('Download response status:', res.status)
     if (!res.ok) {
       const errorText = await res.text()
@@ -20,8 +23,9 @@ async function download() {
 
 async function upload(payload) {
   try {
-    console.log('Uploading to:', API_BASE)
-    const res = await fetch(`${API_BASE}/sync/upload`, {
+    const url = `${API_BASE}/sync/upload`.trim()  // Ensure URL is clean
+    console.log('Uploading to:', url)
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
