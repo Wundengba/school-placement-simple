@@ -121,7 +121,8 @@ class AuthService {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed')
+        console.error('[AUTH] Login failed response:', data)
+        throw new Error(data.error || data.message || 'Login failed')
       }
 
       // Save user and token
@@ -132,6 +133,7 @@ class AuthService {
       return data
     } catch (error) {
       console.error('[AUTH] Login error:', error.message)
+      console.error('[AUTH] Full error:', error)
       throw error
     }
   }
