@@ -1,37 +1,36 @@
-// Function to determine the correct API base
-function getAPIBase() {
-  // First, try environment variable
-  let apiBase = (import.meta.env && import.meta.env.VITE_API_BASE) ? String(import.meta.env.VITE_API_BASE).trim() : null
-  
-  // If not set, determine based on environment
-  if (!apiBase) {
-    if (import.meta.env.PROD && typeof window !== 'undefined') {
-      // In production (Vercel), use the hardcoded backend URL
-      apiBase = 'https://backend-seven-ashen-18.vercel.app/api'
-    } else {
-      // In development, use relative path
-      apiBase = '/api'
-    }
-  }
-  
-  // Ensure /api is included in the path
-  if (apiBase) {
-    if (!apiBase.includes('/api')) {
-      apiBase = apiBase.replace(/\/$/, '') + '/api'
-    }
-  }
-  
-  return apiBase
-}
+// Use hardcoded production URL as fallback for deployment
+const PRODUCTION_API_BASE = 'https://backend-seven-ashen-18.vercel.app/api'
 
 // Determine API base immediately
-let API_BASE = getAPIBase()
-
-console.log('[SYNC] Final API_BASE:', API_BASE)
-console.log('[SYNC] Environment:', import.meta.env.PROD ? 'production' : 'development')
+let API_BASE = '/api'  // Default fallback
 
 // Track last successful sync time for cross-device sync
 let _lastServerSyncTime = localStorage.getItem('_lastServerSyncTime') ? new Date(localStorage.getItem('_lastServerSyncTime')) : null
+
+// Try environment variable first
+if (import.meta.env && import.meta.env.VITE_API_BASE) {
+  const envBase = String(import.meta.env.VITE_API_BASE).trim()
+  if (envBase && envBase.length > 10) {
+    // Ensure /api is included if not already
+    const baseUrl = envBase.endsWith('/api') ? envBase : `${envBase}/api`
+    API_BASE = baseUrl
+    console.log('[SYNC] Using env var VITE_API_BASE:', API_BASE)
+  }
+}
+
+// Check if running in production (on vercel.app domain)
+if (!API_BASE.startsWith('http') && typeof window !== 'undefined') {
+  if (window.location.hostname.includes('vercel.app')) {
+    API_BASE = PRODUCTION_API_BASE
+    console.log('[SYNC] Auto-detected production, using PRODUCTION_API_BASE:', API_BASE)
+  } else if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    // Production-like but not vercel (e.g., custom domain)
+    API_BASE = PRODUCTION_API_BASE
+    console.log('[SYNC] Non-localhost detected, using PRODUCTION_API_BASE:', API_BASE)
+  }
+}
+
+console.log('[SYNC] Final API_BASE:', API_BASE)
 
 async function download() {
   try {
