@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import syncService from './services/syncService'
 import authService from './services/authService'
 import './App.css'
-import Login from './components/Login'
 import StudentLoginOption from './components/StudentLoginOption'
 import StudentPortalView from './components/StudentPortalView'
 import Dashboard from './components/Dashboard'
@@ -113,18 +112,9 @@ export default function App() {
   const studentAuth = localStorage.getItem('authToken')
   const studentInfo = localStorage.getItem('studentInfo')
   
-  // If not authenticated, show login page (student/parent portal is primary)
+  // If not authenticated, show student login page only
   if (!isAuthenticated && !studentAuth) {
-    return (
-      <div className="login-wrapper">
-        <StudentLoginOption />
-        <hr style={{margin:'30px 0', opacity: 0.3}} />
-        <div style={{textAlign: 'center', marginTop: 20}}>
-          <p style={{fontSize: 14, color: '#666', marginBottom: 15}}>Staff/Admin Login</p>
-          <Login onLoginSuccess={handleLoginSuccess} />
-        </div>
-      </div>
-    )
+    return <StudentLoginOption />
   }
 
   // If student is logged in (but not admin), show student view
