@@ -31,38 +31,30 @@ export default function StudentLoginOption() {
     setLoading(true)
 
     try {
-      console.log('[LOGIN] Attempting login with index:', indexNumber)
-      const res = await fetch('/api/login', {
+      const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+      const res = await fetch(`${API_BASE}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ indexNumber: indexNumber.trim() })
       })
 
-      console.log('[LOGIN] Response status:', res.status)
       const data = await res.json()
-      console.log('[LOGIN] Response data:', data)
 
       if (!res.ok) {
-        const errMsg = data.message || `Login failed (${res.status})`
-        console.error('[LOGIN] Error:', errMsg)
-        setError(errMsg)
+        setError(data.message || 'Login failed')
         setLoading(false)
         return
       }
 
       if (data.success && data.token) {
-        console.log('[LOGIN] Success! Storing token and reloading...')
         // Store token and student info
         localStorage.setItem('authToken', data.token)
         localStorage.setItem('studentInfo', JSON.stringify(data.student))
         
         // Reload to show student portal
         window.location.reload()
-      } else {
-        setError('Unexpected response from server')
       }
     } catch (err) {
-      console.error('[LOGIN] Catch error:', err)
       setError(err.message || 'Network error')
     } finally {
       setLoading(false)
@@ -95,15 +87,12 @@ export default function StudentLoginOption() {
               type="text"
               id="indexNumber"
               placeholder="e.g., 050708500126"
-              pattern="\d{12}"
-              title="Index number must be exactly 12 digits"
               value={indexNumber}
               onChange={(e) => {
                 const val = e.target.value.replace(/\D/g, '')
                 setIndexNumber(val.slice(0, 12))
               }}
               maxLength="12"
-              minLength="12"
               disabled={loading}
               required
               autoFocus
