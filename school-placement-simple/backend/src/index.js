@@ -134,29 +134,24 @@ app.get('/api/diagnose', async (req, res) => {
   res.json(diag)
 })
 
-// Student login endpoint (for parents/students)
+// Student login endpoint (for parents/students) - index number only
 app.post('/api/login', async (req, res) => {
   try {
-    const { indexNumber, guardianPhone } = req.body
+    const { indexNumber } = req.body
     
-    if (!indexNumber || !guardianPhone) {
-      return res.status(400).json({ success: false, message: 'Index number and guardian phone required' })
+    if (!indexNumber) {
+      return res.status(400).json({ success: false, message: 'Index number required' })
     }
     
     // Find student by index number
     const Student = mongoose.model('Student')
-    const student = await Student.findOne({ indexNumber: indexNumber.trim() }).select('+guardianPhone')
+    const student = await Student.findOne({ indexNumber: indexNumber.trim() })
     
     if (!student) {
-      return res.status(401).json({ success: false, message: 'Invalid index number or phone' })
+      return res.status(401).json({ success: false, message: 'Invalid index number' })
     }
     
-    // Verify guardianPhone matches
-    if (student.guardianPhone !== guardianPhone.trim()) {
-      return res.status(401).json({ success: false, message: 'Invalid index number or phone' })
-    }
-    
-    // Generate simple JWT token
+    // Generate JWT token
     const token = jwt.sign(
       { indexNumber: student.indexNumber, studentId: student._id },
       process.env.JWT_SECRET || 'your_jwt_secret_key_here_change_in_production',

@@ -5,7 +5,6 @@ import '../styles/StudentLogin.css'
 export default function StudentLoginOption() {
   const [showStudentLogin, setShowStudentLogin] = useState(false)
   const [indexNumber, setIndexNumber] = useState('')
-  const [guardianPhone, setGuardianPhone] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -18,7 +17,7 @@ export default function StudentLoginOption() {
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ indexNumber: indexNumber.trim(), guardianPhone: guardianPhone.trim() })
+        body: JSON.stringify({ indexNumber: indexNumber.trim() })
       })
 
       const data = await res.json()
@@ -60,7 +59,7 @@ export default function StudentLoginOption() {
       <div className="student-login-card">
         <div className="student-login-header">
           <h2>Student Portal Login</h2>
-          <p>Enter your index number and guardian phone</p>
+          <p>Enter your index number to check your placement status</p>
         </div>
 
         <form onSubmit={handleSubmit} className="student-login-form">
@@ -78,23 +77,7 @@ export default function StudentLoginOption() {
               maxLength="12"
               disabled={loading}
               required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="guardianPhone">Guardian Phone</label>
-            <input
-              type="tel"
-              id="guardianPhone"
-              placeholder="e.g., 0501234567"
-              value={guardianPhone}
-              onChange={(e) => {
-                const val = e.target.value.replace(/\D/g, '')
-                setGuardianPhone(val.slice(0, 10))
-              }}
-              maxLength="10"
-              disabled={loading}
-              required
+              autoFocus
             />
           </div>
 
@@ -111,7 +94,7 @@ export default function StudentLoginOption() {
         </form>
 
         <div className="student-login-footer">
-          <p style={{fontSize: 12, color: '#666', marginTop: 12}}>Your index number and parent/guardian contact information are required to access your placement status.</p>
+          <p style={{fontSize: 12, color: '#666', marginTop: 12}}>Enter your 12-digit student index number to access your placement results.</p>
         </div>
       </div>
     </div>
