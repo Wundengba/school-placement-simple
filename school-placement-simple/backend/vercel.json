@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "buildCommand": "npm install",
+  "buildCommand": "npm install && prisma generate",
   "builds": [
     {
       "src": "src/index.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": "src/**"
+        "includeFiles": ["src/**", "prisma/**", "node_modules/.prisma/**"]
       }
     }
   ],
