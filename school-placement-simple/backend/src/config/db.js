@@ -2,14 +2,22 @@ import mongoose from 'mongoose'
 
 let cached = global._mongoConnection || null
 
-const cleanUri = (raw = '') => raw
-  .toString()
-  .trim()
-  .split('\n')[0]
-  .replace(/[^\x20-\x7E]/g, '')
-  .replace(/%0A/gi, '')
-  .replace(/%0D/gi, '')
-  .replace(/%09/gi, '')
+const cleanUri = (raw = '') => {
+  let cleaned = raw
+    .toString()
+    .trim()
+    .replace(/\r\n/g, '')  // Remove carriage return + newline
+    .replace(/\n/g, '')    // Remove newline
+    .replace(/\r/g, '')    // Remove carriage return
+    .replace(/\t/g, '')    // Remove tabs
+    .split('\n')[0]        // Take first line if still multiple lines
+    .replace(/[^\x20-\x7E]/g, '')  // Remove non-printable ASCII
+    .replace(/%0A/gi, '')  // Remove URL-encoded newline
+    .replace(/%0D/gi, '')  // Remove URL-encoded carriage return
+    .replace(/%09/gi, '')  // Remove URL-encoded tab
+    .trim()
+  return cleaned
+}
 
 const connectDB = async () => {
   if (cached && mongoose.connection && mongoose.connection.readyState === 1) {
