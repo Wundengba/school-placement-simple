@@ -113,12 +113,16 @@ export default function App() {
   const studentAuth = localStorage.getItem('authToken')
   const studentInfo = localStorage.getItem('studentInfo')
   
-  // If not authenticated, show login page
+  // If not authenticated, show login page (student/parent portal is primary)
   if (!isAuthenticated && !studentAuth) {
     return (
       <div className="login-wrapper">
-        <Login onLoginSuccess={handleLoginSuccess} />
         <StudentLoginOption />
+        <hr style={{margin:'30px 0', opacity: 0.3}} />
+        <div style={{textAlign: 'center', marginTop: 20}}>
+          <p style={{fontSize: 14, color: '#666', marginBottom: 15}}>Staff/Admin Login</p>
+          <Login onLoginSuccess={handleLoginSuccess} />
+        </div>
       </div>
     )
   }
