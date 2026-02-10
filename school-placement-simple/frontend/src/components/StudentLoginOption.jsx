@@ -31,7 +31,8 @@ export default function StudentLoginOption() {
     setLoading(true)
 
     try {
-      const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+      const API_BASE = import.meta.env.VITE_API_BASE || 'https://backend-seven-ashen-18.vercel.app/api'
+      console.log('[StudentLogin] Using API base:', API_BASE)
       const res = await fetch(`${API_BASE}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -42,6 +43,7 @@ export default function StudentLoginOption() {
 
       if (!res.ok) {
         setError(data.message || 'Login failed')
+        console.error('[StudentLogin] Login error:', data.message)
         setLoading(false)
         return
       }
@@ -51,11 +53,13 @@ export default function StudentLoginOption() {
         localStorage.setItem('authToken', data.token)
         localStorage.setItem('studentInfo', JSON.stringify(data.student))
         
+        console.log('✅ Student login successful')
         // Reload to show student portal
         window.location.reload()
       }
     } catch (err) {
-      setError(err.message || 'Network error')
+      console.error('[StudentLogin] Error:', err)
+      setError(err.message || 'Failed to connect to server. Please check your connection and try again.')
     } finally {
       setLoading(false)
     }

@@ -10,6 +10,7 @@ import placementRoutes from './routes/placementRoutes.js'
 import notificationRoutes from './routes/notificationRoutes.js'
 import syncRoutes from './routes/syncRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
+import adminRoutes from './routes/adminRoutes.js'
 
 console.log('[INDEX] Routes Imported')
 
@@ -21,13 +22,14 @@ const PORT = process.env.PORT || 5000
 // Middleware
 app.use(express.json())
 
-// CORS configuration: allow multiple frontend origins (env var, new deployment, old deployment, localhost)
+// CORS configuration: allow multiple frontend origins
 const allowedOrigins = [
-  process.env.CORS_ORIGIN || 'https://school-placement-fresh-20260209222711-ny8uc778w.vercel.app',  // New primary
-  'https://frontend-three-lovat-67.vercel.app',  // Old deployment (fallback)
-  'https://school-placement-fresh-20260209222711-ny8uc778w.vercel.app',  // New deployment
-  'http://localhost:5173',  // Local dev frontend (Vite default)
-  'http://localhost:3000',  // Local dev frontend alternate
+  process.env.CORS_ORIGIN || 'https://school-placement-fresh-202602092227.vercel.app',
+  'https://school-placement-fresh-202602092227.vercel.app',  // Latest deployment
+  'https://school-placement-fresh-20260209222711-ny8uc778w.vercel.app',  // Previous deployment
+  'https://frontend-three-lovat-67.vercel.app',  // Old deployment fallback
+  'http://localhost:5173',  // Vite dev
+  'http://localhost:3000',  // Alternate dev
 ]
 
 app.use(cors({
@@ -159,6 +161,7 @@ app.post('/api/login', async (req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes)
+app.use('/api/admin', adminRoutes)
 app.use('/api/students', studentRoutes)
 app.use('/api/schools', schoolRoutes)
 app.use('/api/placements', placementRoutes)

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import syncService from './services/syncService'
 import authService from './services/authService'
+import { adminAuthService } from './services/adminAuthService'
 import './App.css'
+import LoginSelection from './components/LoginSelection'
 import StudentLoginOption from './components/StudentLoginOption'
 import StudentPortalView from './components/StudentPortalView'
 import Dashboard from './components/Dashboard'
@@ -98,13 +100,19 @@ export default function App() {
   // Handle logout
   const handleLogout = () => {
     if (confirm('Are you sure you want to logout?')) {
-      authService.logout()
+      // Check if admin or student and logout accordingly
+      if (adminAuth) {
+        adminAuthService.logout()
+      } else {
+        authService.logout()
+      }
       setIsAuthenticated(false)
       setCurrentUser(null)
       setLastSync(null)
       localStorage.removeItem('activeTab')
       setActiveTab('dashboard')
       console.log('[APP] User logged out')
+      window.location.reload()
     }
   }
 
@@ -112,13 +120,22 @@ export default function App() {
   const studentAuth = localStorage.getItem('authToken')
   const studentInfo = localStorage.getItem('studentInfo')
   
-  // If not authenticated, show student login page only
-  if (!isAuthenticated && !studentAuth) {
-    return <StudentLoginOption />
+  // Check for admin login
+  const adminAuth = localStorage.getItem('adminToken')
+  const adminInfo = localStorage.getItem('adminInfo')
+  
+  // If no authentication at all, show login selection
+  if (!isAuthenticated && !studentAuth && !adminAuth) {
+    return <LoginSelection />
+  }
+
+  // If admin is logged in, show admin dashboard
+  if (adminAuth && !isAuthenticated) {
+    return <Dashboard user={adminInfo} />
   }
 
   // If student is logged in (but not admin), show student view
-  if (studentAuth && !isAuthenticated) {
+  if (studentAuth && !isAuthenticated && !adminAuth) {
     return <StudentPortalView studentInfo={studentInfo} />
   }
 
