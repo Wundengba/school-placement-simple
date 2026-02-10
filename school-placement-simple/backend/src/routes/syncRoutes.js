@@ -3,13 +3,13 @@ import Student from '../models/Student.js'
 import School from '../models/School.js'
 import TestScore from '../models/TestScore.js'
 import Placement from '../models/Placement.js'
+import mongoose from 'mongoose'
 
 const router = express.Router()
 
 // Upload data to database (upsert)
 router.post('/upload', async (req, res) => {
   try {
-    const mongoose = await import('mongoose').then(m => m.default)
     const dbState = mongoose.connection.readyState
     const dbStates = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' }
     
