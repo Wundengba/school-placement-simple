@@ -1,5 +1,5 @@
 import bcryptjs from 'bcryptjs'
-import prisma from './backend/src/config/prisma.js'
+import prisma from './src/config/prisma.js'
 
 async function seedAdmins() {
   try {
