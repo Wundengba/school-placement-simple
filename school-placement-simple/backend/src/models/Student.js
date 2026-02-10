@@ -39,6 +39,14 @@ const studentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'School'
   },
+  guardianName: {
+    type: String,
+    trim: true
+  },
+  guardianPhone: {
+    type: String,
+    trim: true
+  },
   status: {
     type: String,
     enum: ['pending', 'placed', 'rejected'],

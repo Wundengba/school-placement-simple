@@ -133,6 +133,51 @@ app.get('/api/diagnose', async (req, res) => {
   res.json(diag)
 })
 
+// Student login endpoint (for parents/students)
+app.post('/api/login', async (req, res) => {
+  try {
+    const { indexNumber, guardianPhone } = req.body
+    
+    if (!indexNumber || !guardianPhone) {
+      return res.status(400).json({ success: false, message: 'Index number and guardian phone required' })
+    }
+    
+    // Find student by index number
+    const Student = mongoose.model('Student')
+    const student = await Student.findOne({ indexNumber: indexNumber.trim() }).select('+guardianPhone')
+    
+    if (!student) {
+      return res.status(401).json({ success: false, message: 'Invalid index number or phone' })
+    }
+    
+    // Verify guardianPhone matches
+    if (student.guardianPhone !== guardianPhone.trim()) {
+      return res.status(401).json({ success: false, message: 'Invalid index number or phone' })
+    }
+    
+    // Generate simple JWT token
+    const token = require('jsonwebtoken').sign(
+      { indexNumber: student.indexNumber, studentId: student._id },
+      process.env.JWT_SECRET || 'your_jwt_secret_key_here_change_in_production',
+      { expiresIn: '30d' }
+    )
+    
+    res.json({
+      success: true,
+      message: 'Login successful',
+      token,
+      student: {
+        indexNumber: student.indexNumber,
+        fullName: student.fullName,
+        email: student.email
+      }
+    })
+  } catch (error) {
+    console.error('[LOGIN] Error:', error.message)
+    res.status(500).json({ success: false, error: error.message })
+  }
+})
+
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/students', studentRoutes)

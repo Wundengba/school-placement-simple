@@ -3,6 +3,8 @@ import syncService from './services/syncService'
 import authService from './services/authService'
 import './App.css'
 import Login from './components/Login'
+import StudentLoginOption from './components/StudentLoginOption'
+import StudentPortalView from './components/StudentPortalView'
 import Dashboard from './components/Dashboard'
 import Registration from './components/Registration'
 import Students from './components/Students'
@@ -107,9 +109,23 @@ export default function App() {
     }
   }
 
+  // Check for student login
+  const studentAuth = localStorage.getItem('authToken')
+  const studentInfo = localStorage.getItem('studentInfo')
+  
   // If not authenticated, show login page
-  if (!isAuthenticated) {
-    return <Login onLoginSuccess={handleLoginSuccess} />
+  if (!isAuthenticated && !studentAuth) {
+    return (
+      <div className="login-wrapper">
+        <Login onLoginSuccess={handleLoginSuccess} />
+        <StudentLoginOption />
+      </div>
+    )
+  }
+
+  // If student is logged in (but not admin), show student view
+  if (studentAuth && !isAuthenticated) {
+    return <StudentPortalView studentInfo={studentInfo} />
   }
 
   // Otherwise show the main app
