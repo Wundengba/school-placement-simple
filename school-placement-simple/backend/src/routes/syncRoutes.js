@@ -25,9 +25,6 @@ router.post('/upload', async (req, res) => {
       hasAnalytics: !!analytics
     })
 
-    // Use Promise.all for parallel batch operations
-    const operations = []
-
     // Load existing tombstones so we can avoid upserting tombstoned items
     const existingTombstones = await Tombstone.find({}).lean().exec()
     const existingDeletedStudents = new Set(existingTombstones.filter(t => t.type === 'student').map(t => String(t.key).trim().toUpperCase()))
@@ -92,90 +89,104 @@ router.post('/upload', async (req, res) => {
       }
     }
 
-    // Batch upsert schools (skip tombstoned)
+    // Batch upsert schools using bulkWrite (faster, batched)
     if (schools && Array.isArray(schools) && schools.length > 0) {
       const allDeletedSchoolKeys = new Set([...existingDeletedSchools, ...(deletedSchools || []).map(s => normalize(s))])
       const schoolsToUpsert = schools.filter(school => {
         const key = normalize(school.id || school.externalId)
         return key && !allDeletedSchoolKeys.has(key)
       })
-      const schoolOps = schoolsToUpsert.map(school =>
-        School.updateOne(
-          { externalId: school.externalId },
-          { $set: { ...school, updatedAt: new Date() } },
-          { upsert: true }
-        ).catch(err => {
-          console.error('[SYNC-UPLOAD] School upsert error:', err.message)
-          return { error: err.message, type: 'school' }
-        })
-      )
-      operations.push(...schoolOps)
+      if (schoolsToUpsert.length > 0) {
+        try {
+          const schoolBatch = schoolsToUpsert.map(school => ({
+            updateOne: {
+              filter: { externalId: school.externalId },
+              update: { $set: { ...school, updatedAt: new Date() } },
+              upsert: true
+            }
+          }))
+          // Batch in chunks of 100 to avoid overwhelming the DB
+          for (let i = 0; i < schoolBatch.length; i += 100) {
+            await School.bulkWrite(schoolBatch.slice(i, i + 100))
+          }
+          console.log('[SYNC-UPLOAD] Upserted schools:', schoolsToUpsert.length)
+        } catch (err) {
+          console.error('[SYNC-UPLOAD] School batch upsert error:', err.message)
+        }
+      }
     }
 
-    // Batch upsert students (skip tombstoned)
+    // Batch upsert students using bulkWrite
     if (students && Array.isArray(students) && students.length > 0) {
       const allDeletedStudentKeys = new Set([...existingDeletedStudents, ...(deletedStudents || []).map(s => normalize(s).toUpperCase())])
       const studentsToUpsert = students.filter(student => {
         const key = normalize(student.indexNumber).toUpperCase()
         return key && !allDeletedStudentKeys.has(key)
       })
-      const studentOps = studentsToUpsert.map(student =>
-        Student.updateOne(
-          { indexNumber: student.indexNumber },
-          { $set: { ...student, updatedAt: new Date() } },
-          { upsert: true }
-        ).catch(err => {
-          console.error('[SYNC-UPLOAD] Student upsert error:', err.message)
-          return { error: err.message, type: 'student' }
-        })
-      )
-      operations.push(...studentOps)
+      if (studentsToUpsert.length > 0) {
+        try {
+          const studentBatch = studentsToUpsert.map(student => ({
+            updateOne: {
+              filter: { indexNumber: student.indexNumber },
+              update: { $set: { ...student, updatedAt: new Date() } },
+              upsert: true
+            }
+          }))
+          // Batch in chunks of 100
+          for (let i = 0; i < studentBatch.length; i += 100) {
+            await Student.bulkWrite(studentBatch.slice(i, i + 100))
+          }
+          console.log('[SYNC-UPLOAD] Upserted students:', studentsToUpsert.length)
+        } catch (err) {
+          console.error('[SYNC-UPLOAD] Student batch upsert error:', err.message)
+        }
+      }
     }
 
-    // Batch upsert test scores (skip tombstoned)
+    // Batch upsert test scores using bulkWrite
     if (scores && Array.isArray(scores) && scores.length > 0) {
       const allDeletedScoreKeys = new Set([...existingDeletedScores, ...(deletedScores || []).map(s => normalize(s).toUpperCase())])
       const scoresToUpsert = scores.filter(score => {
         const key = normalize(score.indexNumber).toUpperCase()
         return key && !allDeletedScoreKeys.has(key)
       })
-      const scoreOps = scoresToUpsert.map(score =>
-        TestScore.updateOne(
-          { indexNumber: score.indexNumber },
-          { $set: { ...score, updatedAt: new Date() } },
-          { upsert: true }
-        ).catch(err => {
-          console.error('[SYNC-UPLOAD] Score upsert error:', err.message)
-          return { error: err.message, type: 'score' }
-        })
-      )
-      operations.push(...scoreOps)
+      if (scoresToUpsert.length > 0) {
+        try {
+          const scoreBatch = scoresToUpsert.map(score => ({
+            updateOne: {
+              filter: { indexNumber: score.indexNumber },
+              update: { $set: { ...score, updatedAt: new Date() } },
+              upsert: true
+            }
+          }))
+          // Batch in chunks of 100
+          for (let i = 0; i < scoreBatch.length; i += 100) {
+            await TestScore.bulkWrite(scoreBatch.slice(i, i + 100))
+          }
+          console.log('[SYNC-UPLOAD] Upserted scores:', scoresToUpsert.length)
+        } catch (err) {
+          console.error('[SYNC-UPLOAD] Score batch upsert error:', err.message)
+        }
+      }
     }
 
-    // Batch upsert placement results
+    // Batch upsert placement results using bulkWrite
     if (placementResults && Array.isArray(placementResults) && placementResults.length > 0) {
-      const placementOps = placementResults.map(result =>
-        Placement.updateOne(
-          { indexNumber: result.indexNumber },
-          { $set: { ...result, updatedAt: new Date() } },
-          { upsert: true }
-        ).catch(err => {
-          console.error('[SYNC-UPLOAD] Placement result upsert error:', err.message)
-          return { error: err.message, type: 'placement' }
-        })
-      )
-      operations.push(...placementOps)
-    }
-
-    // Execute all operations in parallel
-    if (operations.length > 0) {
-      console.log('[SYNC-UPLOAD] Executing', operations.length, 'parallel operations...')
-      const results = await Promise.allSettled(operations)
-      const failed = results.filter(r => r.status === 'rejected').length
-      const succeeded = results.filter(r => r.status === 'fulfilled').length
-      console.log('[SYNC-UPLOAD] Results: succeeded=', succeeded, ', failed=', failed)
-      if (failed > 0) {
-        console.log('[SYNC-UPLOAD] Failed operations:', results.filter(r => r.status === 'rejected').map(r => r.reason.message).slice(0, 5))
+      try {
+        const placementBatch = placementResults.map(result => ({
+          updateOne: {
+            filter: { indexNumber: result.indexNumber },
+            update: { $set: { ...result, updatedAt: new Date() } },
+            upsert: true
+          }
+        }))
+        // Batch in chunks of 100
+        for (let i = 0; i < placementBatch.length; i += 100) {
+          await Placement.bulkWrite(placementBatch.slice(i, i + 100))
+        }
+        console.log('[SYNC-UPLOAD] Upserted placements:', placementResults.length)
+      } catch (err) {
+        console.error('[SYNC-UPLOAD] Placement batch upsert error:', err.message)
       }
     }
 
