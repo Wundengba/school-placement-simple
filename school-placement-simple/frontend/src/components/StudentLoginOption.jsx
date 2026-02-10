@@ -7,6 +7,8 @@ export default function StudentLoginOption() {
   const [indexNumber, setIndexNumber] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  
+  // VERSION: NEW-BUILD-2026-02-09
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -46,7 +48,7 @@ export default function StudentLoginOption() {
   if (!showStudentLogin) {
     return (
       <div className="student-login-prompt">
-        <p>Are you a student or parent?</p>
+        <p>✅ UPDATED - Are you a student or parent?</p>
         <button className="btn btn-secondary" onClick={() => setShowStudentLogin(true)}>
           <IoLogIn style={{marginRight:6}} /> Student Portal Login
         </button>
