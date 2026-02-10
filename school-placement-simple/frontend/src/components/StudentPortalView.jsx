@@ -7,6 +7,7 @@ export default function StudentPortalView({ studentInfo }) {
   const student = studentInfo ? JSON.parse(studentInfo) : null
   const [placementData, setPlacementData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [studentDataError, setStudentDataError] = useState(null)
   
   // School selection state
   const mockSchools = useMemo(() => schools, [])
@@ -26,34 +27,48 @@ export default function StudentPortalView({ studentInfo }) {
   const [selectionLoading, setSelectionLoading] = useState(false)
 
   React.useEffect(() => {
-    // Fetch student's placement data
+    if (!student) {
+      setStudentDataError('Student information not available')
+      setLoading(false)
+      return
+    }
+    
+    // Fetch student's placement data and any additional info from backend
     const fetchPlacementData = async () => {
       try {
-        const resp = await fetch('/api/sync/download')
+        const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+        const resp = await fetch(`${API_BASE}/sync/download`)
         const data = await resp.json()
+        
         if (data.success && data.data.students) {
           const studentRecord = data.data.students.find(s => s.indexNumber === student.indexNumber)
-          setPlacementData(studentRecord)
+          if (studentRecord) {
+            setPlacementData(studentRecord)
+          } else {
+            setStudentDataError('Student record not found in database')
+          }
+        } else {
+          setStudentDataError('Failed to load student data')
         }
       } catch (err) {
         console.error('Error fetching placement data:', err)
+        setStudentDataError('Error loading student data: ' + err.message)
       } finally {
         setLoading(false)
       }
     }
     
     // Load student's existing school selections
-    if (student) {
-      fetchPlacementData()
-      const existingSelections = localStorage.getItem(`studentSchoolSelections_${student.indexNumber}`)
-      if (existingSelections) {
-        const selections = JSON.parse(existingSelections)
-        setCatA(selections.catA || '')
-        setCatB(selections.catB || ['', ''])
-        setCatC(selections.catC || ['', '', '', ''])
-        setSelectionSubmitted(true)
-      }
+    const existingSelections = localStorage.getItem(`studentSchoolSelections_${student.indexNumber}`)
+    if (existingSelections) {
+      const selections = JSON.parse(existingSelections)
+      setCatA(selections.catA || '')
+      setCatB(selections.catB || ['', ''])
+      setCatC(selections.catC || ['', '', '', ''])
+      setSelectionSubmitted(true)
     }
+    
+    fetchPlacementData()
   }, [student])
 
   const handleLogout = () => {
@@ -116,18 +131,36 @@ export default function StudentPortalView({ studentInfo }) {
   }
 
   if (!student) {
-    return <div className="student-portal error">Error loading student information</div>
+    return (
+      <div className="student-portal error">
+        <div style={{padding: 40, textAlign: 'center'}}>
+          <h2>Error loading student information</h2>
+          <p style={{color: '#666', marginBottom: 20}}>Student data is not available. Please log in again.</p>
+          <button className="btn btn-primary" onClick={() => {
+            localStorage.removeItem('authToken')
+            localStorage.removeItem('studentInfo')
+            window.location.reload()
+          }}>
+            Return to Login
+          </button>
+        </div>
+      </div>
+    )
   }
+
+  const displayName = student?.fullName || 'Student'
+  const displayIndex = student?.indexNumber || 'N/A'
+  const displayEmail = student?.email || 'Not provided'
 
   return (
     <div className="student-portal">
       <header className="student-header">
         <div className="student-header-left">
           <h1>Student Placement Portal</h1>
-          <p>Check your school placement status</p>
+          <p>Check your school placement status and make selections</p>
         </div>
         <div className="student-header-right">
-          <span className="student-name">{student.fullName}</span>
+          <span className="student-name">{displayName}</span>
           <button className="btn btn-logout" onClick={handleLogout}>
             <IoLogOut /> Logout
           </button>
@@ -135,41 +168,58 @@ export default function StudentPortalView({ studentInfo }) {
       </header>
 
       <main className="student-main">
+        {studentDataError && (
+          <div style={{
+            backgroundColor: '#ffebee',
+            border: '1px solid #f44336',
+            borderRadius: 8,
+            padding: 16,
+            marginBottom: 20,
+            color: '#c62828'
+          }}>
+            <strong>⚠️ Data Error:</strong> {studentDataError}
+          </div>
+        )}
+
         <div className="student-card">
           <h2>Your Information</h2>
-          <div className="info-grid">
-            <div className="info-item">
-              <span className="label">Index Number:</span>
-              <span className="value">{student.indexNumber}</span>
+          {loading ? (
+            <p style={{color: '#999'}}>Loading your information...</p>
+          ) : (
+            <div className="info-grid">
+              <div className="info-item">
+                <span className="label">Index Number:</span>
+                <span className="value">{displayIndex}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">Full Name:</span>
+                <span className="value">{displayName}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">Email:</span>
+                <span className="value">{displayEmail}</span>
+              </div>
             </div>
-            <div className="info-item">
-              <span className="label">Full Name:</span>
-              <span className="value">{student.fullName}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Email:</span>
-              <span className="value">{student.email || 'Not provided'}</span>
-            </div>
-          </div>
+          )}
         </div>
 
         <div className="student-card">
           <h2>Placement Status</h2>
           {loading ? (
-            <p>Loading...</p>
+            <p style={{color: '#999'}}>Loading your placement status...</p>
           ) : placementData ? (
             <div className="status-info">
               <div className={`status-badge status-${placementData.status || 'pending'}`}>
-                {placementData.status ? placementData.status.toUpperCase() : 'PENDING'}
+                {(placementData.status || 'PENDING').toUpperCase()}
               </div>
               {placementData.placedSchool && (
                 <div className="placed-school">
                   <h3>Placed School:</h3>
-                  <p>{typeof placementData.placedSchool === 'object' ? placementData.placedSchool.name : placementData.placedSchool}</p>
+                  <p>{typeof placementData.placedSchool === 'object' ? (placementData.placedSchool?.name || 'Unknown School') : placementData.placedSchool}</p>
                 </div>
               )}
               {!placementData.placedSchool && (
-                <p className="not-placed">Not yet placed</p>
+                <p className="not-placed">You have not been placed yet. Please complete your school selections below.</p>
               )}
             </div>
           ) : (
