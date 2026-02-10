@@ -1,12 +1,13 @@
-import Placement from '../models/Placement.js'
-import Student from '../models/Student.js'
-import School from '../models/School.js'
+import prisma from '../config/prisma.js'
 
 export const getPlacements = async (req, res) => {
   try {
-    const placements = await Placement.find()
-      .populate('studentId')
-      .populate('schoolId')
+    const placements = await prisma.placement.findMany({
+      include: {
+        student: true,
+        school: true
+      }
+    })
     res.json(placements)
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -15,9 +16,13 @@ export const getPlacements = async (req, res) => {
 
 export const getPlacementById = async (req, res) => {
   try {
-    const placement = await Placement.findById(req.params.id)
-      .populate('studentId')
-      .populate('schoolId')
+    const placement = await prisma.placement.findUnique({
+      where: { id: req.params.id },
+      include: {
+        student: true,
+        school: true
+      }
+    })
     if (!placement) return res.status(404).json({ message: 'Placement not found' })
     res.json(placement)
   } catch (error) {
@@ -28,29 +33,44 @@ export const getPlacementById = async (req, res) => {
 export const runPlacementAlgorithm = async (req, res) => {
   try {
     // Simple placement algorithm
-    const students = await Student.find({ status: 'pending' }).populate('schoolPreferences.schoolId')
-    const schools = await School.find()
+    const students = await prisma.student.findMany({
+      where: { status: 'pending' },
+      include: { schoolPreferences: { include: { school: true } } }
+    })
+    const schools = await prisma.school.findMany()
     
     let placementCount = 0
 
     for (const student of students) {
       for (const pref of student.schoolPreferences) {
-        const school = schools.find(s => s._id.toString() === pref.schoolId._id.toString())
+        const school = schools.find(s => s.id === pref.schoolId)
         
-        if (school && school.enrolledCount < school.capacity) {
-          student.placedSchoolId = school._id
-          student.status = 'placed'
-          school.enrolledCount += 1
-          await school.save()
-          await student.save()
-          placementCount++
-          break
+        if (school) {
+          // Count current enrollments for this school
+          const enrollmentCount = await prisma.placement.count({
+            where: { schoolId: school.id }
+          })
+          
+          if (enrollmentCount < school.capacity) {
+            await prisma.student.update({
+              where: { id: student.id },
+              data: { placedSchoolId: school.id, status: 'placed' }
+            })
+            placementCount++
+            break
+          }
         }
       }
 
-      if (student.status === 'pending') {
-        student.status = 'rejected'
-        await student.save()
+      // If still pending after preferences, mark as rejected
+      const updatedStudent = await prisma.student.findUnique({
+        where: { id: student.id }
+      })
+      if (updatedStudent.status === 'pending') {
+        await prisma.student.update({
+          where: { id: student.id },
+          data: { status: 'rejected' }
+        })
       }
     }
 
@@ -66,12 +86,14 @@ export const runPlacementAlgorithm = async (req, res) => {
 
 export const getPlacementStats = async (req, res) => {
   try {
-    const totalStudents = await Student.countDocuments()
-    const placedStudents = await Student.countDocuments({ status: 'placed' })
-    const rejectedStudents = await Student.countDocuments({ status: 'rejected' })
-    const pendingStudents = await Student.countDocuments({ status: 'pending' })
+    const totalStudents = await prisma.student.count()
+    const placedStudents = await prisma.student.count({ where: { status: 'placed' } })
+    const rejectedStudents = await prisma.student.count({ where: { status: 'rejected' } })
+    const pendingStudents = await prisma.student.count({ where: { status: 'pending' } })
 
-    const schoolStats = await School.find().select('name capacity enrolledCount')
+    const schoolStats = await prisma.school.findMany({
+      select: { id: true, name: true, capacity: true }
+    })
 
     res.json({
       totalStudents,

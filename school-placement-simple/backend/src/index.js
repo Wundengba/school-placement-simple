@@ -1,9 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import connectDB from './config/db.js'
-import mongoose from 'mongoose'
 import jwt from 'jsonwebtoken'
+import prisma from './config/prisma.js'
 import authRoutes from './routes/authRoutes.js'
 import studentRoutes from './routes/studentRoutes.js'
 import schoolRoutes from './routes/schoolRoutes.js'
@@ -12,7 +11,7 @@ import notificationRoutes from './routes/notificationRoutes.js'
 import syncRoutes from './routes/syncRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
 
-console.log('[INDEX] Auth Routes Imported:', !!authRoutes)
+console.log('[INDEX] Routes Imported')
 
 dotenv.config()
 
@@ -51,41 +50,33 @@ app.use((req, res, next) => {
   next()
 })
 
-// Health check - MUST be before MongoDB connection
+// Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'Server is running', timestamp: new Date() })
-})
-
-// Connect to MongoDB (async, don't block server startup)
-connectDB().catch(err => {
-  console.error('Failed to connect to MongoDB:', err && err.message)
-  // Continue running even if DB connection fails
+  res.json({ status: 'Server is running', database: 'PostgreSQL (Neon)', timestamp: new Date() })
 })
 
 // DB status endpoint
-app.get('/api/db-status', (req, res) => {
-  const readyState = mongoose.connection && mongoose.connection.readyState
-  const states = ['disconnected', 'connected', 'connecting', 'disconnecting']
-  res.json({
-    success: true,
-    readyState,
-    state: states[readyState] || 'unknown',
-    host: mongoose.connection && mongoose.connection.host
-  })
+app.get('/api/db-status', async (req, res) => {
+  try {
+    const result = await prisma.$queryRaw`SELECT 1 as test`
+    res.json({
+      success: true,
+      database: 'PostgreSQL (Neon)',
+      connected: true,
+      timestamp: new Date()
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      database: 'PostgreSQL (Neon)',
+      connected: false,
+      error: error.message
+    })
+  }
 })
 
 // Test DB connection endpoint (invokes connectDB and returns diagnostic info)
 app.get('/api/db-test', async (req, res) => {
-  try {
-    const conn = await connectDB()
-    if (!conn) return res.status(500).json({ success: false, message: 'connectDB returned null' })
-    res.json({ success: true, host: conn.connection.host, readyState: mongoose.connection.readyState })
-  } catch (err) {
-    console.error('[DB-TEST] Error during connect:', err && err.message)
-    res.status(500).json({ success: false, error: err && err.message })
-  }
-})
-
 // Debug route to check if routes are loaded
 app.get('/api/debug/routes', (req, res) => {
   res.json({
@@ -95,28 +86,10 @@ app.get('/api/debug/routes', (req, res) => {
     schoolRoutesImported: !!schoolRoutes,
     placementRoutesImported: !!placementRoutes,
     syncRoutesImported: !!syncRoutes,
-    dashboardRoutesImported: !!dashboardRoutes
+    dashboardRoutesImported: !!dashboardRoutes,
+    database: 'PostgreSQL (Neon)'
   })
 })
-
-// Detailed MongoDB diagnostics
-app.get('/api/diagnose', async (req, res) => {
-  const mongoUri = process.env.MONGO_URI
-  const connState = mongoose.connection.readyState
-  const states = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' }
-  
-  const diag = {
-    timestamp: new Date().toISOString(),
-    mongoUri: mongoUri ? `${mongoUri.substring(0, 30)}...${mongoUri.substring(mongoUri.length - 20)}` : 'NOT SET',
-    mongoUriLength: mongoUri ? mongoUri.length : 0,
-    connectionReadyState: connState,
-    connectionState: states[connState],
-    mongooseConnected: mongoose.connection.readyState === 1,
-    host: mongoose.connection.host,
-    port: mongoose.connection.port,
-    name: mongoose.connection.name,
-    user: mongoose.connection.user
-  }
   
   // Try to test the connection
   if (connState !== 1) {
@@ -137,7 +110,7 @@ app.get('/api/diagnose', async (req, res) => {
   res.json(diag)
 })
 
-// Student login endpoint (for parents/students) - index number only [UPDATED]
+// Student login endpoint (for parents/students) - index number only [PRISMA]
 app.post('/api/login', async (req, res) => {
   try {
     const { indexNumber } = req.body
@@ -146,9 +119,10 @@ app.post('/api/login', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Index number required' })
     }
     
-    // Find student by index number
-    const Student = mongoose.model('Student')
-    const student = await Student.findOne({ indexNumber: indexNumber.trim() })
+    // Find student by index number using Prisma
+    const student = await prisma.student.findUnique({
+      where: { indexNumber: indexNumber.trim() }
+    })
     
     if (!student) {
       return res.status(401).json({ success: false, message: 'Invalid index number' })
@@ -156,7 +130,7 @@ app.post('/api/login', async (req, res) => {
     
     // Generate JWT token
     const token = jwt.sign(
-      { indexNumber: student.indexNumber, studentId: student._id },
+      { indexNumber: student.indexNumber, studentId: student.id },
       process.env.JWT_SECRET || 'your_jwt_secret_key_here_change_in_production',
       { expiresIn: '30d' }
     )
@@ -166,7 +140,7 @@ app.post('/api/login', async (req, res) => {
       message: 'Login successful',
       token,
       student: {
-        _id: student._id.toString(),
+        id: student.id,
         indexNumber: student.indexNumber,
         fullName: student.fullName,
         email: student.email || '',

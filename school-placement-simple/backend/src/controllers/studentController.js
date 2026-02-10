@@ -1,8 +1,15 @@
-import Student from '../models/Student.js'
+import prisma from '../config/prisma.js'
 
 export const getStudents = async (req, res) => {
   try {
-    const students = await Student.find().populate('schoolPreferences.schoolId placedSchoolId')
+    const students = await prisma.student.findMany({
+      include: {
+        schoolPreferences: {
+          include: { school: true }
+        },
+        placedSchool: true
+      }
+    })
     res.json(students)
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -11,7 +18,15 @@ export const getStudents = async (req, res) => {
 
 export const getStudentById = async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id).populate('schoolPreferences.schoolId placedSchoolId')
+    const student = await prisma.student.findUnique({
+      where: { id: req.params.id },
+      include: {
+        schoolPreferences: {
+          include: { school: true }
+        },
+        placedSchool: true
+      }
+    })
     if (!student) return res.status(404).json({ message: 'Student not found' })
     res.json(student)
   } catch (error) {
@@ -23,20 +38,20 @@ export const createStudent = async (req, res) => {
   const { indexNumber, fullName, email, maths, english, science, schoolPreferences } = req.body
   
   try {
-    const studentExists = await Student.findOne({ indexNumber })
+    const studentExists = await prisma.student.findUnique({ where: { indexNumber } })
     if (studentExists) return res.status(400).json({ message: 'Student already exists' })
 
-    const student = new Student({
-      indexNumber,
-      fullName,
-      email,
-      maths,
-      english,
-      science,
-      schoolPreferences
+    const student = await prisma.student.create({
+      data: {
+        indexNumber,
+        fullName,
+        email,
+        maths,
+        english,
+        science
+      }
     })
 
-    await student.save()
     res.status(201).json(student)
   } catch (error) {
     res.status(400).json({ message: error.message })
@@ -45,24 +60,35 @@ export const createStudent = async (req, res) => {
 
 export const updateStudent = async (req, res) => {
   try {
-    const student = await Student.findByIdAndUpdate(
-      req.params.id,
-      { ...req.body, updatedAt: Date.now() },
-      { new: true }
-    )
-    if (!student) return res.status(404).json({ message: 'Student not found' })
+    const student = await prisma.student.update({
+      where: { id: req.params.id },
+      data: { ...req.body, updatedAt: new Date() },
+      include: {
+        schoolPreferences: {
+          include: { school: true }
+        },
+        placedSchool: true
+      }
+    })
     res.json(student)
   } catch (error) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ message: 'Student not found' })
+    }
     res.status(400).json({ message: error.message })
   }
 }
 
 export const deleteStudent = async (req, res) => {
   try {
-    const student = await Student.findByIdAndDelete(req.params.id)
-    if (!student) return res.status(404).json({ message: 'Student not found' })
+    const student = await prisma.student.delete({
+      where: { id: req.params.id }
+    })
     res.json({ message: 'Student deleted successfully' })
   } catch (error) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ message: 'Student not found' })
+    }
     res.status(500).json({ message: error.message })
   }
 }

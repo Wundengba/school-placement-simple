@@ -1,0 +1,103 @@
+// This is your Prisma schema file.
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id                String      @id @default(cuid())
+  indexNumber       String      @unique
+  fullName          String
+  email             String?
+  maths             Int?        @db.SmallInt
+  english           Int?        @db.SmallInt
+  science           Int?        @db.SmallInt
+  schoolPreferences SchoolPref[]
+  placedSchoolId    String?
+  placedSchool      School?     @relation("PlacedStudents", fields: [placedSchoolId], references: [id])
+  guardianName      String?
+  guardianPhone     String?
+  status            String      @default("pending") // 'pending', 'placed', 'rejected'
+  placements        Placement[]
+  deleted           Boolean     @default(false)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@index([indexNumber])
+  @@index([status])
+  @@index([deleted])
+}
+
+model School {
+  id              String        @id @default(cuid())
+  name            String        @unique
+  externalId      String?       @unique
+  type            String        // 'Federal', 'State', 'Private'
+  location        String?
+  category        String?       // 'A', 'B', 'C' for school placement categories
+  capacity        Int
+  enrolledCount   Int           @default(0)
+  streams         Stream[]
+  contactPhone    String?
+  contactEmail    String?
+  website         String?
+  schoolPrefs     SchoolPref[]
+  placements      Placement[]
+  placedStudents  Student[]     @relation("PlacedStudents")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([externalId])
+  @@index([type])
+  @@index([category])
+}
+
+model SchoolPref {
+  id        String   @id @default(cuid())
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId String
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  schoolId  String
+  choice    Int      // 1, 2, 3, 4 for choice order
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, schoolId]) // One preference per student-school pair
+  @@index([studentId])
+  @@index([schoolId])
+}
+
+model Placement {
+  id            String   @id @default(cuid())
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId     String
+  school        School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  schoolId      String
+  choice        Int
+  score         Float?
+  status        String   @default("pending") // 'placed', 'rejected', 'pending'
+  placementDate DateTime @default(now())
+  algorithm     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([studentId, schoolId]) // One placement result per student-school pair
+  @@index([studentId])
+  @@index([schoolId])
+  @@index([status])
+}
+
+model Stream {
+  id       String @id @default(cuid())
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  schoolId String
+  name     String
+  capacity Int
+
+  @@index([schoolId])
+}
