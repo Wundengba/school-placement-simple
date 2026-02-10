@@ -30,6 +30,9 @@ const testScoreSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-})
+}, { timestamps: true })
+
+// add soft-delete flag
+testScoreSchema.add({ deleted: { type: Boolean, default: false, index: true } })
 
 export default mongoose.model('TestScore', testScoreSchema)

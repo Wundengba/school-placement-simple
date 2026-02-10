@@ -48,6 +48,12 @@ const schoolSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+  ,
+  deleted: {
+    type: Boolean,
+    default: false,
+    index: true
+  }
 })
 
 export default mongoose.model('School', schoolSchema)
