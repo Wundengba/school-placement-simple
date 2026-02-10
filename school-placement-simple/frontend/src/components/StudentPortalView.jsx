@@ -26,7 +26,7 @@ export default function StudentPortalView({ studentInfo }) {
   const [selectionError, setSelectionError] = useState('')
   const [selectionLoading, setSelectionLoading] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!student) {
       setStudentDataError('Student information not available')
       setLoading(false)

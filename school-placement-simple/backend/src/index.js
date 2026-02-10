@@ -22,21 +22,24 @@ const PORT = process.env.PORT || 5000
 // Middleware
 app.use(express.json())
 
-// Clean CORS_ORIGIN (remove newlines/whitespace from env var)
-// Fallback to production frontend URL and localhost for development
-const corsOrigin = (process.env.CORS_ORIGIN || 'https://frontend-three-lovat-67.vercel.app')
-  .trim()
-  .split('\n')[0]  // Take only the first line if multiple lines exist
-  .replace(/[^\x20-\x7E]/g, '')  // Remove all non-printable ASCII characters
-  .replace(/\s+/g, '')  // Remove all whitespace
-
-// If the env var is malformed, use the production URL directly
-const corsOriginFinal = corsOrigin && corsOrigin.length > 0 
-  ? corsOrigin 
-  : 'https://frontend-three-lovat-67.vercel.app'
+// CORS configuration: allow multiple frontend origins (env var, new deployment, old deployment, localhost)
+const allowedOrigins = [
+  process.env.CORS_ORIGIN || 'https://school-placement-fresh-20260209222711-ny8uc778w.vercel.app',  // New primary
+  'https://frontend-three-lovat-67.vercel.app',  // Old deployment (fallback)
+  'https://school-placement-fresh-20260209222711-ny8uc778w.vercel.app',  // New deployment
+  'http://localhost:5173',  // Local dev frontend (Vite default)
+  'http://localhost:3000',  // Local dev frontend alternate
+]
 
 app.use(cors({
-  origin: corsOriginFinal,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
