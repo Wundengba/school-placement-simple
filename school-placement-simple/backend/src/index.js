@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import connectDB from './config/db.js'
 import mongoose from 'mongoose'
+import jwt from 'jsonwebtoken'
 import authRoutes from './routes/authRoutes.js'
 import studentRoutes from './routes/studentRoutes.js'
 import schoolRoutes from './routes/schoolRoutes.js'
@@ -156,7 +157,7 @@ app.post('/api/login', async (req, res) => {
     }
     
     // Generate simple JWT token
-    const token = require('jsonwebtoken').sign(
+    const token = jwt.sign(
       { indexNumber: student.indexNumber, studentId: student._id },
       process.env.JWT_SECRET || 'your_jwt_secret_key_here_change_in_production',
       { expiresIn: '30d' }
