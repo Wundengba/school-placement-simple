@@ -111,13 +111,21 @@ function getLocalData() {
   // Get analytics data
   const analyticsData = JSON.parse(localStorage.getItem('analyticsSnapshot') || 'null')
   
+  // Get deleted records tracking
+  const deletedStudents = JSON.parse(localStorage.getItem('_deletedStudentIndexes') || '[]')
+  const deletedScores = JSON.parse(localStorage.getItem('_deletedScoreIndexes') || '[]')
+  const deletedSchools = JSON.parse(localStorage.getItem('_deletedSchoolIds') || '[]')
+  
   console.log('[SYNC] LOCAL DATA SNAPSHOT:', {
     studentsCount: students?.length || 0,
     scoresCount: scores?.length || 0,
     schoolsCount: schools?.length || 0,
     placementCount: placementResults?.length || 0,
     hasAnalytics: !!analyticsData,
-    studentIndexNumbers: students.map(s => s.indexNumber).join(', ')
+    studentIndexNumbers: students.map(s => s.indexNumber).join(', '),
+    deletedStudents: deletedStudents.length,
+    deletedScores: deletedScores.length,
+    deletedSchools: deletedSchools.length
   })
   
   return { 
@@ -125,7 +133,10 @@ function getLocalData() {
     scores, 
     schools,
     placementResults,
-    analytics: analyticsData
+    analytics: analyticsData,
+    deletedStudents,
+    deletedScores,
+    deletedSchools
   }
 }
 
@@ -142,25 +153,55 @@ function saveLocalData({ students, scores, schools, preferences, placementResult
 }
 
 // Simple merge: server wins on conflicts (by indexNumber for students/scores, by id for schools/placement)
-function mergeServerIntoLocal(server) {
+// BUT: deleted records are excluded and never merged back in
+function mergeServerIntoLocal(server, deletions = {}) {
   const local = getLocalData()
   
-  // Merge students (by indexNumber)
+  // Filter out deleted students from merge
+  const deletedStudentIndexes = new Set(deletions.deletedStudents || local.deletedStudents || [])
+  const deletedScoreIndexes = new Set(deletions.deletedScores || local.deletedScores || [])
+  const deletedSchoolIds = new Set(deletions.deletedSchools || local.deletedSchools || [])
+  
+  // Merge students (by indexNumber) but exclude deleted ones
   const studentMap = {}
-  local.students.forEach(s => { if (s.indexNumber) studentMap[s.indexNumber] = s })
-  ;(server.students || []).forEach(s => { if (s.indexNumber) studentMap[s.indexNumber] = s })
+  local.students.forEach(s => { 
+    if (s.indexNumber && !deletedStudentIndexes.has(s.indexNumber)) {
+      studentMap[s.indexNumber] = s 
+    }
+  })
+  ;(server.students || []).forEach(s => { 
+    if (s.indexNumber && !deletedStudentIndexes.has(s.indexNumber)) {
+      studentMap[s.indexNumber] = s 
+    }
+  })
   const mergedStudents = Object.values(studentMap)
 
-  // Merge scores (by indexNumber)
+  // Merge scores (by indexNumber) but exclude deleted ones
   const scoreMap = {}
-  local.scores.forEach(s => { if (s.indexNumber) scoreMap[s.indexNumber] = s })
-  ;(server.scores || []).forEach(s => { if (s.indexNumber) scoreMap[s.indexNumber] = s })
+  local.scores.forEach(s => { 
+    if (s.indexNumber && !deletedScoreIndexes.has(s.indexNumber)) {
+      scoreMap[s.indexNumber] = s 
+    }
+  })
+  ;(server.scores || []).forEach(s => { 
+    if (s.indexNumber && !deletedScoreIndexes.has(s.indexNumber)) {
+      scoreMap[s.indexNumber] = s 
+    }
+  })
   const mergedScores = Object.values(scoreMap)
 
-  // Merge schools (by id, but prefer local if both exist to maintain user edits)
+  // Merge schools (by id) but exclude deleted ones, prefer local if both exist to maintain user edits
   const schoolMap = {}
-  ;(server.schools || []).forEach(s => { if (s.id) schoolMap[s.id] = s })
-  local.schools.forEach(s => { if (s.id) schoolMap[s.id] = s })  // Local overwrites server
+  ;(server.schools || []).forEach(s => { 
+    if (s.id && !deletedSchoolIds.has(s.id)) {
+      schoolMap[s.id] = s 
+    }
+  })
+  local.schools.forEach(s => { 
+    if (s.id && !deletedSchoolIds.has(s.id)) {
+      schoolMap[s.id] = s  // Local overwrites server
+    }
+  })
   const mergedSchools = Object.values(schoolMap)
 
   // Merge placement results (prefer server as source of truth)
@@ -259,6 +300,9 @@ async function syncNow() {
     const server = await download()
     console.log('[SYNC] download() returned:', server)
     
+    // Get current local data (including deletions)
+    const localData = getLocalData()
+    
     // Check if there are changes from other devices
     let hasRemoteChanges = false
     if (server && server.success && server.data) {
@@ -273,8 +317,13 @@ async function syncNow() {
         console.log('[SYNC] Remote changes detected from other devices!')
       }
       
-      console.log('[SYNC] Merging server data into local...')
-      mergeServerIntoLocal(server.data)
+      console.log('[SYNC] Merging server data into local (respecting deletions)...')
+      // Pass deletions to merge so deleted records don't come back from server
+      mergeServerIntoLocal(server.data, {
+        deletedStudents: localData.deletedStudents,
+        deletedScores: localData.deletedScores,
+        deletedSchools: localData.deletedSchools
+      })
       
       // Update last server sync time for next incremental sync
       if (server.data.timestamp) {
@@ -358,4 +407,35 @@ function stopAutoSync() {
   _intervalId = null
 }
 
-export default { download, upload, syncNow, startAutoSync, stopAutoSync, notifyDataChange, setupRealtimeSync }
+// Track deleted records so they don't get synced back from server
+function trackDeletedStudent(indexNumber) {
+  const deleted = JSON.parse(localStorage.getItem('_deletedStudentIndexes') || '[]')
+  if (!deleted.includes(indexNumber)) {
+    deleted.push(indexNumber)
+    localStorage.setItem('_deletedStudentIndexes', JSON.stringify(deleted))
+    console.log('[SYNC] Tracked deletion of student:', indexNumber)
+    notifyDataChange('registeredStudents')
+  }
+}
+
+function trackDeletedScore(indexNumber) {
+  const deleted = JSON.parse(localStorage.getItem('_deletedScoreIndexes') || '[]')
+  if (!deleted.includes(indexNumber)) {
+    deleted.push(indexNumber)
+    localStorage.setItem('_deletedScoreIndexes', JSON.stringify(deleted))
+    console.log('[SYNC] Tracked deletion of score:', indexNumber)
+    notifyDataChange('testScores')
+  }
+}
+
+function trackDeletedSchool(schoolId) {
+  const deleted = JSON.parse(localStorage.getItem('_deletedSchoolIds') || '[]')
+  if (!deleted.includes(schoolId)) {
+    deleted.push(schoolId)
+    localStorage.setItem('_deletedSchoolIds', JSON.stringify(deleted))
+    console.log('[SYNC] Tracked deletion of school:', schoolId)
+    notifyDataChange('schools')
+  }
+}
+
+export default { download, upload, syncNow, startAutoSync, stopAutoSync, notifyDataChange, setupRealtimeSync, trackDeletedStudent, trackDeletedScore, trackDeletedSchool }
