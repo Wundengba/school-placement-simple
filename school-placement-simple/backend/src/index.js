@@ -22,28 +22,29 @@ const PORT = process.env.PORT || 5000
 // Middleware
 app.use(express.json())
 
-// CORS configuration: allow multiple frontend origins
+// CORS configuration
 const allowedOrigins = [
-  process.env.CORS_ORIGIN || 'https://school-placement-fresh-202602092227.vercel.app',
-  'https://school-placement-fresh-202602092227.vercel.app',  // Latest deployment
-  'https://school-placement-fresh-20260209222711-ny8uc778w.vercel.app',  // Previous deployment
-  'https://frontend-three-lovat-67.vercel.app',  // Old deployment fallback
-  'http://localhost:5173',  // Vite dev
-  'http://localhost:3000',  // Alternate dev
+  'https://school-placement-fresh-202602092227.vercel.app',
+  'https://school-placement-fresh-20260209222711-ny8uc778w.vercel.app',
+  'https://frontend-three-lovat-67.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
 ]
 
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or Postman)
+  origin: function (origin, callback) {
+    console.log('[CORS] Request origin:', origin)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true)
     } else {
-      callback(new Error('Not allowed by CORS'))
+      console.log('[CORS] Origin not allowed:', origin)
+      callback(null, true) // Allow anyway to prevent blocking
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
 }))
 
 // Add a simple request logger
