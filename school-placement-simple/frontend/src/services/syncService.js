@@ -341,7 +341,11 @@ async function syncNow() {
       students: payload.students,
       scores: payload.scores,
       placementResults: payload.placementResults,
-      analytics: payload.analytics
+      analytics: payload.analytics,
+      // include local tombstones so server can remove deleted records
+      deletedStudents: payload.deletedStudents || [],
+      deletedScores: payload.deletedScores || [],
+      deletedSchools: payload.deletedSchools || []
     }
     console.log('[SYNC] Payload to upload:', {
       schools: uploadPayload.schools?.length || 0,
@@ -356,6 +360,18 @@ async function syncNow() {
     
     console.log('[SYNC] === syncNow() completed successfully ===')
     
+    // If upload succeeded, clear tombstones that were propagated
+    try {
+      if (uploadResult && uploadResult.success) {
+        localStorage.removeItem('_deletedStudentIndexes')
+        localStorage.removeItem('_deletedScoreIndexes')
+        localStorage.removeItem('_deletedSchoolIds')
+        console.log('[SYNC] Cleared local deletion tombstones after successful upload')
+      }
+    } catch (e) {
+      console.warn('[SYNC] Failed to clear tombstones after upload:', e)
+    }
+
     // Dispatch completion event with timestamp
     const newTime = new Date().toISOString()
     window.dispatchEvent(new CustomEvent('syncCompleted', { 
@@ -415,6 +431,23 @@ function trackDeletedStudent(indexNumber) {
     localStorage.setItem('_deletedStudentIndexes', JSON.stringify(deleted))
     console.log('[SYNC] Tracked deletion of student:', indexNumber)
     notifyDataChange('registeredStudents')
+    // Propagate deletion to server immediately (best-effort)
+    try {
+      upload({
+        schools: [],
+        students: [],
+        scores: [],
+        placementResults: [],
+        analytics: null,
+        deletedStudents: [indexNumber]
+      }).then(res => {
+        console.log('[SYNC] Propagated deleted student to server:', indexNumber, res?.success)
+      }).catch(err => {
+        console.warn('[SYNC] Failed to propagate deletion to server (will be retried on next sync):', err?.message || err)
+      })
+    } catch (e) {
+      console.warn('[SYNC] Error while propagating deletion:', e)
+    }
   }
 }
 

@@ -44,6 +44,11 @@ const studentSchema = new mongoose.Schema({
     enum: ['pending', 'placed', 'rejected'],
     default: 'pending'
   },
+  deleted: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
   createdAt: {
     type: Date,
     default: Date.now
