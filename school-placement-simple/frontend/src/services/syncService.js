@@ -424,32 +424,6 @@ function stopAutoSync() {
 }
 
 // Track deleted records so they don't get synced back from server
-function trackDeletedStudent(indexNumber) {
-  const deleted = JSON.parse(localStorage.getItem('_deletedStudentIndexes') || '[]')
-  if (!deleted.includes(indexNumber)) {
-    deleted.push(indexNumber)
-    localStorage.setItem('_deletedStudentIndexes', JSON.stringify(deleted))
-    console.log('[SYNC] Tracked deletion of student:', indexNumber)
-    notifyDataChange('registeredStudents')
-    // Propagate deletion to server immediately (best-effort)
-    try {
-      upload({
-        schools: [],
-        students: [],
-        scores: [],
-        placementResults: [],
-        analytics: null,
-        deletedStudents: [indexNumber]
-      }).then(res => {
-        console.log('[SYNC] Propagated deleted student to server:', indexNumber, res?.success)
-      }).catch(err => {
-        console.warn('[SYNC] Failed to propagate deletion to server (will be retried on next sync):', err?.message || err)
-      })
-    } catch (e) {
-      console.warn('[SYNC] Error while propagating deletion:', e)
-    }
-  }
-}
 
 function trackDeletedScore(indexNumber) {
   const deleted = JSON.parse(localStorage.getItem('_deletedScoreIndexes') || '[]')
@@ -471,4 +445,4 @@ function trackDeletedSchool(schoolId) {
   }
 }
 
-export default { download, upload, syncNow, startAutoSync, stopAutoSync, notifyDataChange, setupRealtimeSync, trackDeletedStudent, trackDeletedScore, trackDeletedSchool }
+export default { download, upload, syncNow, startAutoSync, stopAutoSync, notifyDataChange, setupRealtimeSync, trackDeletedScore, trackDeletedSchool }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import '../styles/Students.css'
-import { IoPersonAdd, IoEye, IoTrash, IoSearch, IoClose } from 'react-icons/io5'
+import { IoPersonAdd, IoEye, IoSearch, IoClose } from 'react-icons/io5'
 import syncService from '../services/syncService'
 
 export default function Students() {
@@ -57,27 +57,6 @@ export default function Students() {
     setShowModal(true)
   }
 
-  const handleDeleteStudent = (studentId) => {
-    if (confirm('Are you sure you want to delete this student?')) {
-      // Find the student being deleted to get their indexNumber
-      const studentToDelete = students.find(s => s.id === studentId)
-      
-      const updatedStudents = students.filter(s => s.id !== studentId)
-      setStudents(updatedStudents)
-      
-      // Update localStorage for registered students
-      const registeredStudents = JSON.parse(localStorage.getItem('registeredStudents') || '[]')
-      const filteredRegistered = registeredStudents.filter(s => s.id !== studentId)
-      localStorage.setItem('registeredStudents', JSON.stringify(filteredRegistered))
-      
-      // Track this deletion so it doesn't come back from server
-      if (studentToDelete && studentToDelete.indexNumber) {
-        syncService.trackDeletedStudent(studentToDelete.indexNumber)
-      }
-      
-      alert('Student deleted successfully')
-    }
-  }
 
   const filteredStudents = students.filter(student =>
     student.indexNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -171,7 +150,6 @@ export default function Students() {
                       </td>
                       <td>
                         <button className="btn btn-sm btn-info" onClick={() => handleViewStudent(student)}><IoEye className="app-icon" />View</button>
-                        <button className="btn btn-sm btn-danger" onClick={() => handleDeleteStudent(student.id)}><IoTrash className="app-icon" />Delete</button>
                       </td>
                     </tr>
                   )
