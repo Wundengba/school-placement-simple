@@ -163,9 +163,15 @@ app.post('/api/login', async (req, res) => {
       message: 'Login successful',
       token,
       student: {
+        _id: student._id.toString(),
         indexNumber: student.indexNumber,
         fullName: student.fullName,
-        email: student.email
+        email: student.email || '',
+        maths: student.maths || null,
+        english: student.english || null,
+        science: student.science || null,
+        placedSchool: student.placedSchool || null,
+        status: student.status || 'pending'
       }
     })
   } catch (error) {
