@@ -10,9 +10,24 @@ export default function StudentLoginOption() {
   
   // VERSION: NEW-BUILD-2026-02-09
 
+  const validateIndex = (index) => {
+    const trimmed = index.trim()
+    if (!trimmed) return 'Index number is required'
+    if (trimmed.length !== 12) return 'Index number must be exactly 12 digits'
+    if (!/^\d{12}$/.test(trimmed)) return 'Index number must contain only digits'
+    return null
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    
+    const validationError = validateIndex(indexNumber)
+    if (validationError) {
+      setError(validationError)
+      return
+    }
+    
     setLoading(true)
 
     try {
@@ -86,7 +101,11 @@ export default function StudentLoginOption() {
           {error && <div className="error-message">{error}</div>}
 
           <div className="form-buttons">
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button 
+              type="submit" 
+              className="btn btn-primary" 
+              disabled={loading || indexNumber.trim().length !== 12}
+            >
               {loading ? 'Logging in...' : 'Login'}
             </button>
             <button type="button" className="btn btn-secondary" onClick={() => setShowStudentLogin(false)} disabled={loading}>
