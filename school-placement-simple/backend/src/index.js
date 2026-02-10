@@ -134,7 +134,7 @@ app.get('/api/diagnose', async (req, res) => {
   res.json(diag)
 })
 
-// Student login endpoint (for parents/students) - index number only
+// Student login endpoint (for parents/students) - index number only [UPDATED]
 app.post('/api/login', async (req, res) => {
   try {
     const { indexNumber } = req.body
