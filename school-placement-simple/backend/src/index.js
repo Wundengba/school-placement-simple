@@ -95,6 +95,44 @@ app.get('/api/debug/routes', (req, res) => {
   })
 })
 
+// Detailed MongoDB diagnostics
+app.get('/api/diagnose', async (req, res) => {
+  const mongoUri = process.env.MONGO_URI
+  const connState = mongoose.connection.readyState
+  const states = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' }
+  
+  const diag = {
+    timestamp: new Date().toISOString(),
+    mongoUri: mongoUri ? `${mongoUri.substring(0, 30)}...${mongoUri.substring(mongoUri.length - 20)}` : 'NOT SET',
+    mongoUriLength: mongoUri ? mongoUri.length : 0,
+    connectionReadyState: connState,
+    connectionState: states[connState],
+    mongooseConnected: mongoose.connection.readyState === 1,
+    host: mongoose.connection.host,
+    port: mongoose.connection.port,
+    name: mongoose.connection.name,
+    user: mongoose.connection.user
+  }
+  
+  // Try to test the connection
+  if (connState !== 1) {
+    try {
+      console.log('[DIAGNOSE] Connection readyState is', connState, '- attempting connection test...')
+      const testConn = mongoose.createConnection(mongoUri)
+      await testConn.asPromise()
+      diag.testConnectionResult = 'SUCCESS - created new connection'
+      testConn.close()
+    } catch (err) {
+      console.error('[DIAGNOSE] Connection test failed:', err.message)
+      diag.testConnectionError = err.message
+      diag.testConnectionCode = err.code
+    }
+  }
+  
+  console.log('[DIAGNOSE] Results:', diag)
+  res.json(diag)
+})
+
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/students', studentRoutes)
