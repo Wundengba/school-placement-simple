@@ -6,7 +6,7 @@ const router = express.Router()
 // Upload data to database (upsert) [SIMPLIFIED FOR PRISMA]
 router.post('/upload', async (req, res) => {
   try {
-    const { schools, students, scores, preferences, placementResults, analytics } = req.body
+    const { schools, students, scores, preferences, placementResults, analytics, deletedStudents = [], deletedScores = [], deletedSchools = [] } = req.body
     
     console.log('[SYNC-UPLOAD] Starting upload with:', {
       schoolsCount: schools?.length || 0,
@@ -14,42 +14,76 @@ router.post('/upload', async (req, res) => {
       scoresCount: scores?.length || 0,
       preferencesCount: preferences?.length || 0,
       placementResultsCount: placementResults?.length || 0,
-      hasAnalytics: !!analytics
+      hasAnalytics: !!analytics,
+      deletedStudents: deletedStudents?.length || 0,
+      deletedScores: deletedScores?.length || 0,
+      deletedSchools: deletedSchools?.length || 0
     })
+
+    // Merge test scores into student records
+    const studentsByIndexNumber = {}
+    if (Array.isArray(students)) {
+      students.forEach(s => {
+        studentsByIndexNumber[s.indexNumber] = s
+      })
+    }
+    
+    if (Array.isArray(scores)) {
+      scores.forEach(score => {
+        if (studentsByIndexNumber[score.indexNumber]) {
+          studentsByIndexNumber[score.indexNumber] = {
+            ...studentsByIndexNumber[score.indexNumber],
+            maths: score.maths || studentsByIndexNumber[score.indexNumber].maths,
+            english: score.english || studentsByIndexNumber[score.indexNumber].english,
+            science: score.science || studentsByIndexNumber[score.indexNumber].science
+          }
+        }
+      })
+    }
+
+    const mergedStudents = Object.values(studentsByIndexNumber)
 
     // Batch upsert schools
     if (schools && Array.isArray(schools) && schools.length > 0) {
       try {
         for (const school of schools) {
+          if (!school.id) {
+            console.warn('[SYNC-UPLOAD] Skipping school without id:', school.name)
+            continue
+          }
           await prisma.school.upsert({
-            where: { externalId: school.externalId || school.id },
+            where: { id: school.id },
             update: { ...school, updatedAt: new Date() },
-            create: {
-              ...school,
-              externalId: school.externalId || school.id,
-              id: school.id || undefined
-            }
+            create: { ...school, id: school.id }
           })
         }
         console.log('[SYNC-UPLOAD] Upserted schools:', schools.length)
       } catch (err) {
-        console.error('[SYNC-UPLOAD] School batch upsert error:', err.message)
+        console.error('[SYNC-UPLOAD] School upsert error:', err.message)
       }
     }
 
     // Batch upsert students
-    if (students && Array.isArray(students) && students.length > 0) {
+    if (mergedStudents && Array.isArray(mergedStudents) && mergedStudents.length > 0) {
       try {
-        for (const student of students) {
+        for (const student of mergedStudents) {
+          if (!student.indexNumber) {
+            console.warn('[SYNC-UPLOAD] Skipping student without indexNumber')
+            continue
+          }
           await prisma.student.upsert({
             where: { indexNumber: student.indexNumber },
-            update: { ...student, updatedAt: new Date() },
+            update: { 
+              ...student, 
+              updatedAt: new Date(),
+              deleted: deletedStudents?.includes(student.indexNumber) ? true : false
+            },
             create: student
           })
         }
-        console.log('[SYNC-UPLOAD] Upserted students:', students.length)
+        console.log('[SYNC-UPLOAD] Upserted students:', mergedStudents.length)
       } catch (err) {
-        console.error('[SYNC-UPLOAD] Student batch upsert error:', err.message)
+        console.error('[SYNC-UPLOAD] Student upsert error:', err.message)
       }
     }
 
@@ -57,15 +91,19 @@ router.post('/upload', async (req, res) => {
     if (placementResults && Array.isArray(placementResults) && placementResults.length > 0) {
       try {
         for (const result of placementResults) {
+          if (!result.id) {
+            console.warn('[SYNC-UPLOAD] Skipping placement without id')
+            continue
+          }
           await prisma.placement.upsert({
-            where: { id: result.id || '' },
+            where: { id: result.id },
             update: { ...result, updatedAt: new Date() },
-            create: result
+            create: { ...result, id: result.id }
           })
         }
         console.log('[SYNC-UPLOAD] Upserted placements:', placementResults.length)
       } catch (err) {
-        console.error('[SYNC-UPLOAD] Placement batch upsert error:', err.message)
+        console.error('[SYNC-UPLOAD] Placement upsert error:', err.message)
       }
     }
 
@@ -74,9 +112,12 @@ router.post('/upload', async (req, res) => {
       message: 'Data synced successfully',
       synced: {
         schools: schools?.length || 0,
-        students: students?.length || 0,
+        students: mergedStudents?.length || 0,
         scores: scores?.length || 0,
         placementResults: placementResults?.length || 0,
+        deletedStudents: deletedStudents?.length || 0,
+        deletedScores: deletedScores?.length || 0,
+        deletedSchools: deletedSchools?.length || 0,
         analytics: !!analytics
       }
     })
