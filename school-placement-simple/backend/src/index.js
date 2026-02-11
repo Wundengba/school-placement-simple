@@ -3,7 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
 import prisma from './config/prisma.js'
-import { runMigrations } from './config/runMigrations.js'
+import { runMigrationsSync, runMigrations } from './config/runMigrations.js'
 import authRoutes from './routes/authRoutes.js'
 import studentRoutes from './routes/studentRoutes.js'
 import schoolRoutes from './routes/schoolRoutes.js'
@@ -16,6 +16,11 @@ import adminRoutes from './routes/adminRoutes.js'
 console.log('[INDEX] Routes Imported')
 
 dotenv.config()
+
+// Run migrations synchronously at startup BEFORE accepting requests
+console.log('[INDEX] Ensuring database schema exists (sync)...')
+runMigrationsSync()
+console.log('[INDEX] ✅ Schema sync complete, proceeding with server startup')
 
 const app = express()
 const PORT = process.env.PORT || 5000
