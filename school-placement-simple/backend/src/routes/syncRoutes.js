@@ -43,65 +43,77 @@ router.post('/upload', async (req, res) => {
 
     const mergedStudents = Object.values(studentsByIndexNumber)
 
-    // Batch upsert schools
+    // Batch upsert schools with limited concurrency to avoid DB overload
     if (schools && Array.isArray(schools) && schools.length > 0) {
       try {
-        for (const school of schools) {
-          if (!school.id) {
-            console.warn('[SYNC-UPLOAD] Skipping school without id:', school.name)
-            continue
+        const batchSize = 20
+        for (let i = 0; i < schools.length; i += batchSize) {
+          const batch = schools.slice(i, i + batchSize)
+          for (const school of batch) {
+            if (!school.id) {
+              console.warn('[SYNC-UPLOAD] Skipping school without id:', school.name)
+              continue
+            }
+            await prisma.school.upsert({
+              where: { id: school.id },
+              update: { ...school, updatedAt: new Date() },
+              create: { ...school, id: school.id }
+            })
           }
-          await prisma.school.upsert({
-            where: { id: school.id },
-            update: { ...school, updatedAt: new Date() },
-            create: { ...school, id: school.id }
-          })
         }
-        console.log('[SYNC-UPLOAD] Upserted schools:', schools.length)
+        console.log('[SYNC-UPLOAD] Upserted schools (batched):', schools.length)
       } catch (err) {
         console.error('[SYNC-UPLOAD] School upsert error:', err.message)
       }
     }
 
-    // Batch upsert students
+    // Batch upsert students with limited concurrency to avoid DB overload
     if (mergedStudents && Array.isArray(mergedStudents) && mergedStudents.length > 0) {
       try {
-        for (const student of mergedStudents) {
-          if (!student.indexNumber) {
-            console.warn('[SYNC-UPLOAD] Skipping student without indexNumber')
-            continue
+        const batchSize = 20
+        for (let i = 0; i < mergedStudents.length; i += batchSize) {
+          const batch = mergedStudents.slice(i, i + batchSize)
+          for (const student of batch) {
+            if (!student.indexNumber) {
+              console.warn('[SYNC-UPLOAD] Skipping student without indexNumber')
+              continue
+            }
+            await prisma.student.upsert({
+              where: { indexNumber: student.indexNumber },
+              update: { 
+                ...student, 
+                updatedAt: new Date(),
+                deleted: deletedStudents?.includes(student.indexNumber) ? true : false
+              },
+              create: student
+            })
           }
-          await prisma.student.upsert({
-            where: { indexNumber: student.indexNumber },
-            update: { 
-              ...student, 
-              updatedAt: new Date(),
-              deleted: deletedStudents?.includes(student.indexNumber) ? true : false
-            },
-            create: student
-          })
         }
-        console.log('[SYNC-UPLOAD] Upserted students:', mergedStudents.length)
+        console.log('[SYNC-UPLOAD] Upserted students (batched):', mergedStudents.length)
       } catch (err) {
         console.error('[SYNC-UPLOAD] Student upsert error:', err.message)
       }
     }
 
-    // Batch upsert placements
+    // Batch upsert placements with limited concurrency
     if (placementResults && Array.isArray(placementResults) && placementResults.length > 0) {
       try {
-        for (const result of placementResults) {
-          if (!result.id) {
-            console.warn('[SYNC-UPLOAD] Skipping placement without id')
-            continue
+        const batchSize = 20
+        for (let i = 0; i < placementResults.length; i += batchSize) {
+          const batch = placementResults.slice(i, i + batchSize)
+          for (const result of batch) {
+            if (!result.id) {
+              console.warn('[SYNC-UPLOAD] Skipping placement without id')
+              continue
+            }
+            await prisma.placement.upsert({
+              where: { id: result.id },
+              update: { ...result, updatedAt: new Date() },
+              create: { ...result, id: result.id }
+            })
           }
-          await prisma.placement.upsert({
-            where: { id: result.id },
-            update: { ...result, updatedAt: new Date() },
-            create: { ...result, id: result.id }
-          })
         }
-        console.log('[SYNC-UPLOAD] Upserted placements:', placementResults.length)
+        console.log('[SYNC-UPLOAD] Upserted placements (batched):', placementResults.length)
       } catch (err) {
         console.error('[SYNC-UPLOAD] Placement upsert error:', err.message)
       }
