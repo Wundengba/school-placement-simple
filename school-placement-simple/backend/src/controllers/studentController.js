@@ -35,7 +35,7 @@ export const getStudentById = async (req, res) => {
 }
 
 export const createStudent = async (req, res) => {
-  const { indexNumber, fullName, email, maths, english, science, guardianName, guardianPhone, dateOfBirth, gender, status } = req.body
+  const { indexNumber, fullName, email, maths, english, science, guardianName, guardianPhone, status } = req.body
   
   try {
     if (!indexNumber || !fullName) {
