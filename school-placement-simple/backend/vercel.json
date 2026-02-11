@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm install && prisma generate",
+  "buildCommand": "npm install && npx prisma migrate deploy && npx prisma generate",
   "builds": [
     {
       "src": "src/index.js",
