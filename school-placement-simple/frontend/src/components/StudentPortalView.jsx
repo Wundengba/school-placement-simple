@@ -15,7 +15,7 @@ export default function StudentPortalView({ studentInfo }) {
   const [isSaving, setIsSaving] = useState(false)
   const [editError, setEditError] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
-  const [activeTab, setActiveTab] = useState('profile') // 'profile', 'placement', 'schools'
+  const [activeTab, setActiveTab] = useState('profile') // 'profile', 'placement', 'schools', 'selected'
   
   // School selection state
   const mockSchools = useMemo(() => schools, [])
@@ -351,6 +351,22 @@ export default function StudentPortalView({ studentInfo }) {
           }}
         >
           🏫 School Selection
+        </button>
+        <button
+          onClick={() => setActiveTab('selected')}
+          style={{
+            padding: '14px 24px',
+            backgroundColor: activeTab === 'selected' ? '#2196F3' : 'transparent',
+            color: activeTab === 'selected' ? 'white' : '#333',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: activeTab === 'selected' ? 'bold' : 'normal',
+            borderRadius: '4px 4px 0 0',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          ✅ Your Selections
         </button>
       </div>
 
@@ -773,6 +789,125 @@ export default function StudentPortalView({ studentInfo }) {
               </button>
             </div>
           </form>
+        </div>
+        )}
+
+        {/* YOUR SELECTIONS TAB */}
+        {activeTab === 'selected' && (
+        <div className="student-card">
+          <h2>📋 Your Selected Schools</h2>
+          {!selectionSubmitted ? (
+            <div style={{
+              backgroundColor: '#fff3cd',
+              border: '1px solid #ffc107',
+              borderRadius: 8,
+              padding: 16,
+              color: '#856404'
+            }}>
+              <strong>ℹ️ No selections yet</strong>
+              <p style={{margin: '8px 0 0 0'}}>You haven't submitted your school selections yet. Go to the "School Selection" tab to choose your preferred schools.</p>
+            </div>
+          ) : (
+            <div>
+              {/* Category A */}
+              <div style={{marginBottom: 24}}>
+                <h4 style={{color: '#2196F3', marginBottom: 12, fontSize: 16, fontWeight: 'bold'}}>📌 Category A (1 Selection)</h4>
+                {catA ? (
+                  <div style={{
+                    backgroundColor: '#e3f2fd',
+                    border: '1px solid #2196F3',
+                    borderRadius: 8,
+                    padding: 14,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <span style={{fontSize: 15, fontWeight: '500', color: '#1976D2'}}>
+                      {schoolsByCategory['A']?.find(s => s.id === catA)?.name || catA}
+                    </span>
+                    <span style={{fontSize: 20}}>✓</span>
+                  </div>
+                ) : (
+                  <div style={{color: '#999', fontStyle: 'italic', padding: 12}}>Not selected</div>
+                )}
+              </div>
+
+              {/* Category B */}
+              <div style={{marginBottom: 24}}>
+                <h4 style={{color: '#4CAF50', marginBottom: 12, fontSize: 16, fontWeight: 'bold'}}>📌 Category B (2 Selections)</h4>
+                {catB.filter(Boolean).length > 0 ? (
+                  <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 12}}>
+                    {catB.map((schoolId, idx) => (
+                      schoolId ? (
+                        <div key={idx} style={{
+                          backgroundColor: '#e8f5e9',
+                          border: '1px solid #4CAF50',
+                          borderRadius: 8,
+                          padding: 14,
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center'
+                        }}>
+                          <span style={{fontSize: 14, fontWeight: '500', color: '#388E3C'}}>
+                            {schoolsByCategory['B']?.find(s => s.id === schoolId)?.name || schoolId}
+                          </span>
+                          <span style={{fontSize: 18}}>✓</span>
+                        </div>
+                      ) : (
+                        <div key={idx} style={{color: '#999', fontStyle: 'italic', padding: 12}}>Not selected</div>
+                      )
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{color: '#999', fontStyle: 'italic', padding: 12}}>Not selected</div>
+                )}
+              </div>
+
+              {/* Category C */}
+              <div style={{marginBottom: 24}}>
+                <h4 style={{color: '#FF9800', marginBottom: 12, fontSize: 16, fontWeight: 'bold'}}>📌 Category C (4 Selections)</h4>
+                {catC.filter(Boolean).length > 0 ? (
+                  <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 12}}>
+                    {catC.map((schoolId, idx) => (
+                      schoolId ? (
+                        <div key={idx} style={{
+                          backgroundColor: '#fff3e0',
+                          border: '1px solid #FF9800',
+                          borderRadius: 8,
+                          padding: 14,
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center'
+                        }}>
+                          <span style={{fontSize: 14, fontWeight: '500', color: '#E65100'}}>
+                            {schoolsByCategory['C']?.find(s => s.id === schoolId)?.name || schoolId}
+                          </span>
+                          <span style={{fontSize: 18}}>✓</span>
+                        </div>
+                      ) : (
+                        <div key={idx} style={{color: '#999', fontStyle: 'italic', padding: 12}}>Not selected</div>
+                      )
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{color: '#999', fontStyle: 'italic', padding: 12}}>Not selected</div>
+                )}
+              </div>
+
+              {/* Summary */}
+              <div style={{
+                backgroundColor: '#f5f5f5',
+                borderRadius: 8,
+                padding: 16,
+                marginTop: 20,
+                textAlign: 'center'
+              }}>
+                <p style={{margin: 0, color: '#666'}}>
+                  <strong>Total Schools Selected:</strong> {[catA, ...catB.filter(Boolean), ...catC.filter(Boolean)].length} / 7
+                </p>
+              </div>
+            </div>
+          )}
         </div>
         )}
 
