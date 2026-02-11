@@ -7,7 +7,7 @@ export function runMigrationsSync() {
   try {
     // Use migrate deploy to actually apply pending migrations
     console.log('[MIGRATIONS-SYNC] Running: prisma migrate deploy...')
-    const output = execSync('npx prisma migrate deploy --skip-generate', {
+    const output = execSync('npx prisma migrate deploy', {
       timeout: 120000,
       maxBuffer: 5 * 1024 * 1024,
       encoding: 'utf-8'
