@@ -15,7 +15,7 @@ export default function StudentPortalView({ studentInfo }) {
   const [isSaving, setIsSaving] = useState(false)
   const [editError, setEditError] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
-  const [activeTab, setActiveTab] = useState('profile') // 'profile', 'placement', 'schools', 'selected', 'scores'
+  const [activeTab, setActiveTab] = useState('profile') // 'profile', 'placement', 'schools', 'selected', 'results'
   
   // School selection state
   const mockSchools = useMemo(() => schools, [])
@@ -369,20 +369,20 @@ export default function StudentPortalView({ studentInfo }) {
           ✅ Your Selections
         </button>
         <button
-          onClick={() => setActiveTab('scores')}
+          onClick={() => setActiveTab('results')}
           style={{
             padding: '14px 24px',
-            backgroundColor: activeTab === 'scores' ? '#2196F3' : 'transparent',
-            color: activeTab === 'scores' ? 'white' : '#333',
+            backgroundColor: activeTab === 'results' ? '#2196F3' : 'transparent',
+            color: activeTab === 'results' ? 'white' : '#333',
             border: 'none',
             cursor: 'pointer',
             fontSize: '14px',
-            fontWeight: activeTab === 'scores' ? 'bold' : 'normal',
+            fontWeight: activeTab === 'results' ? 'bold' : 'normal',
             borderRadius: '4px 4px 0 0',
             transition: 'all 0.3s ease'
           }}
         >
-          📊 Test Scores
+          📊 Results
         </button>
       </div>
 
@@ -927,10 +927,10 @@ export default function StudentPortalView({ studentInfo }) {
         </div>
         )}
 
-        {/* TEST SCORES TAB */}
-        {activeTab === 'scores' && (
+        {/* RESULTS TAB */}
+        {activeTab === 'results' && (
         <div className="student-card">
-          <h2>📊 Your Test Scores</h2>
+          <h2>📊 Your Results</h2>
           {loading ? (
             <p style={{color: '#999'}}>Loading your test scores...</p>
           ) : (
