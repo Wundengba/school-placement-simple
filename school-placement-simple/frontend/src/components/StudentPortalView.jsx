@@ -15,7 +15,7 @@ export default function StudentPortalView({ studentInfo }) {
   const [isSaving, setIsSaving] = useState(false)
   const [editError, setEditError] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
-  const [activeTab, setActiveTab] = useState('profile') // 'profile', 'placement', 'schools', 'selected'
+  const [activeTab, setActiveTab] = useState('profile') // 'profile', 'placement', 'schools', 'selected', 'scores'
   
   // School selection state
   const mockSchools = useMemo(() => schools, [])
@@ -367,6 +367,22 @@ export default function StudentPortalView({ studentInfo }) {
           }}
         >
           ✅ Your Selections
+        </button>
+        <button
+          onClick={() => setActiveTab('scores')}
+          style={{
+            padding: '14px 24px',
+            backgroundColor: activeTab === 'scores' ? '#2196F3' : 'transparent',
+            color: activeTab === 'scores' ? 'white' : '#333',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: activeTab === 'scores' ? 'bold' : 'normal',
+            borderRadius: '4px 4px 0 0',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          📊 Test Scores
         </button>
       </div>
 
@@ -905,6 +921,124 @@ export default function StudentPortalView({ studentInfo }) {
                 <p style={{margin: 0, color: '#666'}}>
                   <strong>Total Schools Selected:</strong> {[catA, ...catB.filter(Boolean), ...catC.filter(Boolean)].length} / 7
                 </p>
+              </div>
+            </div>
+          )}
+        </div>
+        )}
+
+        {/* TEST SCORES TAB */}
+        {activeTab === 'scores' && (
+        <div className="student-card">
+          <h2>📊 Your Test Scores</h2>
+          {loading ? (
+            <p style={{color: '#999'}}>Loading your test scores...</p>
+          ) : (
+            <div>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, marginBottom: 24}}>
+                {/* Mathematics */}
+                <div style={{
+                  backgroundColor: '#e3f2fd',
+                  border: '2px solid #2196F3',
+                  borderRadius: 12,
+                  padding: 24,
+                  textAlign: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                }}>
+                  <div style={{fontSize: 14, color: '#1976D2', fontWeight: '600', marginBottom: 8}}>Mathematics</div>
+                  <div style={{fontSize: 48, fontWeight: 'bold', color: '#2196F3', marginBottom: 8}}>
+                    {placementData?.maths !== null && placementData?.maths !== undefined ? placementData.maths : '-'}
+                  </div>
+                  <div style={{fontSize: 12, color: '#666'}}>Score out of 100</div>
+                </div>
+
+                {/* English */}
+                <div style={{
+                  backgroundColor: '#e8f5e9',
+                  border: '2px solid #4CAF50',
+                  borderRadius: 12,
+                  padding: 24,
+                  textAlign: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                }}>
+                  <div style={{fontSize: 14, color: '#388E3C', fontWeight: '600', marginBottom: 8}}>English</div>
+                  <div style={{fontSize: 48, fontWeight: 'bold', color: '#4CAF50', marginBottom: 8}}>
+                    {placementData?.english !== null && placementData?.english !== undefined ? placementData.english : '-'}
+                  </div>
+                  <div style={{fontSize: 12, color: '#666'}}>Score out of 100</div>
+                </div>
+
+                {/* Science */}
+                <div style={{
+                  backgroundColor: '#fff3e0',
+                  border: '2px solid #FF9800',
+                  borderRadius: 12,
+                  padding: 24,
+                  textAlign: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                }}>
+                  <div style={{fontSize: 14, color: '#E65100', fontWeight: '600', marginBottom: 8}}>Science</div>
+                  <div style={{fontSize: 48, fontWeight: 'bold', color: '#FF9800', marginBottom: 8}}>
+                    {placementData?.science !== null && placementData?.science !== undefined ? placementData.science : '-'}
+                  </div>
+                  <div style={{fontSize: 12, color: '#666'}}>Score out of 100</div>
+                </div>
+              </div>
+
+              {/* Score Statistics */}
+              <div style={{
+                backgroundColor: '#f5f5f5',
+                borderRadius: 8,
+                padding: 20,
+                marginTop: 24
+              }}>
+                <h4 style={{marginTop: 0, marginBottom: 16, color: '#333'}}>Score Summary</h4>
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 16}}>
+                  <div>
+                    <div style={{fontSize: 12, color: '#666', marginBottom: 4}}>Average Score</div>
+                    <div style={{fontSize: 24, fontWeight: 'bold', color: '#2196F3'}}>
+                      {placementData && (placementData.maths || placementData.english || placementData.science) 
+                        ? Math.round(
+                            ((placementData.maths || 0) + (placementData.english || 0) + (placementData.science || 0)) / 3
+                          )
+                        : '-'}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{fontSize: 12, color: '#666', marginBottom: 4}}>Highest Subject</div>
+                    <div style={{fontSize: 20, fontWeight: 'bold', color: '#4CAF50'}}>
+                      {placementData && (placementData.maths || placementData.english || placementData.science)
+                        ? (() => {
+                            const scores = {
+                              'Math': placementData.maths || 0,
+                              'English': placementData.english || 0,
+                              'Science': placementData.science || 0
+                            }
+                            const highest = Object.entries(scores).reduce((a, b) => a[1] > b[1] ? a : b)
+                            return `${highest[0]} (${highest[1]})`
+                          })()
+                        : '-'
+                      }
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{fontSize: 12, color: '#666', marginBottom: 4}}>Lowest Subject</div>
+                    <div style={{fontSize: 20, fontWeight: 'bold', color: '#FF9800'}}>
+                      {placementData && (placementData.maths || placementData.english || placementData.science)
+                        ? (() => {
+                            const scores = {
+                              'Math': placementData.maths || 0,
+                              'English': placementData.english || 0,
+                              'Science': placementData.science || 0
+                            }
+                            const lowest = Object.entries(scores).reduce((a, b) => a[1] < b[1] ? a : b)
+                            return `${lowest[0]} (${lowest[1]})`
+                          })()
+                        : '-'
+                      }
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
