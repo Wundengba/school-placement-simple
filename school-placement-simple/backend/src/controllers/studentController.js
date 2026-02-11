@@ -58,7 +58,6 @@ export const createStudent = async (req, res) => {
         science: science ? parseInt(science) : null,
         guardianName: guardianName ? guardianName.trim() : null,
         guardianPhone: guardianPhone ? guardianPhone.trim() : null,
-        dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
         status: status || 'pending'
       }
     })
