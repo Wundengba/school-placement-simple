@@ -1,5 +1,61 @@
 import prisma from '../config/prisma.js'
 
+export const loginStudent = async (req, res) => {
+  const { indexNumber } = req.body
+
+  try {
+    if (!indexNumber) {
+      return res.status(400).json({ success: false, message: 'Index number is required' })
+    }
+
+    const student = await prisma.student.findUnique({
+      where: { indexNumber: indexNumber.trim() },
+      include: {
+        schoolPreferences: {
+          include: { school: true }
+        },
+        placedSchool: true,
+        placements: {
+          include: { school: true }
+        }
+      }
+    })
+
+    if (!student) {
+      console.log('[Student Controller] Login failed - student not found:', indexNumber)
+      return res.status(401).json({ success: false, message: 'Invalid index number' })
+    }
+
+    // Create JWT-like token
+    const token = Buffer.from(JSON.stringify({
+      studentId: student.id,
+      indexNumber: student.indexNumber,
+      fullName: student.fullName,
+      role: 'student',
+      timestamp: Date.now()
+    })).toString('base64')
+
+    console.log('[Student Controller] ✅ Student login successful:', indexNumber)
+    res.json({
+      success: true,
+      token,
+      student: {
+        id: student.id,
+        indexNumber: student.indexNumber,
+        fullName: student.fullName,
+        email: student.email,
+        status: student.status,
+        placedSchool: student.placedSchool,
+        schoolPreferences: student.schoolPreferences,
+        placements: student.placements
+      }
+    })
+  } catch (error) {
+    console.error('[Student Controller] Login error:', error.message)
+    res.status(500).json({ success: false, message: 'Login failed', error: error.message })
+  }
+}
+
 export const getStudents = async (req, res) => {
   try {
     const students = await prisma.student.findMany({

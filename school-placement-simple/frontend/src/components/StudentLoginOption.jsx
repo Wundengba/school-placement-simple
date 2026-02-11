@@ -33,7 +33,7 @@ export default function StudentLoginOption() {
     try {
       const API_BASE = import.meta.env.VITE_API_BASE || 'https://backend-seven-ashen-18.vercel.app/api'
       console.log('[StudentLogin] Using API base:', API_BASE)
-      const res = await fetch(`${API_BASE}/login`, {
+      const res = await fetch(`${API_BASE}/students/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ indexNumber: indexNumber.trim() })
