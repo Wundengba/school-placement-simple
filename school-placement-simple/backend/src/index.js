@@ -30,6 +30,8 @@ app.use(express.json())
 
 // CORS configuration
 const allowedOrigins = [
+  'https://frontend-one-umber-83.vercel.app',
+  'https://frontend-evlsycva2-daniel-wundengbas-projects.vercel.app',
   'https://school-placement-fresh-202602092227.vercel.app',
   'https://school-placement-fresh-20260209222711-ny8uc778w.vercel.app',
   'https://frontend-three-lovat-67.vercel.app',
