@@ -434,3 +434,73 @@ export const updateMockScore = async (req, res) => {
     return res.status(500).json({ error: 'Server error updating mock score' })
   }
 }
+
+// Examination Types (persisted via raw SQL to avoid schema/client regeneration)
+export const ensureExamTypesTable = async () => {
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "ExaminationType" (
+        id TEXT PRIMARY KEY,
+        name TEXT UNIQUE NOT NULL,
+        description TEXT,
+        "createdAt" TIMESTAMP DEFAULT now(),
+        "updatedAt" TIMESTAMP DEFAULT now()
+      );
+    `)
+  } catch (err) {
+    console.error('[ensureExamTypesTable] Error ensuring table exists:', err.message)
+  }
+}
+
+export const listExamTypes = async (req, res) => {
+  try {
+    await ensureExamTypesTable()
+    const rows = await prisma.$queryRawUnsafe('SELECT id, name, description, "createdAt", "updatedAt" FROM "ExaminationType" ORDER BY "createdAt" DESC')
+    return res.status(200).json({ success: true, examTypes: rows })
+  } catch (err) {
+    console.error('[listExamTypes] Error:', err.message)
+    return res.status(500).json({ error: 'Server error listing exam types' })
+  }
+}
+
+export const createExamType = async (req, res) => {
+  try {
+    const { name, description } = req.body
+    if (!name) return res.status(400).json({ error: 'Name is required' })
+    await ensureExamTypesTable()
+    const id = Date.now().toString()
+    await prisma.$executeRawUnsafe('INSERT INTO "ExaminationType" (id, name, description) VALUES ($1, $2, $3)', id, name, description || null)
+    return res.status(201).json({ success: true, examType: { id, name, description } })
+  } catch (err) {
+    console.error('[createExamType] Error:', err.message)
+    if (err.message && err.message.includes('unique')) return res.status(409).json({ error: 'Exam type already exists' })
+    return res.status(500).json({ error: 'Server error creating exam type' })
+  }
+}
+
+export const updateExamType = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { name, description } = req.body
+    if (!id) return res.status(400).json({ error: 'ID required' })
+    await ensureExamTypesTable()
+    await prisma.$executeRawUnsafe('UPDATE "ExaminationType" SET name = $2, description = $3, "updatedAt" = now() WHERE id = $1', id, name, description || null)
+    return res.status(200).json({ success: true, examType: { id, name, description } })
+  } catch (err) {
+    console.error('[updateExamType] Error:', err.message)
+    return res.status(500).json({ error: 'Server error updating exam type' })
+  }
+}
+
+export const deleteExamType = async (req, res) => {
+  try {
+    const { id } = req.params
+    if (!id) return res.status(400).json({ error: 'ID required' })
+    await ensureExamTypesTable()
+    await prisma.$executeRawUnsafe('DELETE FROM "ExaminationType" WHERE id = $1', id)
+    return res.status(200).json({ success: true, message: 'Deleted' })
+  } catch (err) {
+    console.error('[deleteExamType] Error:', err.message)
+    return res.status(500).json({ error: 'Server error deleting exam type' })
+  }
+}

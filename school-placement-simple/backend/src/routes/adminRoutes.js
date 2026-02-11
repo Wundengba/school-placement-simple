@@ -13,6 +13,11 @@ import {
   deleteMock,
   assignMockScores,
   updateMockScore
+  ,
+  listExamTypes,
+  createExamType,
+  updateExamType,
+  deleteExamType
 } from '../controllers/adminController.js'
 import { verifyAdminToken } from '../middleware/auth.js'
 
@@ -36,5 +41,11 @@ router.put('/mocks/:mockId', verifyAdminToken, updateMock)
 router.delete('/mocks/:mockId', verifyAdminToken, deleteMock)
 router.post('/mocks/:mockId/scores', verifyAdminToken, assignMockScores)
 router.put('/mocks/:mockId/scores/:scoreId', verifyAdminToken, updateMockScore)
+
+// Examination types
+router.get('/exam-types', verifyAdminToken, listExamTypes)
+router.post('/exam-types', verifyAdminToken, createExamType)
+router.put('/exam-types/:id', verifyAdminToken, updateExamType)
+router.delete('/exam-types/:id', verifyAdminToken, deleteExamType)
 
 export default router
