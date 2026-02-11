@@ -197,17 +197,18 @@ export default function App() {
         </aside>
 
         <main className="tab-content">
-        {/* content rendering */}
-        {/* Dashboard removed; keep remaining tabs rendering */}
-        {activeTab === 'registration' && <Registration />}
-        {activeTab === 'students' && <Students />}
-        {activeTab === 'testscores' && <TestScores />}
-        {activeTab === 'examinations' && <AdminExaminations />}
-        {activeTab === 'schoolselection' && <SchoolSelection />}
-        {activeTab === 'placement' && <Placement />}
-        {activeTab === 'analytics' && <Analytics />}
-        {activeTab === 'schools' && <Schools />}
-      </main>
+          {/* content rendering */}
+          {/* Dashboard removed; keep remaining tabs rendering */}
+          {activeTab === 'registration' && <Registration />}
+          {activeTab === 'students' && <Students />}
+          {activeTab === 'testscores' && <TestScores />}
+          {activeTab === 'examinations' && <AdminExaminations />}
+          {activeTab === 'schoolselection' && <SchoolSelection />}
+          {activeTab === 'placement' && <Placement />}
+          {activeTab === 'analytics' && <Analytics />}
+          {activeTab === 'schools' && <Schools />}
+        </main>
+      </div>
     </div>
   )
 }
