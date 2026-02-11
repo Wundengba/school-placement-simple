@@ -5,39 +5,25 @@ export function runMigrationsSync() {
   console.log('[MIGRATIONS-SYNC] DATABASE_URL:', process.env.DATABASE_URL ? '✅ Set' : '❌ Not set')
   
   try {
-    // First try: prisma migrate deploy to apply pending migrations
+    // Use migrate deploy to actually apply pending migrations
     console.log('[MIGRATIONS-SYNC] Running: prisma migrate deploy...')
     const output = execSync('npx prisma migrate deploy --skip-generate', {
       timeout: 120000,
       maxBuffer: 5 * 1024 * 1024,
       encoding: 'utf-8'
     })
+    console.log('[MIGRATIONS-SYNC] ✅ Migrations deployed successfully!')
     console.log('[MIGRATIONS-SYNC] Output:', output)
-    console.log('[MIGRATIONS-SYNC] ✅ Migrations applied successfully!')
     return true
   } catch (error) {
-    console.error('[MIGRATIONS-SYNC] ❌ Migrate deploy failed, trying db push...')
+    console.error('[MIGRATIONS-SYNC] ❌ Migration deploy failed')
     console.error('[MIGRATIONS-SYNC] Error:', error.message)
+    if (error.stdout) console.error('[MIGRATIONS-SYNC] stdout:', error.stdout)
+    if (error.stderr) console.error('[MIGRATIONS-SYNC] stderr:', error.stderr)
     
-    // Fallback: try db push for serverless environments
-    try {
-      console.log('[MIGRATIONS-SYNC] Running fallback: prisma db push --skip-validate...')
-      const pushOutput = execSync('npx prisma db push --skip-validate --skip-generate', {
-        timeout: 120000,
-        maxBuffer: 5 * 1024 * 1024,
-        encoding: 'utf-8'
-      })
-      console.log('[MIGRATIONS-SYNC] Fallback output:', pushOutput)
-      console.log('[MIGRATIONS-SYNC] ✅ Schema synced with db push!')
-      return true
-    } catch (fallbackError) {
-      console.error('[MIGRATIONS-SYNC] ❌ Both migrate deploy and db push failed')
-      console.error('[MIGRATIONS-SYNC] Fallback error:', fallbackError.message)
-      
-      // Log but continue - tables might already exist
-      console.log('[MIGRATIONS-SYNC] ⚠️  Continuing anyway (tables may already exist)')
-      return false
-    }
+    // Log but continue - migrations might have already been applied during build
+    console.log('[MIGRATIONS-SYNC] ⚠️  Continuing anyway (migrations may have been applied during build)')
+    return false
   }
 }
 
