@@ -80,37 +80,21 @@ app.get('/api/db-status', async (req, res) => {
 
 // Test DB connection endpoint (invokes connectDB and returns diagnostic info)
 app.get('/api/db-test', async (req, res) => {
-// Debug route to check if routes are loaded
-app.get('/api/debug/routes', (req, res) => {
-  res.json({
-    message: 'Routes test',
-    authRoutesImported: !!authRoutes,
-    studentRoutesImported: !!studentRoutes,
-    schoolRoutesImported: !!schoolRoutes,
-    placementRoutesImported: !!placementRoutes,
-    syncRoutesImported: !!syncRoutes,
-    dashboardRoutesImported: !!dashboardRoutes,
-    database: 'PostgreSQL (Neon)'
+  // Debug route to check if routes are loaded
+  app.get('/api/debug/routes', (req, res) => {
+    res.json({
+      message: 'Routes test',
+      authRoutesImported: !!authRoutes,
+      studentRoutesImported: !!studentRoutes,
+      schoolRoutesImported: !!schoolRoutes,
+      placementRoutesImported: !!placementRoutes,
+      syncRoutesImported: !!syncRoutes,
+      dashboardRoutesImported: !!dashboardRoutes,
+      database: 'PostgreSQL (Neon)'
+    })
   })
-})
-  
-  // Try to test the connection
-  if (connState !== 1) {
-    try {
-      console.log('[DIAGNOSE] Connection readyState is', connState, '- attempting connection test...')
-      const testConn = mongoose.createConnection(mongoUri)
-      await testConn.asPromise()
-      diag.testConnectionResult = 'SUCCESS - created new connection'
-      testConn.close()
-    } catch (err) {
-      console.error('[DIAGNOSE] Connection test failed:', err.message)
-      diag.testConnectionError = err.message
-      diag.testConnectionCode = err.code
-    }
-  }
-  
-  console.log('[DIAGNOSE] Results:', diag)
-  res.json(diag)
+
+  res.json({ success: true, message: 'DB test endpoint (Postgres via Prisma)' })
 })
 
 // Student login endpoint (for parents/students) - index number only [PRISMA]

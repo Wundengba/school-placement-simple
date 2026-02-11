@@ -116,3 +116,39 @@ model Admin {
   @@index([username])
   @@index([isActive])
 }
+
+model ActivityLog {
+  id           String   @id @default(cuid())
+  userId       String?
+  username     String?
+  action       String
+  entityType   String?
+  entityId     String?
+  entityName   String?
+  changes      Json?
+  ipAddress    String?
+  userAgent    String?
+  description  String?
+  status       String   @default("SUCCESS")
+  errorMessage String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([entityId])
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  role      String   @default("staff")
+  fullName  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([username])
+  @@index([email])
+}

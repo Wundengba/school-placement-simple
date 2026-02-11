@@ -1,6 +1,6 @@
 import express from 'express'
 import bcrypt from 'bcryptjs'
-import User from '../models/User.js'
+import prisma from '../config/prisma.js'
 
 const router = express.Router()
 
@@ -11,14 +11,13 @@ router.post('/seed-demo', async (req, res) => {
     const email = 'demo@example.com'
     const password = 'demo123'
 
-    const existing = await User.findOne({ $or: [{ username }, { email }] })
+    const existing = await prisma.user.findFirst({ where: { OR: [{ username }, { email }] } })
     if (existing) {
       return res.json({ success: true, message: 'Demo user already exists' })
     }
 
     const hashed = await bcrypt.hash(password, 10)
-    const demo = new User({ username, email, password: hashed, fullName: 'Demo User', role: 'admin' })
-    await demo.save()
+    await prisma.user.create({ data: { username, email, password: hashed, fullName: 'Demo User', role: 'admin' } })
 
     res.json({ success: true, message: 'Demo user created', user: { username, email } })
   } catch (err) {
@@ -46,9 +45,7 @@ router.post('/register', async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({
-      $or: [{ username }, { email }]
-    })
+    const existingUser = await prisma.user.findFirst({ where: { OR: [{ username }, { email }] } })
 
     if (existingUser) {
       return res.status(400).json({
@@ -61,19 +58,11 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     // Create user
-    const newUser = new User({
-      username,
-      email,
-      password: hashedPassword,
-      fullName,
-      role
-    })
-
-    await newUser.save()
+    const newUser = await prisma.user.create({ data: { username, email, password: hashedPassword, fullName, role } })
 
     // Return user data without password
     const userResponse = {
-      id: newUser._id,
+      id: newUser.id,
       username: newUser.username,
       email: newUser.email,
       fullName: newUser.fullName,
@@ -102,9 +91,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Find user by username or email
-    const user = await User.findOne({
-      $or: [{ username }, { email: username }]
-    })
+    const user = await prisma.user.findFirst({ where: { OR: [{ username }, { email: username }] } })
 
     if (!user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' })
@@ -119,7 +106,7 @@ router.post('/login', async (req, res) => {
 
     // Create token (simple JWT-like token: base64 encoded user data)
     const token = Buffer.from(JSON.stringify({
-      id: user._id,
+      id: user.id,
       username: user.username,
       email: user.email,
       role: user.role,
@@ -128,7 +115,7 @@ router.post('/login', async (req, res) => {
 
     // Return success with user data and token
     const userResponse = {
-      id: user._id,
+      id: user.id,
       username: user.username,
       email: user.email,
       fullName: user.fullName,

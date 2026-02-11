@@ -6,7 +6,7 @@ import './App.css'
 import LoginSelection from './components/LoginSelection'
 import StudentLoginOption from './components/StudentLoginOption'
 import StudentPortalView from './components/StudentPortalView'
-import Dashboard from './components/Dashboard'
+// Dashboard removed per request
 import Registration from './components/Registration'
 import Students from './components/Students'
 import TestScores from './components/TestScores'
@@ -18,7 +18,7 @@ import { IoHome, IoPersonAdd, IoPeople, IoDocumentText, IoBarChart, IoLocation, 
 
 function getInitialTab() {
   const saved = localStorage.getItem('activeTab')
-  return saved || 'dashboard'
+  return saved || 'students'
 }
 
 export default function App() {
@@ -130,10 +130,7 @@ export default function App() {
     return <LoginSelection />
   }
 
-  // If admin is logged in, show admin dashboard
-  if (adminAuth && adminInfo) {
-    return <Dashboard user={adminInfo} />
-  }
+  // If admin is logged in, continue into the main app (dashboard tab removed)
 
   // If student is logged in (but not admin), show student view
   if (studentAuth && !adminAuth) {
@@ -149,7 +146,7 @@ export default function App() {
         </div>
         <div style={{display:'flex',gap:8,alignItems:'center',flexWrap:'wrap',justifyContent:'flex-end'}}>
           <span style={{fontSize:12,color:'#666'}}>Welcome, <strong>{currentUser?.fullName || currentUser?.username}</strong></span>
-          <button className="btn" onClick={() => setActiveTab('dashboard')} title="Go to Dashboard">
+          <button className="btn" onClick={() => setActiveTab('students')} title="Home">
             <IoHome style={{marginRight:6}} /> Home
           </button>
           <button className="btn" onClick={async () => { try { await syncService.syncNow(); setLastSync(new Date().toISOString()); alert('Sync complete') } catch(e) { alert('Sync failed: '+e.message) } }}>
@@ -163,12 +160,7 @@ export default function App() {
       </header>
 
       <nav className="tabs-nav">
-        <button 
-          className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
-          onClick={() => setActiveTab('dashboard')}
-        >
-          <IoHome className="app-icon" /> Dashboard
-        </button>
+        {/* Dashboard tab intentionally removed */}
         <button 
           className={`tab-btn ${activeTab === 'registration' ? 'active' : ''}`}
           onClick={() => setActiveTab('registration')}
@@ -214,7 +206,7 @@ export default function App() {
       </nav>
 
       <main className="tab-content">
-        {activeTab === 'dashboard' && <Dashboard user={currentUser} />}
+        {/* Dashboard removed; keep remaining tabs rendering */}
         {activeTab === 'registration' && <Registration />}
         {activeTab === 'students' && <Students />}
         {activeTab === 'testscores' && <TestScores />}

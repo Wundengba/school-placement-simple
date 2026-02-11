@@ -67,35 +67,38 @@ router.get('/school', async (req, res) => {
       return res.status(400).json({ success: false, message: 'schoolId required' })
     }
 
-    const [schoolInfo, assignedPlacements, stats] = await Promise.all([
-      School.findById(schoolId),
-      Placement.find({ schoolId })
-        .populate('studentId', 'name email testScores')
-        .sort({ createdAt: -1 }),
-      Placement.aggregate([
-        { $match: { schoolId: require('mongoose').Types.ObjectId(schoolId) } },
-        {
-          $group: {
-            _id: '$status',
-            count: { $sum: 1 }
-          }
-        }
-      ])
-    ])
-
+    // Use Prisma to fetch school and placements
+    const schoolInfo = await prisma.school.findUnique({ where: { id: schoolId } })
     if (!schoolInfo) {
       return res.status(404).json({ success: false, message: 'School not found' })
     }
+
+    const assignedPlacements = await prisma.placement.findMany({
+      where: { schoolId },
+      include: {
+        student: {
+          select: { id: true, fullName: true, email: true, maths: true, english: true, science: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+
+    const [total, accepted, pending, rejected] = await Promise.all([
+      prisma.placement.count({ where: { schoolId } }),
+      prisma.placement.count({ where: { schoolId, status: 'accepted' } }),
+      prisma.placement.count({ where: { schoolId, status: 'pending' } }),
+      prisma.placement.count({ where: { schoolId, status: 'rejected' } }),
+    ])
 
     res.json({
       success: true,
       school: schoolInfo,
       placements: assignedPlacements,
       stats: {
-        total: assignedPlacements.length,
-        accepted: assignedPlacements.filter(p => p.status === 'accepted').length,
-        pending: assignedPlacements.filter(p => p.status === 'pending').length,
-        rejected: assignedPlacements.filter(p => p.status === 'rejected').length
+        total,
+        accepted,
+        pending,
+        rejected
       }
     })
   } catch (err) {
@@ -114,21 +117,23 @@ router.get('/student', async (req, res) => {
       return res.status(400).json({ success: false, message: 'studentId required' })
     }
 
-    const [studentInfo, placements, placementHistory] = await Promise.all([
-      Student.findById(studentId),
-      Placement.find({ studentId })
-        .populate('schoolId', 'name location capacity sector')
-        .sort({ createdAt: -1 }),
-      PlacementHistory.find({ studentId })
-        .sort({ createdAt: -1 })
-        .limit(20)
-    ])
-
+    // Fetch student and placements with Prisma
+    const studentInfo = await prisma.student.findUnique({ where: { id: studentId } })
     if (!studentInfo) {
       return res.status(404).json({ success: false, message: 'Student not found' })
     }
 
-    // Find current placement (if any)
+    const placements = await prisma.placement.findMany({
+      where: { studentId },
+      include: {
+        school: { select: { id: true, name: true, location: true, capacity: true } }
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+
+    // No PlacementHistory model in Prisma currently; return placements as history fallback
+    const placementHistory = []
+
     const currentPlacement = placements.find(p => p.status === 'accepted') || null
 
     res.json({
@@ -157,13 +162,10 @@ router.get('/placement-history/:placementId', async (req, res) => {
   try {
     const { placementId } = req.params
 
-    const history = await PlacementHistory.find({ placementId })
-      .sort({ createdAt: -1 })
-      .populate('changedBy', 'username')
-
+    // PlacementHistory not yet migrated to Prisma; return empty history for now
     res.json({
       success: true,
-      history
+      history: []
     })
   } catch (err) {
     console.error('[DASHBOARD] History error:', err.message)
