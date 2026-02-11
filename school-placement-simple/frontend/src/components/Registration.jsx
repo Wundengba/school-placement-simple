@@ -105,10 +105,21 @@ export default function Registration() {
     try {
       const API_BASE = import.meta.env.VITE_API_BASE || 'https://backend-seven-ashen-18.vercel.app/api'
       console.log('[Registration] Registering student in backend:', newStudent.indexNumber)
+      
+      // Only send fields that exist in the database schema
+      const backendData = {
+        indexNumber: newStudent.indexNumber,
+        fullName: newStudent.fullName,
+        email: formData.email || null,
+        guardianName: newStudent.guardianName || null,
+        guardianPhone: newStudent.guardianPhone || null,
+        status: 'pending'
+      }
+      
       await fetch(`${API_BASE}/students`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newStudent)
+        body: JSON.stringify(backendData)
       })
       console.log('[Registration] Backend registration successful')
     } catch (err) {
