@@ -203,20 +203,22 @@ app.use((err, req, res, next) => {
 // Run migrations in background (non-blocking)
 runMigrations()
   .then(() => {
-    console.log('[STARTUP] ✅ Migrations completed')
+    console.log('[STARTUP] ✅ Schema sync completed')
     migrationsRunning = false
   })
   .catch(err => {
-    console.error('[STARTUP] ⚠️  Migrations failed:', err.message)
+    console.error('[STARTUP] ⚠️  Schema sync encountered error:', err.message)
     migrationError = err
     migrationsRunning = false
-    // Don't exit - server continues to run
+  })
+  .finally(() => {
+    console.log('[STARTUP] Migration process finished')
   })
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
   console.log(`Environment: ${process.env.NODE_ENV}`)
-  console.log(`Database: PostgreSQL (Neon) - Migrations running in background`)
+  console.log(`Database: PostgreSQL (Neon) - Schema sync running in background`)
 })
 
 export default app
