@@ -54,9 +54,19 @@ app.use((req, res, next) => {
   next()
 })
 
+// Track migration status globally
+let migrationsRunning = true
+let migrationError = null
+
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'Server is running', database: 'PostgreSQL (Neon)', timestamp: new Date() })
+  res.json({ 
+    status: 'Server is running', 
+    database: 'PostgreSQL (Neon)', 
+    migrationsRunning,
+    migrationError: migrationError ? migrationError.message : null,
+    timestamp: new Date() 
+  })
 })
 
 // DB status endpoint
@@ -166,20 +176,23 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal server error', error: err.message })
 })
 
-// Start server with migrations
-(async () => {
-  try {
-    // Run migrations before starting server
-    await runMigrations()
-    
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`)
-      console.log(`Environment: ${process.env.NODE_ENV}`)
-    })
-  } catch (err) {
-    console.error('[STARTUP] ❌ Failed to start server:', err.message)
-    process.exit(1)
-  }
-})()
+// Run migrations in background (non-blocking)
+runMigrations()
+  .then(() => {
+    console.log('[STARTUP] ✅ Migrations completed')
+    migrationsRunning = false
+  })
+  .catch(err => {
+    console.error('[STARTUP] ⚠️  Migrations failed:', err.message)
+    migrationError = err
+    migrationsRunning = false
+    // Don't exit - server continues to run
+  })
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+  console.log(`Environment: ${process.env.NODE_ENV}`)
+  console.log(`Database: PostgreSQL (Neon) - Migrations running in background`)
+})
 
 export default app
