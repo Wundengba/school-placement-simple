@@ -111,6 +111,9 @@ export default function Registration() {
         indexNumber: newStudent.indexNumber,
         fullName: newStudent.fullName,
         email: formData.email || null,
+        gender: formData.gender || null,
+        dateOfBirth: formData.dateOfBirth || null,
+        photo: photoPreview || null,
         guardianName: newStudent.guardianName || null,
         guardianPhone: newStudent.guardianPhone || null,
         status: 'pending'

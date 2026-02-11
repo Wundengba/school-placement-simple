@@ -158,8 +158,7 @@ CREATE INDEX "SchoolPref_studentId_idx" ON "SchoolPref"("studentId");
 CREATE INDEX "SchoolPref_schoolId_idx" ON "SchoolPref"("schoolId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "SchoolPref_studentId_schoolId_key" ON "SchoolPref"("student
-Id", "schoolId");                                                               
+CREATE UNIQUE INDEX "SchoolPref_studentId_schoolId_key" ON "SchoolPref"("studentId", "schoolId");                                                               
 -- CreateIndex
 CREATE INDEX "Placement_studentId_idx" ON "Placement"("studentId");
 
@@ -170,8 +169,7 @@ CREATE INDEX "Placement_schoolId_idx" ON "Placement"("schoolId");
 CREATE INDEX "Placement_status_idx" ON "Placement"("status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Placement_studentId_schoolId_key" ON "Placement"("studentId
-", "schoolId");                                                                 
+CREATE UNIQUE INDEX "Placement_studentId_schoolId_key" ON "Placement"("studentId", "schoolId");                                                                 
 -- CreateIndex
 CREATE INDEX "Stream_schoolId_idx" ON "Stream"("schoolId");
 
@@ -188,7 +186,7 @@ CREATE INDEX "Admin_isActive_idx" ON "Admin"("isActive");
 CREATE INDEX "ActivityLog_userId_idx" ON "ActivityLog"("userId");
 
 -- CreateIndex
-CREATE INDEX "ActivityLog_entityType_idx" ON "ActivityLog"("entityType");       
+CREATE INDEX "ActivityLog_entityType_idx" ON "ActivityLog"("entityType");
 
 -- CreateIndex
 CREATE INDEX "ActivityLog_entityId_idx" ON "ActivityLog"("entityId");
@@ -206,21 +204,10 @@ CREATE INDEX "User_username_idx" ON "User"("username");
 CREATE INDEX "User_email_idx" ON "User"("email");
 
 -- AddForeignKey
-ALTER TABLE "Student" ADD CONSTRAINT "Student_placedSchoolId_fkey" FOREIGN KEY (
-"placedSchoolId") REFERENCES "School"("id") ON DELETE SET NULL ON UPDATE CASCADE;                                                                               
+ALTER TABLE "Student" ADD CONSTRAINT "Student_placedSchoolId_fkey" FOREIGN KEY ("placedSchoolId") REFERENCES "School"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "SchoolPref" ADD CONSTRAINT "SchoolPref_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "SchoolPref" ADD CONSTRAINT "SchoolPref_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Placement" ADD CONSTRAINT "Placement_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;     
 -- AddForeignKey
-ALTER TABLE "SchoolPref" ADD CONSTRAINT "SchoolPref_studentId_fkey" FOREIGN KEY 
-("studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;   
-
--- AddForeignKey
-ALTER TABLE "SchoolPref" ADD CONSTRAINT "SchoolPref_schoolId_fkey" FOREIGN KEY (
-"schoolId") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;      
--- AddForeignKey
-ALTER TABLE "Placement" ADD CONSTRAINT "Placement_studentId_fkey" FOREIGN KEY ("
-studentId") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;     
--- AddForeignKey
-ALTER TABLE "Placement" ADD CONSTRAINT "Placement_schoolId_fkey" FOREIGN KEY ("s
-choolId") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;        
--- AddForeignKey
-ALTER TABLE "Stream" ADD CONSTRAINT "Stream_schoolId_fkey" FOREIGN KEY ("schoolI
-d") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;              
+ALTER TABLE "Placement" ADD CONSTRAINT "Placement_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Stream" ADD CONSTRAINT "Stream_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;              

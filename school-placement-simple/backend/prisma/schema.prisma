@@ -15,6 +15,9 @@ model Student {
   indexNumber       String      @unique
   fullName          String
   email             String?
+  gender            String?     // 'male', 'female', 'other'
+  dateOfBirth       DateTime?
+  photo             String?     // Base64 encoded photo or URL
   maths             Int?        @db.SmallInt
   english           Int?        @db.SmallInt
   science           Int?        @db.SmallInt

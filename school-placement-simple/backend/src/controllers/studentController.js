@@ -44,6 +44,14 @@ export const loginStudent = async (req, res) => {
         indexNumber: student.indexNumber,
         fullName: student.fullName,
         email: student.email,
+        gender: student.gender,
+        dateOfBirth: student.dateOfBirth,
+        photo: student.photo,
+        guardianName: student.guardianName,
+        guardianPhone: student.guardianPhone,
+        maths: student.maths,
+        english: student.english,
+        science: student.science,
         status: student.status,
         placedSchool: student.placedSchool,
         schoolPreferences: student.schoolPreferences,
@@ -91,7 +99,7 @@ export const getStudentById = async (req, res) => {
 }
 
 export const createStudent = async (req, res) => {
-  const { indexNumber, fullName, email, maths, english, science, guardianName, guardianPhone, status } = req.body
+  const { indexNumber, fullName, email, gender, dateOfBirth, photo, maths, english, science, guardianName, guardianPhone, status } = req.body
   
   try {
     if (!indexNumber || !fullName) {
@@ -109,6 +117,9 @@ export const createStudent = async (req, res) => {
         indexNumber: indexNumber.trim(),
         fullName: fullName.trim(),
         email: email ? email.trim() : null,
+        gender: gender || null,
+        dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
+        photo: photo || null,
         maths: maths ? parseInt(maths) : null,
         english: english ? parseInt(english) : null,
         science: science ? parseInt(science) : null,
@@ -158,5 +169,36 @@ export const deleteStudent = async (req, res) => {
       return res.status(404).json({ message: 'Student not found' })
     }
     res.status(500).json({ message: error.message })
+  }
+}
+
+export const updatePreferences = async (req, res) => {
+  const studentId = req.params.id
+  const { catA, catB = [], catC = [] } = req.body
+
+  try {
+    // Build ordered choices: 1 = catA, 2..3 = catB, 4..7 = catC
+    const choices = []
+    if (catA) choices.push({ schoolId: catA, choice: 1 })
+    catB.forEach((s, i) => { if (s) choices.push({ schoolId: s, choice: 2 + i }) })
+    catC.forEach((s, i) => { if (s) choices.push({ schoolId: s, choice: 4 + i }) })
+
+    // Validate school IDs exist to avoid FK violations
+    const schoolIds = choices.map(c => c.schoolId).filter(Boolean)
+    const existingSchools = await prisma.school.findMany({ where: { id: { in: schoolIds } }, select: { id: true } })
+    const existingSet = new Set(existingSchools.map(s => s.id))
+    const filtered = choices.filter(c => existingSet.has(c.schoolId))
+
+    // Remove existing preferences and insert new ones in a transaction
+    await prisma.$transaction([
+      prisma.schoolPref.deleteMany({ where: { studentId } }),
+      prisma.schoolPref.createMany({ data: filtered.map(c => ({ studentId, schoolId: c.schoolId, choice: c.choice })) })
+    ])
+
+    const prefs = await prisma.schoolPref.findMany({ where: { studentId }, include: { school: true }, orderBy: { choice: 'asc' } })
+    res.json({ success: true, preferences: prefs })
+  } catch (error) {
+    console.error('[Student Controller] updatePreferences error:', error.message)
+    res.status(500).json({ success: false, message: 'Failed to update preferences', error: error.message })
   }
 }

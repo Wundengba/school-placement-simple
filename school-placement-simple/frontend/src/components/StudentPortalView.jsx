@@ -109,17 +109,53 @@ export default function StudentPortalView({ studentInfo }) {
     }
     
     setSelectionLoading(true)
-    try {
-      // Save selections to localStorage
-      const selections = { catA, catB, catC, savedAt: new Date().toISOString() }
-      localStorage.setItem(`studentSchoolSelections_${student.indexNumber}`, JSON.stringify(selections))
-      setSelectionSubmitted(true)
-      setSelectionError('')
-    } catch (err) {
-      setSelectionError('Failed to save selections: ' + err.message)
-    } finally {
-      setSelectionLoading(false)
-    }
+    (async () => {
+      try {
+        // Save selections to localStorage
+        const selections = { catA, catB, catC, savedAt: new Date().toISOString() }
+        localStorage.setItem(`studentSchoolSelections_${student.indexNumber}`, JSON.stringify(selections))
+        setSelectionSubmitted(true)
+        setSelectionError('')
+
+        // Try to persist selections to backend so admin sees them
+        try {
+          const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+
+          // Ensure we have a student id; fetch students list if necessary
+          let studentId = student.id
+          if (!studentId) {
+            const listResp = await fetch(`${API_BASE}/students`)
+            if (listResp.ok) {
+              const list = await listResp.json()
+              const found = list.find(s => s.indexNumber === student.indexNumber)
+              studentId = found?.id
+            }
+          }
+
+          if (studentId) {
+            const prefResp = await fetch(`${API_BASE}/students/${studentId}/preferences`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ catA, catB, catC })
+            })
+
+            if (!prefResp.ok) {
+              console.warn('Failed to persist preferences to backend')
+            } else {
+              console.log('Preferences saved to backend')
+            }
+          } else {
+            console.warn('Could not determine student id to persist preferences')
+          }
+        } catch (err) {
+          console.warn('Error saving preferences to backend:', err.message)
+        }
+      } catch (err) {
+        setSelectionError('Failed to save selections: ' + err.message)
+      } finally {
+        setSelectionLoading(false)
+      }
+    })()
   }
 
   const handleResetSelections = () => {
@@ -182,22 +218,102 @@ export default function StudentPortalView({ studentInfo }) {
         )}
 
         <div className="student-card">
-          <h2>Your Information</h2>
+          <h2>Your Complete Information</h2>
           {loading ? (
             <p style={{color: '#999'}}>Loading your information...</p>
           ) : (
-            <div className="info-grid">
-              <div className="info-item">
-                <span className="label">Index Number:</span>
-                <span className="value">{displayIndex}</span>
-              </div>
-              <div className="info-item">
-                <span className="label">Full Name:</span>
-                <span className="value">{displayName}</span>
-              </div>
-              <div className="info-item">
-                <span className="label">Email:</span>
-                <span className="value">{displayEmail}</span>
+            <div className="student-complete-info">
+              <div style={{display: 'flex', gap: 24, flexWrap: 'wrap'}}>
+                {/* Photo Section */}
+                <div style={{textAlign: 'center'}}>
+                  <div style={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: '50%',
+                    backgroundColor: '#e0e0e0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    border: '3px solid #2196F3',
+                    marginBottom: 10
+                  }}>
+                    {placementData?.photo ? (
+                      <img src={placementData.photo} alt="Student Photo" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                    ) : (
+                      <div style={{fontSize: 40, color: '#999'}}>📷</div>
+                    )}
+                  </div>
+                  <p style={{color: '#666', fontSize: '12px'}}>Student Photo</p>
+                </div>
+
+                {/* Details Section */}
+                <div style={{flex: 1, minWidth: 250}}>
+                  <div className="info-grid" style={{gridTemplateColumns: '1fr 1fr', gap: 16}}>
+                    <div className="info-item">
+                      <span className="label">Index Number:</span>
+                      <span className="value">{displayIndex}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="label">Full Name:</span>
+                      <span className="value">{displayName}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="label">Email:</span>
+                      <span className="value">{displayEmail}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="label">Gender:</span>
+                      <span className="value">{placementData?.gender || 'Not specified'}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="label">Date of Birth:</span>
+                      <span className="value">
+                        {placementData?.dateOfBirth ? new Date(placementData.dateOfBirth).toLocaleDateString() : 'Not provided'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Guardian Information */}
+                  <div style={{marginTop: 16, paddingTop: 16, borderTop: '1px solid #eee'}}>
+                    <h4 style={{marginBottom: 8, color: '#333'}}>Guardian Information</h4>
+                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16}}>
+                      <div className="info-item">
+                        <span className="label">Guardian Name:</span>
+                        <span className="value">{placementData?.guardianName || 'Not provided'}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="label">Guardian Phone:</span>
+                        <span className="value">{placementData?.guardianPhone || 'Not provided'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Test Scores */}
+                  <div style={{marginTop: 16, paddingTop: 16, borderTop: '1px solid #eee'}}>
+                    <h4 style={{marginBottom: 8, color: '#333'}}>Test Scores</h4>
+                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16}}>
+                      <div className="info-item">
+                        <span className="label">Mathematics:</span>
+                        <span className="value" style={{fontSize: 18, fontWeight: 'bold', color: '#2196F3'}}>
+                          {placementData?.maths !== null && placementData?.maths !== undefined ? placementData.maths : '-'}
+                        </span>
+                      </div>
+                      <div className="info-item">
+                        <span className="label">English:</span>
+                        <span className="value" style={{fontSize: 18, fontWeight: 'bold', color: '#4CAF50'}}>
+                          {placementData?.english !== null && placementData?.english !== undefined ? placementData.english : '-'}
+                        </span>
+                      </div>
+                      <div className="info-item">
+                        <span className="label">Science:</span>
+                        <span className="value" style={{fontSize: 18, fontWeight: 'bold', color: '#FF9800'}}>
+                          {placementData?.science !== null && placementData?.science !== undefined ? placementData.science : '-'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
