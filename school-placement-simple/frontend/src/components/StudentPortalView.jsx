@@ -96,21 +96,29 @@ export default function StudentPortalView({ studentInfo }) {
           return
         }
         
-        const studentToken = localStorage.getItem('studentToken') || sessionStorage.getItem('studentToken')
         const resp = await fetch(`${API_BASE}/students/${studentId}/mocks`, {
+          method: 'GET',
           headers: {
-            'Authorization': `Bearer ${studentToken}`
+            'Content-Type': 'application/json'
           }
         })
+        
+        if (!resp.ok) {
+          console.warn('Mock scores fetch failed with status:', resp.status)
+          setMockScores([])
+          return
+        }
         
         const data = await resp.json()
         if (data.success && data.mocks) {
           setMockScores(data.mocks)
           console.log('✅ Mock scores loaded:', data.mocks.length, 'mocks')
+        } else {
+          setMockScores([])
         }
       } catch (err) {
-        console.error('Error fetching mock scores:', err)
-        // Don't fail silently, but don't block user either
+        console.error('Error fetching mock scores:', err.message)
+        // Don't fail - just show empty mock scores section
         setMockScores([])
       } finally {
         setMocksLoading(false)
