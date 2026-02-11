@@ -118,11 +118,25 @@ app.post('/api/login', async (req, res) => {
     }
     
     // Find student by index number using Prisma
-    const student = await prisma.student.findUnique({
-      where: { indexNumber: indexNumber.trim() }
-    })
+    let student = null
+    try {
+      student = await prisma.student.findUnique({
+        where: { indexNumber: indexNumber.trim() }
+      })
+    } catch (dbErr) {
+      console.error('[LOGIN] Database error:', dbErr.message)
+      // If migrations are still running, provide helpful message
+      if (migrationsRunning) {
+        return res.status(503).json({ 
+          success: false, 
+          message: 'System initializing (migrations running). Please try again in 30 seconds.'
+        })
+      }
+      throw dbErr
+    }
     
     if (!student) {
+      console.log('[LOGIN] Student not found:', indexNumber)
       return res.status(401).json({ success: false, message: 'Invalid index number' })
     }
     

@@ -64,7 +64,7 @@ export default function Registration() {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     
     // Validate index number is exactly 12 digits
@@ -94,12 +94,27 @@ export default function Registration() {
       dateOfBirth: formData.dateOfBirth,
       guardianName: formData.guardianName,
       guardianPhone: formData.guardianPhone,
-      status: 'pending',  // Changed from 'registered' to match backend enum
+      status: 'pending',
       placedSchool: 'Not yet placed',
       registeredAt: new Date().toISOString()
     }
     existingStudents.push(newStudent)
     localStorage.setItem('registeredStudents', JSON.stringify(existingStudents))
+    
+    // Also register in backend database immediately
+    try {
+      const API_BASE = import.meta.env.VITE_API_BASE || 'https://backend-seven-ashen-18.vercel.app/api'
+      console.log('[Registration] Registering student in backend:', newStudent.indexNumber)
+      await fetch(`${API_BASE}/students`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStudent)
+      })
+      console.log('[Registration] Backend registration successful')
+    } catch (err) {
+      console.warn('[Registration] Backend registration failed:', err.message)
+      // Continue anyway - data is in localStorage and will sync
+    }
     
     // Trigger real-time sync
     syncService.notifyDataChange('registeredStudents')
