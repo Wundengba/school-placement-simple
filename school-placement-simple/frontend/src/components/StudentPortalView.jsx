@@ -8,6 +8,12 @@ export default function StudentPortalView({ studentInfo }) {
   const [placementData, setPlacementData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [studentDataError, setStudentDataError] = useState(null)
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [editData, setEditData] = useState({})
+  const [editPhoto, setEditPhoto] = useState(null)
+  const [editPhotoPreview, setEditPhotoPreview] = useState(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [editError, setEditError] = useState('')
   
   // School selection state
   const mockSchools = useMemo(() => schools, [])
@@ -70,6 +76,86 @@ export default function StudentPortalView({ studentInfo }) {
     
     fetchPlacementData()
   }, [student])
+
+  const startEdit = () => {
+    setEditData({
+      fullName: student?.fullName || '',
+      email: student?.email || '',
+      gender: placementData?.gender || '',
+      dateOfBirth: placementData?.dateOfBirth ? new Date(placementData.dateOfBirth).toISOString().split('T')[0] : '',
+      guardianName: placementData?.guardianName || '',
+      guardianPhone: placementData?.guardianPhone || ''
+    })
+    setEditPhotoPreview(placementData?.photo || null)
+    setIsEditMode(true)
+    setEditError('')
+  }
+
+  const cancelEdit = () => {
+    setIsEditMode(false)
+    setEditData({})
+    setEditPhoto(null)
+    setEditPhotoPreview(null)
+    setEditError('')
+  }
+
+  const handlePhotoSelect = (e) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const base64String = event.target?.result
+        setEditPhoto(base64String)
+        setEditPhotoPreview(base64String)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const saveProfile = async () => {
+    setIsSaving(true)
+    setEditError('')
+    try {
+      const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+      
+      // Update student info with new data
+      const updatedStudent = {
+        ...student,
+        ...editData,
+        photo: editPhoto || placementData?.photo
+      }
+
+      // Update backend
+      const resp = await fetch(`${API_BASE}/students/${student.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editData)
+      })
+
+      if (!resp.ok) {
+        throw new Error('Failed to save profile changes')
+      }
+
+      // Update localStorage
+      localStorage.setItem('studentInfo', JSON.stringify(updatedStudent))
+      
+      // Update placement data display
+      setPlacementData({
+        ...placementData,
+        ...editData,
+        photo: editPhoto || placementData?.photo
+      })
+
+      setIsEditMode(false)
+      setEditData({})
+      setEditPhoto(null)
+      setEditPhotoPreview(null)
+    } catch (err) {
+      setEditError('Failed to save changes: ' + err.message)
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('authToken')
@@ -218,9 +304,170 @@ export default function StudentPortalView({ studentInfo }) {
         )}
 
         <div className="student-card">
-          <h2>Your Complete Information</h2>
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16}}>
+            <h2>Your Complete Information</h2>
+            {!isEditMode && (
+              <button className="btn btn-primary" onClick={startEdit} style={{padding: '8px 16px'}}>
+                ✏️ Edit Profile
+              </button>
+            )}
+          </div>
           {loading ? (
             <p style={{color: '#999'}}>Loading your information...</p>
+          ) : isEditMode ? (
+            <div className="student-edit-form">
+              {editError && (
+                <div style={{
+                  backgroundColor: '#ffebee',
+                  border: '1px solid #f44336',
+                  borderRadius: 8,
+                  padding: 12,
+                  marginBottom: 16,
+                  color: '#c62828'
+                }}>
+                  {editError}
+                </div>
+              )}
+              
+              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16}}>
+                {/* Photo Upload */}
+                <div style={{gridColumn: '1 / -1'}}>
+                  <label style={{display: 'block', marginBottom: 8, fontWeight: 'bold', color: '#333'}}>
+                    Student Photo
+                  </label>
+                  <div style={{display: 'flex', gap: 16, alignItems: 'flex-start'}}>
+                    <div style={{
+                      width: 120,
+                      height: 120,
+                      borderRadius: '50%',
+                      backgroundColor: '#e0e0e0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                      border: '3px solid #2196F3'
+                    }}>
+                      {editPhotoPreview ? (
+                        <img src={editPhotoPreview} alt="Preview" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                      ) : (
+                        <div style={{fontSize: 40, color: '#999'}}>📷</div>
+                      )}
+                    </div>
+                    <div>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handlePhotoSelect}
+                        style={{marginBottom: 8}}
+                      />
+                      <p style={{fontSize: '12px', color: '#666', margin: 0}}>Upload a new photo (JPG, PNG)</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Full Name */}
+                <div>
+                  <label style={{display: 'block', marginBottom: 4, fontWeight: 'bold', fontSize: 14, color: '#333'}}>
+                    Full Name
+                  </label>
+                  <input 
+                    type="text"
+                    value={editData.fullName}
+                    onChange={(e) => setEditData({...editData, fullName: e.target.value})}
+                    style={{width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ddd', fontSize: 14}}
+                  />
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label style={{display: 'block', marginBottom: 4, fontWeight: 'bold', fontSize: 14, color: '#333'}}>
+                    Email
+                  </label>
+                  <input 
+                    type="email"
+                    value={editData.email}
+                    onChange={(e) => setEditData({...editData, email: e.target.value})}
+                    style={{width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ddd', fontSize: 14}}
+                  />
+                </div>
+
+                {/* Gender */}
+                <div>
+                  <label style={{display: 'block', marginBottom: 4, fontWeight: 'bold', fontSize: 14, color: '#333'}}>
+                    Gender
+                  </label>
+                  <select 
+                    value={editData.gender}
+                    onChange={(e) => setEditData({...editData, gender: e.target.value})}
+                    style={{width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ddd', fontSize: 14}}
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                {/* Date of Birth */}
+                <div>
+                  <label style={{display: 'block', marginBottom: 4, fontWeight: 'bold', fontSize: 14, color: '#333'}}>
+                    Date of Birth
+                  </label>
+                  <input 
+                    type="date"
+                    value={editData.dateOfBirth}
+                    onChange={(e) => setEditData({...editData, dateOfBirth: e.target.value})}
+                    style={{width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ddd', fontSize: 14}}
+                  />
+                </div>
+
+                {/* Guardian Name */}
+                <div>
+                  <label style={{display: 'block', marginBottom: 4, fontWeight: 'bold', fontSize: 14, color: '#333'}}>
+                    Guardian Name
+                  </label>
+                  <input 
+                    type="text"
+                    value={editData.guardianName}
+                    onChange={(e) => setEditData({...editData, guardianName: e.target.value})}
+                    style={{width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ddd', fontSize: 14}}
+                  />
+                </div>
+
+                {/* Guardian Phone */}
+                <div>
+                  <label style={{display: 'block', marginBottom: 4, fontWeight: 'bold', fontSize: 14, color: '#333'}}>
+                    Guardian Phone
+                  </label>
+                  <input 
+                    type="tel"
+                    value={editData.guardianPhone}
+                    onChange={(e) => setEditData({...editData, guardianPhone: e.target.value})}
+                    style={{width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ddd', fontSize: 14}}
+                  />
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 16}}>
+                <button 
+                  className="btn" 
+                  onClick={cancelEdit}
+                  style={{padding: '10px 20px', backgroundColor: '#f5f5f5', color: '#333', border: '1px solid #ddd'}}
+                  disabled={isSaving}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={saveProfile}
+                  style={{padding: '10px 20px'}}
+                  disabled={isSaving}
+                >
+                  {isSaving ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </div>
           ) : (
             <div className="student-complete-info">
               <div style={{display: 'flex', gap: 24, flexWrap: 'wrap'}}>
