@@ -39,12 +39,15 @@ export default function Dashboard({ user }) {
           return
       }
 
+      // Determine correct token (admin uses adminToken, students use authToken)
+      const token = localStorage.getItem('adminToken') || localStorage.getItem('authToken')
+
       // Try relative API base first (works when proxied). If it returns 404,
       // retry against explicit backend fallback (useful on Vercel where frontend and backend are separate).
       let response = await fetch(`${API_BASE}${endpoint}?${params}`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': token ? `Bearer ${token}` : ''
         }
       })
 
@@ -55,7 +58,7 @@ export default function Dashboard({ user }) {
         response = await fetch(fallbackUrl, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            'Authorization': token ? `Bearer ${token}` : ''
           }
         })
       }
