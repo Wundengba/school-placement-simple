@@ -351,6 +351,12 @@ export default function Students() {
                     <label>Full Name:</label>
                     <p>{selectedStudent.fullName}</p>
                   </div>
+                  {selectedStudent.email && (
+                    <div className="detail-group">
+                      <label>Email:</label>
+                      <p>{selectedStudent.email}</p>
+                    </div>
+                  )}
                   <div className="detail-group">
                     <label>Status:</label>
                     <p><span className={`badge badge-${selectedStudent.status}`}>{selectedStudent.status.toUpperCase()}</span></p>
