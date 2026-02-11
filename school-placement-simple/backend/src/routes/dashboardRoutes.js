@@ -1,9 +1,5 @@
 import express from 'express'
-import Student from '../models/Student.js'
-import School from '../models/School.js'
-import Placement from '../models/Placement.js'
-import User from '../models/User.js'
-import PlacementHistory from '../models/PlacementHistory.js'
+import prisma from '../config/prisma.js'
 import { getActivityLogs } from '../utils/auditLogger.js'
 
 const router = express.Router()
@@ -17,25 +13,30 @@ router.get('/admin', async (req, res) => {
     if (req.query.role !== 'admin') {
       return res.status(403).json({ success: false, message: 'Admin access required' })
     }
-
-    const [totalStudents, totalSchools, totalPlacements, placedStudents, pendingPlacements] = await Promise.all([
-      Student.countDocuments(),
-      School.countDocuments(),
-      Placement.countDocuments(),
-      Placement.countDocuments({ status: 'accepted' }),
-      Placement.countDocuments({ status: 'pending' })
+    // Use Prisma counts (Postgres)
+    const [totalStudents, totalSchools, totalPlacements, placedStudents, pendingPlacements, rejectedPlacements] = await Promise.all([
+      prisma.student.count(),
+      prisma.school.count(),
+      prisma.placement.count(),
+      prisma.placement.count({ where: { status: 'accepted' } }),
+      prisma.placement.count({ where: { status: 'pending' } }),
+      prisma.placement.count({ where: { status: 'rejected' } })
     ])
 
-    const placementStats = await Placement.aggregate([
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 }
-        }
-      }
-    ])
+    const placementStats = [
+      { status: 'accepted', count: placedStudents },
+      { status: 'pending', count: pendingPlacements },
+      { status: 'rejected', count: rejectedPlacements }
+    ]
 
-    const recentActivity = await getActivityLogs({}, 10, 1)
+    // Recent activity uses Mongo-based ActivityLog; skip if not available
+    let recentActivity = []
+    try {
+      const logsResult = await getActivityLogs({}, 10, 1)
+      recentActivity = logsResult.logs || []
+    } catch (e) {
+      recentActivity = []
+    }
 
     res.json({
       success: true,
@@ -45,10 +46,10 @@ router.get('/admin', async (req, res) => {
         totalPlacements,
         placedStudents,
         pendingPlacements,
-        placementRate: totalPlacements > 0 ? ((placedStudents / totalStudents) * 100).toFixed(2) + '%' : '0%'
+        placementRate: totalStudents > 0 ? ((placedStudents / totalStudents) * 100).toFixed(2) + '%' : '0%'
       },
       placementStats,
-      recentActivity: recentActivity.logs
+      recentActivity
     })
   } catch (err) {
     console.error('[DASHBOARD] Admin error:', err.message)
