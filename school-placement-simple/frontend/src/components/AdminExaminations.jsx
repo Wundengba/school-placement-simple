@@ -12,17 +12,16 @@ export default function AdminExaminations() {
   ]
 
   const subjectOptions = [
+    'English Language',
     'Mathematics',
-    'English',
     'Science',
-    'Literature',
-    'History',
-    'Geography',
-    'Physics',
-    'Chemistry',
-    'Biology',
-    'Economics',
-    'Accounting'
+    'Social Studies',
+    'Computing',
+    'Religious and Moral Educations',
+    'Career Technology',
+    'Creative Arts and Design',
+    'Ghanian Language',
+    'French'
   ]
 
   const [activeTab, setActiveTab] = useState('view') // 'view' or 'create'
@@ -36,7 +35,7 @@ export default function AdminExaminations() {
     title: '',
     description: '',
     examType: examTypes[0].name,
-    subjects: ['Mathematics', 'English', 'Science'],
+    subjects: ['English Language', 'Mathematics', 'Science'],
     totalQuestions: 100,
     duration: 180
   })
@@ -44,7 +43,7 @@ export default function AdminExaminations() {
   const [newMockData, setNewMockData] = useState({
     title: '',
     description: '',
-    subjects: []
+    subjects: ['English Language', 'Mathematics', 'Science']
   })
 
   const [editingMock, setEditingMock] = useState(null)
