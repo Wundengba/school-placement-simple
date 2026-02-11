@@ -14,6 +14,7 @@ export default function StudentPortalView({ studentInfo }) {
   const [editPhotoPreview, setEditPhotoPreview] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
   const [editError, setEditError] = useState('')
+  const [isAdmin, setIsAdmin] = useState(false)
   
   // School selection state
   const mockSchools = useMemo(() => schools, [])
@@ -38,6 +39,11 @@ export default function StudentPortalView({ studentInfo }) {
       setLoading(false)
       return
     }
+    
+    // Check if current user is an admin
+    const adminToken = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken')
+    const adminInfo = localStorage.getItem('adminInfo') || sessionStorage.getItem('adminInfo')
+    setIsAdmin(!!(adminToken && adminInfo))
     
     // Fetch student's placement data and any additional info from backend
     const fetchPlacementData = async () => {
@@ -306,7 +312,7 @@ export default function StudentPortalView({ studentInfo }) {
         <div className="student-card">
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16}}>
             <h2>Your Complete Information</h2>
-            {!isEditMode && (
+            {!isEditMode && isAdmin && (
               <button className="btn btn-primary" onClick={startEdit} style={{padding: '8px 16px'}}>
                 ✏️ Edit Profile
               </button>
