@@ -32,6 +32,7 @@ model Student {
   guardianPhone     String?
   status            String      @default("pending") // 'pending', 'placed', 'rejected'
   placements        Placement[]
+  mockScores        MockScore[]
   deleted           Boolean     @default(false)
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
@@ -107,6 +108,36 @@ model Stream {
   capacity Int
 
   @@index([schoolId])
+}
+
+model Mock {
+  id          String      @id @default(cuid())
+  title       String      // e.g., "Mock Exam 1", "Practice Test January"
+  description String?
+  subjects    MockScore[]
+  createdBy   String?     // admin username
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+model MockScore {
+  id        String   @id @default(cuid())
+  mock      Mock     @relation(fields: [mockId], references: [id], onDelete: Cascade)
+  mockId    String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId String
+  subject   String   // 'Mathematics', 'English', 'Science', 'Literature', 'History', 'Geography', etc.
+  score     Int      @db.SmallInt // 0-100
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([mockId, studentId, subject]) // One score per student per subject per mock
+  @@index([mockId])
+  @@index([studentId])
 }
 
 model Admin {

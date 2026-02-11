@@ -206,3 +206,231 @@ export const deactivateAdmin = async (req, res) => {
     return res.status(500).json({ error: 'Server error' })
   }
 }
+
+// Mock Exam Management Functions
+
+export const createMock = async (req, res) => {
+  try {
+    const { title, description } = req.body
+    const adminUsername = req.admin.username
+
+    if (!title) {
+      return res.status(400).json({ error: 'Title is required' })
+    }
+
+    const mock = await prisma.mock.create({
+      data: {
+        title,
+        description,
+        createdBy: adminUsername,
+        isActive: true
+      }
+    })
+
+    console.log('✅ Mock exam created:', title, 'by', adminUsername)
+
+    return res.status(201).json({
+      success: true,
+      mock
+    })
+  } catch (error) {
+    console.error('[createMock] Error:', error.message)
+    return res.status(500).json({ error: 'Server error creating mock' })
+  }
+}
+
+export const listMocks = async (req, res) => {
+  try {
+    const mocks = await prisma.mock.findMany({
+      include: {
+        subjects: {
+          select: {
+            id: true,
+            subject: true,
+            score: true,
+            studentId: true
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+
+    return res.status(200).json({
+      success: true,
+      mocks
+    })
+  } catch (error) {
+    console.error('[listMocks] Error:', error.message)
+    return res.status(500).json({ error: 'Server error fetching mocks' })
+  }
+}
+
+export const getMockDetails = async (req, res) => {
+  try {
+    const { mockId } = req.params
+
+    const mock = await prisma.mock.findUnique({
+      where: { id: mockId },
+      include: {
+        subjects: {
+          include: {
+            student: {
+              select: {
+                id: true,
+                indexNumber: true,
+                fullName: true
+              }
+            }
+          }
+        }
+      }
+    })
+
+    if (!mock) {
+      return res.status(404).json({ error: 'Mock not found' })
+    }
+
+    return res.status(200).json({
+      success: true,
+      mock
+    })
+  } catch (error) {
+    console.error('[getMockDetails] Error:', error.message)
+    return res.status(500).json({ error: 'Server error fetching mock details' })
+  }
+}
+
+export const updateMock = async (req, res) => {
+  try {
+    const { mockId } = req.params
+    const { title, description, isActive } = req.body
+
+    const mock = await prisma.mock.update({
+      where: { id: mockId },
+      data: {
+        title: title || undefined,
+        description: description || undefined,
+        isActive: isActive !== undefined ? isActive : undefined
+      }
+    })
+
+    console.log('✅ Mock exam updated:', mockId)
+
+    return res.status(200).json({
+      success: true,
+      mock
+    })
+  } catch (error) {
+    console.error('[updateMock] Error:', error.message)
+    return res.status(500).json({ error: 'Server error updating mock' })
+  }
+}
+
+export const deleteMock = async (req, res) => {
+  try {
+    const { mockId } = req.params
+
+    await prisma.mock.delete({
+      where: { id: mockId }
+    })
+
+    console.log('✅ Mock exam deleted:', mockId)
+
+    return res.status(200).json({
+      success: true,
+      message: 'Mock deleted successfully'
+    })
+  } catch (error) {
+    console.error('[deleteMock] Error:', error.message)
+    return res.status(500).json({ error: 'Server error deleting mock' })
+  }
+}
+
+export const assignMockScores = async (req, res) => {
+  try {
+    const { mockId } = req.params
+    const { scores } = req.body // Array of {studentId, subject, score}
+
+    if (!Array.isArray(scores) || scores.length === 0) {
+      return res.status(400).json({ error: 'Scores array is required' })
+    }
+
+    // Verify mock exists
+    const mockExists = await prisma.mock.findUnique({
+      where: { id: mockId }
+    })
+
+    if (!mockExists) {
+      return res.status(404).json({ error: 'Mock not found' })
+    }
+
+    // Create or update mock scores
+    const createdScores = []
+
+    for (const scoreData of scores) {
+      const { studentId, subject, score } = scoreData
+
+      if (!studentId || !subject || score === undefined) {
+        continue
+      }
+
+      const mockScore = await prisma.mockScore.upsert({
+        where: {
+          mockId_studentId_subject: {
+            mockId,
+            studentId,
+            subject
+          }
+        },
+        update: {
+          score
+        },
+        create: {
+          mockId,
+          studentId,
+          subject,
+          score
+        }
+      })
+
+      createdScores.push(mockScore)
+    }
+
+    console.log('✅ Mock scores assigned:', mockId, 'for', createdScores.length, 'scores')
+
+    return res.status(200).json({
+      success: true,
+      scoresCount: createdScores.length,
+      message: `${createdScores.length} scores assigned`
+    })
+  } catch (error) {
+    console.error('[assignMockScores] Error:', error.message)
+    return res.status(500).json({ error: 'Server error assigning mock scores' })
+  }
+}
+
+export const updateMockScore = async (req, res) => {
+  try {
+    const { mockId, scoreId } = req.params
+    const { score } = req.body
+
+    if (score === undefined) {
+      return res.status(400).json({ error: 'Score is required' })
+    }
+
+    const mockScore = await prisma.mockScore.update({
+      where: { id: scoreId },
+      data: { score }
+    })
+
+    console.log('✅ Mock score updated:', scoreId)
+
+    return res.status(200).json({
+      success: true,
+      mockScore
+    })
+  } catch (error) {
+    console.error('[updateMockScore] Error:', error.message)
+    return res.status(500).json({ error: 'Server error updating mock score' })
+  }
+}

@@ -16,6 +16,8 @@ export default function StudentPortalView({ studentInfo }) {
   const [editError, setEditError] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
   const [activeTab, setActiveTab] = useState('profile') // 'profile', 'placement', 'schools', 'selected', 'results'
+  const [mockScores, setMockScores] = useState([])
+  const [mocksLoading, setMocksLoading] = useState(false)
   
   // School selection state
   const mockSchools = useMemo(() => schools, [])
@@ -81,7 +83,42 @@ export default function StudentPortalView({ studentInfo }) {
       setSelectionSubmitted(true)
     }
     
+    // Fetch mock scores for the student
+    const fetchMockScores = async () => {
+      try {
+        setMocksLoading(true)
+        const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+        
+        // Use student ID from login response or extract from student object
+        const studentId = student.id || student.studentId
+        if (!studentId) {
+          console.warn('No student ID available for mock scores fetch')
+          return
+        }
+        
+        const studentToken = localStorage.getItem('studentToken') || sessionStorage.getItem('studentToken')
+        const resp = await fetch(`${API_BASE}/students/${studentId}/mocks`, {
+          headers: {
+            'Authorization': `Bearer ${studentToken}`
+          }
+        })
+        
+        const data = await resp.json()
+        if (data.success && data.mocks) {
+          setMockScores(data.mocks)
+          console.log('✅ Mock scores loaded:', data.mocks.length, 'mocks')
+        }
+      } catch (err) {
+        console.error('Error fetching mock scores:', err)
+        // Don't fail silently, but don't block user either
+        setMockScores([])
+      } finally {
+        setMocksLoading(false)
+      }
+    }
+    
     fetchPlacementData()
+    fetchMockScores()
   }, [student])
 
   const startEdit = () => {
@@ -1205,6 +1242,159 @@ export default function StudentPortalView({ studentInfo }) {
                   <div>C: 65-69 (Acceptable)</div>
                   <div>D: Below 65 (Needs Work)</div>
                 </div>
+              </div>
+
+              {/* Mock Exam Scores Section */}
+              <div style={{marginTop: 32}}>
+                <h3 style={{color: '#333', marginBottom: 20, borderBottom: '2px solid #e0e0e0', paddingBottom: 12}}>
+                  🧪 Mock Exam Results
+                </h3>
+                
+                {mocksLoading ? (
+                  <p style={{color: '#999', textAlign: 'center', padding: 20}}>Loading mock exam results...</p>
+                ) : mockScores && mockScores.length > 0 ? (
+                  <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20}}>
+                    {mockScores.map((mock, mockIdx) => (
+                      <div key={mockIdx} style={{
+                        backgroundColor: '#f9f9f9',
+                        border: '1px solid #ddd',
+                        borderRadius: 10,
+                        padding: 20,
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.08)'
+                      }}>
+                        <div style={{marginBottom: 16, borderBottom: '2px solid #2196F3', paddingBottom: 12}}>
+                          <div style={{fontSize: 16, fontWeight: 'bold', color: '#333', marginBottom: 4}}>
+                            📝 {mock.mockTitle}
+                          </div>
+                          {mock.mockDescription && (
+                            <div style={{fontSize: 13, color: '#666', marginBottom: 4}}>
+                              {mock.mockDescription}
+                            </div>
+                          )}
+                          <div style={{fontSize: 11, color: '#999'}}>
+                            Created: {new Date(mock.createdAt).toLocaleDateString()} by {mock.createdBy || 'Admin'}
+                          </div>
+                        </div>
+
+                        {/* Mock Scores Grid */}
+                        <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12}}>
+                          {mock.scores.map((score, idx) => {
+                            const colorMap = {
+                              'Mathematics': '#2196F3',
+                              'English': '#4CAF50',
+                              'Science': '#FF9800',
+                              'Literature': '#9C27B0',
+                              'History': '#CDDC39',
+                              'Geography': '#00BCD4'
+                            }
+                            const bgColorMap = {
+                              'Mathematics': '#e3f2fd',
+                              'English': '#e8f5e9',
+                              'Science': '#fff3e0',
+                              'Literature': '#f3e5f5',
+                              'History': '#fffde7',
+                              'Geography': '#e0f2f1'
+                            }
+
+                            let gradeLetters = '−'
+                            let performanceLevel = ''
+                            if (score.score !== null && score.score !== undefined) {
+                              if (score.score >= 90) { gradeLetters = 'A+'; performanceLevel = 'Outstanding' }
+                              else if (score.score >= 85) { gradeLetters = 'A'; performanceLevel = 'Excellent' }
+                              else if (score.score >= 80) { gradeLetters = 'B+'; performanceLevel = 'Very Good' }
+                              else if (score.score >= 75) { gradeLetters = 'B'; performanceLevel = 'Good' }
+                              else if (score.score >= 70) { gradeLetters = 'C+'; performanceLevel = 'Satisfactory' }
+                              else if (score.score >= 65) { gradeLetters = 'C'; performanceLevel = 'Acceptable' }
+                              else { gradeLetters = 'D'; performanceLevel = 'Needs Work' }
+                            }
+
+                            return (
+                              <div key={idx} style={{
+                                backgroundColor: bgColorMap[score.subject] || '#f5f5f5',
+                                padding: 12,
+                                borderRadius: 8,
+                                border: `2px solid ${colorMap[score.subject] || '#ddd'}`
+                              }}>
+                                <div style={{fontSize: 12, color: '#666', marginBottom: 6}}>
+                                  {score.subject}
+                                </div>
+                                <div style={{
+                                  fontSize: 28,
+                                  fontWeight: 'bold',
+                                  color: colorMap[score.subject] || '#333',
+                                  marginBottom: 4,
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center'
+                                }}>
+                                  <span>{score.score !== null && score.score !== undefined ? score.score : '−'}</span>
+                                  <span style={{fontSize: 16}}>{gradeLetters}</span>
+                                </div>
+                                {performanceLevel && (
+                                  <div style={{fontSize: 11, color: colorMap[score.subject] || '#999', fontWeight: '600'}}>
+                                    {performanceLevel}
+                                  </div>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+
+                        {/* Mock Summary Stats */}
+                        {mock.scores && mock.scores.length > 0 && (() => {
+                          const validScores = mock.scores.filter(s => s.score !== null && s.score !== undefined).map(s => s.score)
+                          if (validScores.length === 0) return null
+
+                          const avg = Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length)
+                          const highest = Math.max(...validScores)
+                          const lowest = Math.min(...validScores)
+                          const highestSubject = mock.scores.find(s => s.score === highest)
+                          const lowestSubject = mock.scores.find(s => s.score === lowest)
+
+                          return (
+                            <div style={{
+                              marginTop: 12,
+                              paddingTop: 12,
+                              borderTop: '1px solid #ddd',
+                              display: 'grid',
+                              gridTemplateColumns: 'repeat(3, 1fr)',
+                              gap: 8,
+                              fontSize: 11
+                            }}>
+                              <div style={{textAlign: 'center'}}>
+                                <div style={{color: '#666', marginBottom: 4}}>Average</div>
+                                <div style={{fontSize: 16, fontWeight: 'bold', color: '#2196F3'}}>{avg}</div>
+                              </div>
+                              <div style={{textAlign: 'center'}}>
+                                <div style={{color: '#666', marginBottom: 4}}>Highest</div>
+                                <div style={{fontSize: 14, fontWeight: 'bold', color: '#4CAF50'}}>
+                                  {highestSubject?.subject} ({highest})
+                                </div>
+                              </div>
+                              <div style={{textAlign: 'center'}}>
+                                <div style={{color: '#666', marginBottom: 4}}>Lowest</div>
+                                <div style={{fontSize: 14, fontWeight: 'bold', color: '#FF9800'}}>
+                                  {lowestSubject?.subject} ({lowest})
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })()}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{
+                    backgroundColor: '#f5f5f5',
+                    padding: 24,
+                    textAlign: 'center',
+                    borderRadius: 8,
+                    color: '#999'
+                  }}>
+                    <p style={{margin: 0}}>No mock exam results available yet.</p>
+                    <p style={{margin: 0, fontSize: 12}}>Administrators will add mock exams as they become available.</p>
+                  </div>
+                )}
               </div>
             </div>
           )}

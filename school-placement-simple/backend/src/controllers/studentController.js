@@ -202,3 +202,50 @@ export const updatePreferences = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to update preferences', error: error.message })
   }
 }
+
+export const getStudentMockScores = async (req, res) => {
+  try {
+    const { id: studentId } = req.params
+
+    // Get all active mocks with this student's scores
+    const mockScores = await prisma.mock.findMany({
+      where: { isActive: true },
+      include: {
+        subjects: {
+          where: { studentId },
+          select: {
+            id: true,
+            subject: true,
+            score: true,
+            createdAt: true,
+            updatedAt: true
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+
+    // Transform response to group scores by mock
+    const mocks = mockScores
+      .filter(mock => mock.subjects.length > 0) // Only include mocks where student has scores
+      .map(mock => ({
+        mockId: mock.id,
+        mockTitle: mock.title,
+        mockDescription: mock.description,
+        scores: mock.subjects,
+        createdAt: mock.createdAt,
+        createdBy: mock.createdBy
+      }))
+
+    console.log('[Student Controller] ✅ Mock scores fetched for student:', studentId, 'Count:', mocks.length)
+
+    res.json({
+      success: true,
+      mocks,
+      totalMocks: mocks.length
+    })
+  } catch (error) {
+    console.error('[Student Controller] getStudentMockScores error:', error.message)
+    res.status(500).json({ success: false, message: 'Failed to fetch mock scores', error: error.message })
+  }
+}
