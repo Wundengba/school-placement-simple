@@ -1,18 +1,15 @@
 import express from 'express'
 import prisma from '../config/prisma.js'
 import { getActivityLogs } from '../utils/auditLogger.js'
+import { verifyAdminToken } from '../middleware/auth.js'
 
 const router = express.Router()
 
 /**
  * Admin Dashboard - Overall statistics
  */
-router.get('/admin', async (req, res) => {
+router.get('/admin', verifyAdminToken, async (req, res) => {
   try {
-    // Check if user is admin
-    if (req.query.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Admin access required' })
-    }
     // Use Prisma counts (Postgres)
     const [totalStudents, totalSchools, totalPlacements, placedStudents, pendingPlacements, rejectedPlacements] = await Promise.all([
       prisma.student.count(),
@@ -176,13 +173,9 @@ router.get('/placement-history/:placementId', async (req, res) => {
 /**
  * Get activity logs (admin only)
  */
-router.get('/activity-logs', async (req, res) => {
+router.get('/activity-logs', verifyAdminToken, async (req, res) => {
   try {
-    const { role, limit = 50, page = 1 } = req.query
-
-    if (role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Admin access required' })
-    }
+    const { limit = 50, page = 1 } = req.query
 
     const result = await getActivityLogs({}, parseInt(limit), parseInt(page))
 
