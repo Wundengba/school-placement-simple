@@ -1,8 +1,8 @@
 import express from 'express'
-import { 
-  loginAdmin, 
-  registerAdmin, 
-  getAdminProfile, 
+import {
+  loginAdmin,
+  registerAdmin,
+  getAdminProfile,
   updateAdminProfile,
   listAdmins,
   deactivateAdmin,

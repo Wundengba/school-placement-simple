@@ -9,7 +9,7 @@ import {
   deleteStudent,
   getStudentMockScores
 } from '../controllers/studentController.js'
-import { verifyToken } from '../middleware/auth.js'
+import { verifyAdminToken } from '../middleware/auth.js'
 
 const router = express.Router()
 
@@ -21,7 +21,7 @@ router.put('/:id', updateStudent)
 router.post('/:id/preferences', updatePreferences)
 router.delete('/:id', deleteStudent)
 
-// Mock scores route (protected)
-router.get('/:id/mocks', verifyToken, getStudentMockScores)
+// Mock scores route (no auth needed for now)
+router.get('/:id/mocks', getStudentMockScores)
 
 export default router

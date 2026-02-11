@@ -227,12 +227,12 @@ export const getStudentMockScores = async (req, res) => {
 
     // Transform response to group scores by mock
     const mocks = mockScores
-      .filter(mock => mock.subjects.length > 0) // Only include mocks where student has scores
+      .filter(mock => mock.subjects && mock.subjects.length > 0) // Only include mocks where student has scores
       .map(mock => ({
         mockId: mock.id,
         mockTitle: mock.title,
         mockDescription: mock.description,
-        scores: mock.subjects,
+        scores: mock.subjects || [],
         createdAt: mock.createdAt,
         createdBy: mock.createdBy
       }))
