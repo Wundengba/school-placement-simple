@@ -15,6 +15,7 @@ export default function StudentPortalView({ studentInfo }) {
   const [isSaving, setIsSaving] = useState(false)
   const [editError, setEditError] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
+  const [activeTab, setActiveTab] = useState('profile') // 'profile', 'placement', 'schools'
   
   // School selection state
   const mockSchools = useMemo(() => schools, [])
@@ -295,6 +296,64 @@ export default function StudentPortalView({ studentInfo }) {
         </div>
       </header>
 
+      {/* Tab Navigation */}
+      <div style={{
+        backgroundColor: '#f5f5f5',
+        borderBottom: '2px solid #2196F3',
+        display: 'flex',
+        gap: 0,
+        padding: '0 20px'
+      }}>
+        <button
+          onClick={() => setActiveTab('profile')}
+          style={{
+            padding: '14px 24px',
+            backgroundColor: activeTab === 'profile' ? '#2196F3' : 'transparent',
+            color: activeTab === 'profile' ? 'white' : '#333',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: activeTab === 'profile' ? 'bold' : 'normal',
+            borderRadius: '4px 4px 0 0',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          👤 Profile
+        </button>
+        <button
+          onClick={() => setActiveTab('placement')}
+          style={{
+            padding: '14px 24px',
+            backgroundColor: activeTab === 'placement' ? '#2196F3' : 'transparent',
+            color: activeTab === 'placement' ? 'white' : '#333',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: activeTab === 'placement' ? 'bold' : 'normal',
+            borderRadius: '4px 4px 0 0',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          🎓 Placement Status
+        </button>
+        <button
+          onClick={() => setActiveTab('schools')}
+          style={{
+            padding: '14px 24px',
+            backgroundColor: activeTab === 'schools' ? '#2196F3' : 'transparent',
+            color: activeTab === 'schools' ? 'white' : '#333',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: activeTab === 'schools' ? 'bold' : 'normal',
+            borderRadius: '4px 4px 0 0',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          🏫 School Selection
+        </button>
+      </div>
+
       <main className="student-main">
         {studentDataError && (
           <div style={{
@@ -309,6 +368,8 @@ export default function StudentPortalView({ studentInfo }) {
           </div>
         )}
 
+        {/* PROFILE TAB */}
+        {activeTab === 'profile' && (
         <div className="student-card">
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16}}>
             <h2>Your Complete Information</h2>
@@ -571,7 +632,10 @@ export default function StudentPortalView({ studentInfo }) {
             </div>
           )}
         </div>
+        )}
 
+        {/* PLACEMENT STATUS TAB */}
+        {activeTab === 'placement' && (
         <div className="student-card">
           <h2>Placement Status</h2>
           {loading ? (
@@ -595,7 +659,10 @@ export default function StudentPortalView({ studentInfo }) {
             <p>No placement data available</p>
           )}
         </div>
+        )}
 
+        {/* SCHOOL SELECTION TAB */}
+        {activeTab === 'schools' && (
         <div className="student-card">
           <h2><IoSchool style={{marginRight: 8}} /> School Selection</h2>
           <p style={{color: '#666', marginBottom: 16}}>Select your preferred schools: 1 Category A, 2 Category B, 4 Category C (must be unique)</p>
@@ -707,6 +774,7 @@ export default function StudentPortalView({ studentInfo }) {
             </div>
           </form>
         </div>
+        )}
 
         <div className="student-card">
           <h3>Important Notes</h3>
