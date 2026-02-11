@@ -4,6 +4,16 @@ import { IoCloudUpload } from 'react-icons/io5'
 import syncService from '../services/syncService'
 
 export default function TestScores() {
+  const examTypes = [
+    'Mock Exam',
+    'Diagnostic Test',
+    'Mid-Term Exam',
+    'Final Exam',
+    'Pre-Placement Test',
+    'Aptitude Test'
+  ]
+
+  const [selectedExamType, setSelectedExamType] = useState('')
   // Mock students for lookup (would normally come from backend)
   const mockStudents = [
     { id: 1, indexNumber: 'STU001', fullName: 'John Doe' },
@@ -179,6 +189,10 @@ export default function TestScores() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (!selectedExamType) {
+      alert('Please select an Examination Type before saving scores')
+      return
+    }
     if (!form.indexNumber || !form.fullName) {
       alert('Please provide index number and verify full name')
       return
@@ -199,6 +213,7 @@ export default function TestScores() {
     const avg = calculateAverage(form)
     const newEntry = {
       id: Date.now(),
+      examType: selectedExamType,
       indexNumber: form.indexNumber,
       fullName: form.fullName,
       ...subjectKeys.reduce((acc,k) => ({ ...acc, [k]: Number(form[k]) }), {}),
@@ -305,6 +320,13 @@ export default function TestScores() {
       <h2>Test Scores Management</h2>
 
       <div className="testscores-header">
+        <div style={{ marginRight: 12 }}>
+          <label style={{ fontSize: 13, fontWeight: 600, marginRight: 6 }}>Examination Type</label>
+          <select value={selectedExamType} onChange={(e) => setSelectedExamType(e.target.value)} style={{ padding: '6px 8px', borderRadius: 6 }}>
+            <option value="">-- Select examination type --</option>
+            {examTypes.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+        </div>
         <div className="upload-section">
           <label htmlFor="csv-upload" className="btn btn-success">
             <IoCloudUpload className="app-icon" /> Upload CSV
@@ -329,6 +351,12 @@ export default function TestScores() {
           <option value="low">Low Performers (-60)</option>
         </select>
       </div>
+
+      {!selectedExamType && (
+        <div style={{ padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 8, marginBottom: 12 }}>
+          <strong>Note:</strong> Please select an <em>Examination Type</em> before entering test scores.
+        </div>
+      )}
 
       <form className="scores-entry" onSubmit={handleSubmit}>
         <div className="entry-row">
@@ -358,13 +386,14 @@ export default function TestScores() {
                 max="100"
                 value={form[key]}
                 onChange={(e) => handleScoreChange(key, e.target.value)}
+                disabled={!selectedExamType}
                 placeholder="0"
               />
             </div>
           ))}
         </div>
 
-        <button type="submit" className="btn btn-primary">Save Scores</button>
+        <button type="submit" className="btn btn-primary" disabled={!selectedExamType}>Save Scores</button>
       </form>
 
       <div className="scores-table">
