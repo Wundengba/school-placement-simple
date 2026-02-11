@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm install && node scripts/migrateDb.js",
+  "buildCommand": "npm install && npx prisma generate && node scripts/migrateDirect.js",
   "builds": [
     {
       "src": "src/index.js",
