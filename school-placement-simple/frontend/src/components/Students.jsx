@@ -405,18 +405,14 @@ export default function Students() {
                       )}
                     </p>
                   </div>
-                  {selectedStudent.gender && (
-                    <div className="detail-group">
-                      <label>Gender:</label>
-                      <p>{selectedStudent.gender}</p>
-                    </div>
-                  )}
-                  {selectedStudent.dateOfBirth && (
-                    <div className="detail-group">
-                      <label>Date of Birth:</label>
-                      <p>{selectedStudent.dateOfBirth}</p>
-                    </div>
-                  )}
+                  <div className="detail-group">
+                    <label>Gender:</label>
+                    <p>{selectedStudent.gender || 'Not provided'}</p>
+                  </div>
+                  <div className="detail-group">
+                    <label>Date of Birth:</label>
+                    <p>{selectedStudent.dateOfBirth ? new Date(selectedStudent.dateOfBirth).toLocaleDateString() : 'Not provided'}</p>
+                  </div>
                   {selectedStudent.guardianName && (
                     <div className="detail-group">
                       <label>Guardian Name:</label>
