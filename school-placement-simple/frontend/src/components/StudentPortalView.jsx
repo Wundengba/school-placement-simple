@@ -634,31 +634,6 @@ export default function StudentPortalView({ studentInfo }) {
                       </div>
                     </div>
                   </div>
-
-                  {/* Test Scores */}
-                  <div style={{marginTop: 16, paddingTop: 16, borderTop: '1px solid #eee'}}>
-                    <h4 style={{marginBottom: 8, color: '#333'}}>Test Scores</h4>
-                    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16}}>
-                      <div className="info-item">
-                        <span className="label">Mathematics:</span>
-                        <span className="value" style={{fontSize: 18, fontWeight: 'bold', color: '#2196F3'}}>
-                          {placementData?.maths !== null && placementData?.maths !== undefined ? placementData.maths : '-'}
-                        </span>
-                      </div>
-                      <div className="info-item">
-                        <span className="label">English:</span>
-                        <span className="value" style={{fontSize: 18, fontWeight: 'bold', color: '#4CAF50'}}>
-                          {placementData?.english !== null && placementData?.english !== undefined ? placementData.english : '-'}
-                        </span>
-                      </div>
-                      <div className="info-item">
-                        <span className="label">Science:</span>
-                        <span className="value" style={{fontSize: 18, fontWeight: 'bold', color: '#FF9800'}}>
-                          {placementData?.science !== null && placementData?.science !== undefined ? placementData.science : '-'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -985,14 +960,14 @@ export default function StudentPortalView({ studentInfo }) {
                 </div>
               </div>
 
-              {/* Score Statistics */}
+              {/* Score Statistics and Analytics */}
               <div style={{
                 backgroundColor: '#f5f5f5',
                 borderRadius: 8,
                 padding: 20,
                 marginTop: 24
               }}>
-                <h4 style={{marginTop: 0, marginBottom: 16, color: '#333'}}>Score Summary</h4>
+                <h4 style={{marginTop: 0, marginBottom: 16, color: '#333'}}>📈 Score Analysis</h4>
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 16}}>
                   <div>
                     <div style={{fontSize: 12, color: '#666', marginBottom: 4}}>Average Score</div>
@@ -1038,6 +1013,197 @@ export default function StudentPortalView({ studentInfo }) {
                       }
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Performance Level Badge */}
+              <div style={{
+                backgroundColor: '#f0f4ff',
+                borderRadius: 8,
+                padding: 20,
+                marginTop: 16,
+                textAlign: 'center',
+                border: '1px solid #e0e7ff'
+              }}>
+                {placementData && (placementData.maths || placementData.english || placementData.science) ? (() => {
+                  const avg = Math.round(((placementData.maths || 0) + (placementData.english || 0) + (placementData.science || 0)) / 3)
+                  let level = 'N/A', badge = '−', color = '#999', bgColor = '#f0f0f0'
+                  
+                  if (avg >= 90) { level = 'Outstanding'; badge = '⭐'; color = '#fbc02d'; bgColor = '#fffde7' }
+                  else if (avg >= 80) { level = 'Excellent'; badge = '🎯'; color = '#2196F3'; bgColor = '#e3f2fd' }
+                  else if (avg >= 70) { level = 'Good'; badge = '👍'; color = '#4CAF50'; bgColor = '#e8f5e9' }
+                  else if (avg >= 60) { level = 'Satisfactory'; badge = '✓'; color = '#FF9800'; bgColor = '#fff3e0' }
+                  else { level = 'Needs Improvement'; badge = '→'; color = '#f44336'; bgColor = '#ffebee' }
+                  
+                  return (
+                    <div style={{color: color}}>
+                      <div style={{fontSize: 32, marginBottom: 8}}>{badge}</div>
+                      <div style={{fontSize: 20, fontWeight: 'bold', marginBottom: 4}}>Performance Level</div>
+                      <div style={{fontSize: 18, color: color}}>{level}</div>
+                    </div>
+                  )
+                })() : <div style={{color: '#999'}}>No scores available</div>}
+              </div>
+
+              {/* Grade Scale Interpretation */}
+              <div style={{
+                backgroundColor: '#fff8f0',
+                borderRadius: 8,
+                padding: 20,
+                marginTop: 16,
+                border: '1px solid #ffe0b2'
+              }}>
+                <h4 style={{marginTop: 0, marginBottom: 12, color: '#333'}}>📝 Subject Grades</h4>
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12}}>
+                  {/* Mathematics Grade */}
+                  <div style={{
+                    backgroundColor: '#e3f2fd',
+                    padding: 12,
+                    borderRadius: 6,
+                    textAlign: 'center'
+                  }}>
+                    <div style={{fontSize: 12, color: '#666', marginBottom: 6}}>Mathematics</div>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                      <div style={{fontSize: 24, fontWeight: 'bold', color: '#2196F3'}}>
+                        {placementData?.maths ? (() => {
+                          const score = placementData.maths
+                          if (score >= 90) return 'A+'; if (score >= 85) return 'A'; if (score >= 80) return 'B+'; 
+                          if (score >= 75) return 'B'; if (score >= 70) return 'C+'; if (score >= 65) return 'C';
+                          return 'D'
+                        })() : '-'}
+                      </div>
+                      <div style={{fontSize: 10, color: '#999', maxWidth: '40%'}}>
+                        {placementData?.maths ? (() => {
+                          if (placementData.maths >= 80) return '✓ Strong'; 
+                          if (placementData.maths >= 60) return '→ Average';
+                          return '⚠ Weak'
+                        })() : ''}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* English Grade */}
+                  <div style={{
+                    backgroundColor: '#e8f5e9',
+                    padding: 12,
+                    borderRadius: 6,
+                    textAlign: 'center'
+                  }}>
+                    <div style={{fontSize: 12, color: '#666', marginBottom: 6}}>English</div>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                      <div style={{fontSize: 24, fontWeight: 'bold', color: '#4CAF50'}}>
+                        {placementData?.english ? (() => {
+                          const score = placementData.english
+                          if (score >= 90) return 'A+'; if (score >= 85) return 'A'; if (score >= 80) return 'B+'; 
+                          if (score >= 75) return 'B'; if (score >= 70) return 'C+'; if (score >= 65) return 'C';
+                          return 'D'
+                        })() : '-'}
+                      </div>
+                      <div style={{fontSize: 10, color: '#999', maxWidth: '40%'}}>
+                        {placementData?.english ? (() => {
+                          if (placementData.english >= 80) return '✓ Strong'; 
+                          if (placementData.english >= 60) return '→ Average';
+                          return '⚠ Weak'
+                        })() : ''}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Science Grade */}
+                  <div style={{
+                    backgroundColor: '#fff3e0',
+                    padding: 12,
+                    borderRadius: 6,
+                    textAlign: 'center'
+                  }}>
+                    <div style={{fontSize: 12, color: '#666', marginBottom: 6}}>Science</div>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                      <div style={{fontSize: 24, fontWeight: 'bold', color: '#FF9800'}}>
+                        {placementData?.science ? (() => {
+                          const score = placementData.science
+                          if (score >= 90) return 'A+'; if (score >= 85) return 'A'; if (score >= 80) return 'B+'; 
+                          if (score >= 75) return 'B'; if (score >= 70) return 'C+'; if (score >= 65) return 'C';
+                          return 'D'
+                        })() : '-'}
+                      </div>
+                      <div style={{fontSize: 10, color: '#999', maxWidth: '40%'}}>
+                        {placementData?.science ? (() => {
+                          if (placementData.science >= 80) return '✓ Strong'; 
+                          if (placementData.science >= 60) return '→ Average';
+                          return '⚠ Weak'
+                        })() : ''}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Performance Strength Analysis */}
+              <div style={{
+                backgroundColor: '#f3e5f5',
+                borderRadius: 8,
+                padding: 20,
+                marginTop: 16,
+                border: '1px solid #e1bee7'
+              }}>
+                <h4 style={{marginTop: 0, marginBottom: 12, color: '#333'}}>💪 Strength Analysis</h4>
+                {placementData && (placementData.maths || placementData.english || placementData.science) ? (() => {
+                  const scores = [
+                    { subject: 'Mathematics', score: placementData.maths || 0, color: '#2196F3' },
+                    { subject: 'English', score: placementData.english || 0, color: '#4CAF50' },
+                    { subject: 'Science', score: placementData.science || 0, color: '#FF9800' }
+                  ]
+                  const avgScore = Math.round((scores[0].score + scores[1].score + scores[2].score) / 3)
+                  
+                  return (
+                    <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12}}>
+                      {scores.map((item, idx) => {
+                        const diff = item.score - avgScore
+                        const status = diff > 5 ? 'Strength' : diff < -5 ? 'Area to Improve' : 'Balanced'
+                        const icon = diff > 5 ? '⬆️' : diff < -5 ? '⬇️' : '→'
+                        const bgColor = diff > 5 ? '#e8f5e9' : diff < -5 ? '#ffebee' : '#f5f5f5'
+                        
+                        return (
+                          <div key={idx} style={{
+                            backgroundColor: bgColor,
+                            padding: 12,
+                            borderRadius: 6,
+                            borderLeft: `4px solid ${item.color}`
+                          }}>
+                            <div style={{fontSize: 12, color: '#666', marginBottom: 4}}>{item.subject}</div>
+                            <div style={{fontSize: 14, fontWeight: 'bold', color: item.color, marginBottom: 4}}>
+                              {item.score} {icon}
+                            </div>
+                            <div style={{fontSize: 11, color: '#999'}}>{status}</div>
+                            {diff !== 0 && <div style={{fontSize: 10, color: '#666', marginTop: 4}}>
+                              {Math.abs(diff)} pts {diff > 0 ? 'above' : 'below'} avg
+                            </div>}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )
+                })() : <div style={{color: '#999'}}>No scores available for analysis</div>}
+              </div>
+
+              {/* Grade Scale Reference */}
+              <div style={{
+                backgroundColor: '#eceff1',
+                borderRadius: 8,
+                padding: 16,
+                marginTop: 16,
+                fontSize: 12,
+                color: '#555'
+              }}>
+                <div style={{fontWeight: 'bold', marginBottom: 8, color: '#333'}}>📊 Grade Scale Reference</div>
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: 8}}>
+                  <div>A+: 90-100 (Outstanding)</div>
+                  <div>A: 85-89 (Excellent)</div>
+                  <div>B+: 80-84 (Very Good)</div>
+                  <div>B: 75-79 (Good)</div>
+                  <div>C+: 70-74 (Satisfactory)</div>
+                  <div>C: 65-69 (Acceptable)</div>
+                  <div>D: Below 65 (Needs Work)</div>
                 </div>
               </div>
             </div>
