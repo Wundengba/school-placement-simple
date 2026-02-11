@@ -122,7 +122,8 @@ export default function App() {
   
   // Check for admin login
   const adminAuth = localStorage.getItem('adminToken')
-  const adminInfo = localStorage.getItem('adminInfo')
+  const adminInfoJson = localStorage.getItem('adminInfo')
+  const adminInfo = adminInfoJson ? JSON.parse(adminInfoJson) : null
   
   // If no authentication at all, show login selection
   if (!isAuthenticated && !studentAuth && !adminAuth) {
@@ -130,12 +131,12 @@ export default function App() {
   }
 
   // If admin is logged in, show admin dashboard
-  if (adminAuth && !isAuthenticated) {
+  if (adminAuth && adminInfo) {
     return <Dashboard user={adminInfo} />
   }
 
   // If student is logged in (but not admin), show student view
-  if (studentAuth && !isAuthenticated && !adminAuth) {
+  if (studentAuth && !adminAuth) {
     return <StudentPortalView studentInfo={studentInfo} />
   }
 
