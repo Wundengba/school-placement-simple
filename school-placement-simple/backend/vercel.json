@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm install && npx prisma generate && node scripts/migrateDirect.js",
+  "buildCommand": "npm install && npx prisma generate && npx prisma migrate deploy",
   "builds": [
     {
       "src": "src/index.js",
@@ -11,7 +11,11 @@
       }
     }
   ],
-  "env": {},
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "JWT_SECRET": "@jwt_secret",
+    "NODE_ENV": "production"
+  },
   "routes": [
     {
       "src": "/(.*)",

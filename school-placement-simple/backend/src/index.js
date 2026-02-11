@@ -17,10 +17,14 @@ console.log('[INDEX] Routes Imported')
 
 dotenv.config()
 
-// Run migrations synchronously at startup BEFORE accepting requests
-console.log('[INDEX] Ensuring database schema exists (sync)...')
-runMigrationsSync()
-console.log('[INDEX] ✅ Schema sync complete, proceeding with server startup')
+// Log environment check
+console.log('[INDEX] DATABASE_URL set:', !!process.env.DATABASE_URL)
+console.log('[INDEX] NODE_ENV:', process.env.NODE_ENV || 'development')
+
+// Migrations are run during Vercel build phase via buildCommand in vercel.json
+// Commenting out sync migrations at runtime to avoid timeouts on serverless
+// runMigrationsSync()
+// console.log('[INDEX] ✅ Schema sync complete, proceeding with server startup')
 
 const app = express()
 const PORT = process.env.PORT || 5000
