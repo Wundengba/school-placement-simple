@@ -26,6 +26,9 @@ const router = express.Router()
 // Public routes
 router.post('/login', loginAdmin)
 
+// Public exam-types listing (allows students/clients to read available exam types)
+router.get('/public/exam-types', listExamTypes)
+
 // Protected routes (require admin token)
 router.post('/register', verifyAdminToken, registerAdmin)
 router.get('/profile', verifyAdminToken, getAdminProfile)

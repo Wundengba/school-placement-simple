@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react'
 import { IoAdd, IoClose, IoCheckmark, IoTrash, IoEye, IoCreate } from 'react-icons/io5'
 
 export default function AdminExaminations() {
-  const examTypes = [
-    { id: 1, name: 'Mock Exam', description: 'Practice examination for students' },
-    { id: 2, name: 'Diagnostic Test', description: 'Initial assessment test' },
-    { id: 3, name: 'Mid-Term Exam', description: 'Middle of semester exam' },
-    { id: 4, name: 'Final Exam', description: 'End of semester exam' },
-    { id: 5, name: 'Pre-Placement Test', description: 'Test before school placement' },
-    { id: 6, name: 'Aptitude Test', description: 'Student aptitude assessment' }
-  ]
+  const [examTypes, setExamTypes] = useState([])
+  const [examTypesLoading, setExamTypesLoading] = useState(false)
+  const [newExamName, setNewExamName] = useState('')
+  const [newExamDesc, setNewExamDesc] = useState('')
+  const [editingExam, setEditingExam] = useState(null)
+  const [editingExamName, setEditingExamName] = useState('')
+  const [editingExamDesc, setEditingExamDesc] = useState('')
 
   const subjectOptions = [
     'English Language',
@@ -28,13 +27,13 @@ export default function AdminExaminations() {
   const [mocks, setMocks] = useState([])
   const [loading, setLoading] = useState(false)
   const [showCreateForm, setShowCreateForm] = useState(false)
-  const [selectedExamType, setSelectedExamType] = useState(examTypes[0])
+  const [selectedExamType, setSelectedExamType] = useState(null)
   const [expandedMock, setExpandedMock] = useState(null)
 
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    examType: examTypes[0].name,
+    examType: '',
     subjects: ['English Language', 'Mathematics', 'Science'],
     totalQuestions: 100,
     duration: 180
@@ -54,7 +53,101 @@ export default function AdminExaminations() {
 
   useEffect(() => {
     fetchMocks()
+    fetchExamTypes()
   }, [])
+
+  const fetchExamTypes = async () => {
+    try {
+      setExamTypesLoading(true)
+      const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+      const adminToken = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken')
+      const res = await fetch(`${API_BASE}/admin/exam-types`, { headers: { 'Authorization': `Bearer ${adminToken}` } })
+      if (res.ok) {
+        const data = await res.json()
+        setExamTypes(data.examTypes || [])
+        // default selected
+        if ((data.examTypes || []).length > 0 && !selectedExamType) setSelectedExamType((data.examTypes || [])[0])
+      }
+    } catch (err) {
+      console.error('Error fetching exam types:', err)
+    } finally {
+      setExamTypesLoading(false)
+    }
+  }
+
+  const handleCreateExamType = async (e) => {
+    e.preventDefault()
+    if (!newExamName.trim()) return alert('Enter exam type name')
+    try {
+      const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+      const adminToken = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken')
+      const res = await fetch(`${API_BASE}/admin/exam-types`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
+        body: JSON.stringify({ name: newExamName.trim(), description: newExamDesc.trim() })
+      })
+      if (res.ok) {
+        setNewExamName('')
+        setNewExamDesc('')
+        fetchExamTypes()
+        alert('✅ Examination type created')
+      } else {
+        const err = await res.json()
+        alert('❌ ' + (err.error || 'Failed to create'))
+      }
+    } catch (err) {
+      alert('❌ Error: ' + err.message)
+    }
+  }
+
+  const openEditExam = (et) => {
+    setEditingExam(et)
+    setEditingExamName(et.name)
+    setEditingExamDesc(et.description || '')
+  }
+
+  const handleUpdateExam = async (e) => {
+    e.preventDefault()
+    if (!editingExam || !editingExam.id) return
+    try {
+      const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+      const adminToken = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken')
+      const res = await fetch(`${API_BASE}/admin/exam-types/${editingExam.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
+        body: JSON.stringify({ name: editingExamName.trim(), description: editingExamDesc.trim() })
+      })
+      if (res.ok) {
+        setEditingExam(null)
+        setEditingExamName('')
+        setEditingExamDesc('')
+        fetchExamTypes()
+        alert('✅ Updated')
+      } else {
+        const err = await res.json()
+        alert('❌ ' + (err.error || 'Failed to update'))
+      }
+    } catch (err) {
+      alert('❌ Error: ' + err.message)
+    }
+  }
+
+  const handleDeleteExam = async (id) => {
+    if (!confirm('Delete this exam type?')) return
+    try {
+      const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+      const adminToken = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken')
+      const res = await fetch(`${API_BASE}/admin/exam-types/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${adminToken}` } })
+      if (res.ok) {
+        fetchExamTypes()
+        alert('✅ Deleted')
+      } else {
+        alert('❌ Failed to delete')
+      }
+    } catch (err) {
+      alert('❌ Error: ' + err.message)
+    }
+  }
 
   const fetchMocks = async () => {
     try {

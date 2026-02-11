@@ -2,18 +2,13 @@ import { useState, useMemo, useEffect } from 'react'
 import '../styles/TestScores.css'
 import { IoCloudUpload } from 'react-icons/io5'
 import syncService from '../services/syncService'
+import { adminAuthService } from '../services/adminAuthService'
 
 export default function TestScores() {
-  const examTypes = [
-    'Mock Exam',
-    'Diagnostic Test',
-    'Mid-Term Exam',
-    'Final Exam',
-    'Pre-Placement Test',
-    'Aptitude Test'
-  ]
-
+  const [examTypes, setExamTypes] = useState([])
   const [selectedExamType, setSelectedExamType] = useState('')
+  const [mocksList, setMocksList] = useState([])
+  const [selectedMockId, setSelectedMockId] = useState('')
   // Mock students for lookup (would normally come from backend)
   const mockStudents = [
     { id: 1, indexNumber: 'STU001', fullName: 'John Doe' },
@@ -81,6 +76,32 @@ export default function TestScores() {
     return map
   }, [])
 
+  // Fetch exam types from backend public endpoint (or admin-protected one if necessary)
+  useEffect(() => {
+    const fetchExamTypes = async () => {
+      try {
+        const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+        // Try public exam-types first
+        let res = await fetch(`${API_BASE}/admin/public/exam-types`)
+        if (!res.ok) {
+          // fallback: try using admin auth header if available
+          const headers = adminAuthService.getAuthHeader()
+          res = await fetch(`${API_BASE}/admin/exam-types`, { headers })
+        }
+        if (res.ok) {
+          const data = await res.json()
+          setExamTypes((data.examTypes || data.examTypes || []).map(t => t.name || t))
+        } else {
+          // fallback to local list
+          setExamTypes(['Mock Exam','Diagnostic Test','Mid-Term Exam','Final Exam','Pre-Placement Test','Aptitude Test'])
+        }
+      } catch (err) {
+        setExamTypes(['Mock Exam','Diagnostic Test','Mid-Term Exam','Final Exam','Pre-Placement Test','Aptitude Test'])
+      }
+    }
+    fetchExamTypes()
+  }, [])
+
   // Load existing test scores from localStorage on component mount
   useEffect(() => {
     const loadScores = () => {
@@ -130,7 +151,21 @@ export default function TestScores() {
     const val = e.target.value.trim().toUpperCase()
     setForm(prev => ({ ...prev, indexNumber: val }))
     if (val && studentsByIndex[val]) {
-      setForm(prev => ({ ...prev, fullName: studentsByIndex[val].fullName }))
+      const student = studentsByIndex[val]
+      setForm(prev => ({ ...prev, fullName: student.fullName }))
+      // If we have a stored profile or testScore for this student, prefill scores
+      try {
+        const profileKey = student.id ? `studentProfile_${student.id}` : `studentProfile_index_${val}`
+        const profile = JSON.parse(localStorage.getItem(profileKey) || 'null')
+        if (profile && profile.testScore) {
+          const ts = profile.testScore
+          const filled = { indexNumber: ts.indexNumber || val, fullName: ts.fullName || student.fullName }
+          subjectKeys.forEach(k => { filled[k] = ts[k] !== undefined ? ts[k] : '' })
+          setForm(filled)
+        }
+      } catch (err) {
+        // ignore
+      }
       setLookupError('')
     } else if (val) {
       setForm(prev => ({ ...prev, fullName: '' }))
@@ -214,6 +249,7 @@ export default function TestScores() {
     const newEntry = {
       id: Date.now(),
       examType: selectedExamType,
+      mockId: selectedExamType === 'Mock Exam' ? selectedMockId : undefined,
       indexNumber: form.indexNumber,
       fullName: form.fullName,
       ...subjectKeys.reduce((acc,k) => ({ ...acc, [k]: Number(form[k]) }), {}),
@@ -233,6 +269,34 @@ export default function TestScores() {
       allTestScores.push(newEntry)
     }
     localStorage.setItem('testScores', JSON.stringify(allTestScores))
+
+    // If this is a Mock Exam and a mock is selected and admin token present, persist to backend
+    (async () => {
+      try {
+        if (selectedExamType === 'Mock Exam' && selectedMockId) {
+          const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+          const adminToken = adminAuthService.getToken()
+          if (adminToken) {
+            const scoresArray = subjectKeys.map(k => ({ subject: k, score: Number(newEntry[k]) }))
+            const studentId = studentsByIndex[newEntry.indexNumber]?.id
+            if (studentId) {
+              // include studentId on each score object
+              const payload = scoresArray.map(s => ({ studentId, subject: s.subject, score: s.score }))
+              await fetch(`${API_BASE}/admin/mocks/${selectedMockId}/scores`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${adminToken}`
+                },
+                body: JSON.stringify({ scores: payload })
+              })
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to persist mock scores to backend:', err.message)
+      }
+    })()
 
     // Trigger real-time sync
     syncService.notifyDataChange('testScores')

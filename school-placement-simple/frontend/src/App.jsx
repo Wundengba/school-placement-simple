@@ -15,7 +15,7 @@ import SchoolSelection from './components/SchoolSelection'
 import Placement from './components/Placement'
 import Schools from './components/Schools'
 import AdminExaminations from './components/AdminExaminations'
-import { IoHome, IoPersonAdd, IoPeople, IoDocumentText, IoBarChart, IoLocation, IoCheckmarkDone, IoLibrary, IoLogOut, IoClipboard } from 'react-icons/io5'
+import { IoHome, IoPersonAdd, IoPeople, IoDocumentText, IoBarChart, IoLocation, IoCheckmarkDone, IoLibrary, IoLogOut, IoClipboard, IoMenu } from 'react-icons/io5'
 
 function getInitialTab() {
   const saved = localStorage.getItem('activeTab')
@@ -139,10 +139,16 @@ export default function App() {
   }
 
   // Otherwise show the main app
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const toggleSidebar = () => setSidebarOpen(s => !s)
+
   return (
     <div className="app">
       <header className="header">
-        <div className="header-left">
+        <div className="header-left" style={{display:'flex',alignItems:'center',gap:12}}>
+          <button className="btn" onClick={toggleSidebar} aria-label="Toggle sidebar" style={{padding:'8px 10px'}}>
+            <IoMenu />
+          </button>
           <h1>Tankpe School Management & Placement System</h1>
         </div>
         <div style={{display:'flex',gap:8,alignItems:'center',flexWrap:'wrap',justifyContent:'flex-end'}}>
@@ -160,59 +166,38 @@ export default function App() {
         </div>
       </header>
 
-      <nav className="tabs-nav">
-        {/* Dashboard tab intentionally removed */}
-        <button 
-          className={`tab-btn ${activeTab === 'registration' ? 'active' : ''}`}
-          onClick={() => setActiveTab('registration')}
-        >
-          <IoPersonAdd className="app-icon" /> Registration
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'students' ? 'active' : ''}`}
-          onClick={() => setActiveTab('students')}
-        >
-          <IoPeople className="app-icon" /> Students
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'testscores' ? 'active' : ''}`}
-          onClick={() => setActiveTab('testscores')}
-        >
-          <IoDocumentText className="app-icon" /> Test Scores
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'examinations' ? 'active' : ''}`}
-          onClick={() => setActiveTab('examinations')}
-        >
-          <IoClipboard className="app-icon" /> Examinations
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'schoolselection' ? 'active' : ''}`}
-          onClick={() => setActiveTab('schoolselection')}
-        >
-          <IoLocation className="app-icon" /> School Selection
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'placement' ? 'active' : ''}`}
-          onClick={() => setActiveTab('placement')}
-        >
-          <IoCheckmarkDone className="app-icon" /> Placement Results
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'schools' ? 'active' : ''}`}
-          onClick={() => setActiveTab('schools')}
-        >
-          <IoLibrary className="app-icon" /> Schools
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`}
-          onClick={() => setActiveTab('analytics')}
-        >
-          <IoBarChart className="app-icon" /> Analytics
-        </button>
-      </nav>
+      <div className="app-body">
+        <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+          <nav className="sidebar-nav">
+            <button className={`tab-btn ${activeTab === 'registration' ? 'active' : ''}`} onClick={() => { setActiveTab('registration'); if (window.innerWidth < 900) setSidebarOpen(false) }}>
+              <IoPersonAdd className="app-icon" /> Registration
+            </button>
+            <button className={`tab-btn ${activeTab === 'students' ? 'active' : ''}`} onClick={() => { setActiveTab('students'); if (window.innerWidth < 900) setSidebarOpen(false) }}>
+              <IoPeople className="app-icon" /> Students
+            </button>
+            <button className={`tab-btn ${activeTab === 'testscores' ? 'active' : ''}`} onClick={() => { setActiveTab('testscores'); if (window.innerWidth < 900) setSidebarOpen(false) }}>
+              <IoDocumentText className="app-icon" /> Test Scores
+            </button>
+            <button className={`tab-btn ${activeTab === 'examinations' ? 'active' : ''}`} onClick={() => { setActiveTab('examinations'); if (window.innerWidth < 900) setSidebarOpen(false) }}>
+              <IoClipboard className="app-icon" /> Examinations
+            </button>
+            <button className={`tab-btn ${activeTab === 'schoolselection' ? 'active' : ''}`} onClick={() => { setActiveTab('schoolselection'); if (window.innerWidth < 900) setSidebarOpen(false) }}>
+              <IoLocation className="app-icon" /> School Selection
+            </button>
+            <button className={`tab-btn ${activeTab === 'placement' ? 'active' : ''}`} onClick={() => { setActiveTab('placement'); if (window.innerWidth < 900) setSidebarOpen(false) }}>
+              <IoCheckmarkDone className="app-icon" /> Placement Results
+            </button>
+            <button className={`tab-btn ${activeTab === 'schools' ? 'active' : ''}`} onClick={() => { setActiveTab('schools'); if (window.innerWidth < 900) setSidebarOpen(false) }}>
+              <IoLibrary className="app-icon" /> Schools
+            </button>
+            <button className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`} onClick={() => { setActiveTab('analytics'); if (window.innerWidth < 900) setSidebarOpen(false) }}>
+              <IoBarChart className="app-icon" /> Analytics
+            </button>
+          </nav>
+        </aside>
 
-      <main className="tab-content">
+        <main className="tab-content">
+        {/* content rendering */}
         {/* Dashboard removed; keep remaining tabs rendering */}
         {activeTab === 'registration' && <Registration />}
         {activeTab === 'students' && <Students />}

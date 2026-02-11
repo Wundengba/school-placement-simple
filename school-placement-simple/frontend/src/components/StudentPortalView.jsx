@@ -18,6 +18,8 @@ export default function StudentPortalView({ studentInfo }) {
   const [activeTab, setActiveTab] = useState('profile') // 'profile', 'placement', 'schools', 'selected', 'results'
   const [mockScores, setMockScores] = useState([])
   const [mocksLoading, setMocksLoading] = useState(false)
+  const [examTypes, setExamTypes] = useState([])
+  const [examTypesLoading, setExamTypesLoading] = useState(false)
   
   // School selection state
   const mockSchools = useMemo(() => schools, [])
@@ -124,9 +126,29 @@ export default function StudentPortalView({ studentInfo }) {
         setMocksLoading(false)
       }
     }
+    // Fetch exam types (public)
+    const fetchExamTypes = async () => {
+      try {
+        setExamTypesLoading(true)
+        const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
+        const resp = await fetch(`${API_BASE}/admin/public/exam-types`)
+        if (!resp.ok) {
+          setExamTypes([])
+          return
+        }
+        const data = await resp.json()
+        if (data && data.examTypes) setExamTypes(data.examTypes)
+      } catch (err) {
+        console.warn('Failed to load exam types for student portal:', err.message)
+        setExamTypes([])
+      } finally {
+        setExamTypesLoading(false)
+      }
+    }
     
     fetchPlacementData()
     fetchMockScores()
+    fetchExamTypes()
   }, [student])
 
   const startEdit = () => {
@@ -951,6 +973,20 @@ export default function StudentPortalView({ studentInfo }) {
         {activeTab === 'results' && (
         <div className="student-card">
           <h2>📊 Your Results</h2>
+          {/* Exam types available (from admin) */}
+          <div style={{marginBottom: 12}}>
+            {examTypesLoading ? (
+              <div style={{fontSize:12,color:'#666'}}>Loading exam types...</div>
+            ) : examTypes && examTypes.length > 0 ? (
+              <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+                {examTypes.map(et => (
+                  <div key={et.id} style={{padding:'6px 10px',background:'#f5f5f5',borderRadius:6,border:'1px solid #eee',fontSize:12}}>{et.name}</div>
+                ))}
+              </div>
+            ) : (
+              <div style={{fontSize:12,color:'#999'}}>No examination types available yet.</div>
+            )}
+          </div>
           {loading ? (
             <p style={{color: '#999'}}>Loading your test scores...</p>
           ) : (
