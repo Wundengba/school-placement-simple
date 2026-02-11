@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
 import prisma from './config/prisma.js'
+import { runMigrations } from './config/runMigrations.js'
 import authRoutes from './routes/authRoutes.js'
 import studentRoutes from './routes/studentRoutes.js'
 import schoolRoutes from './routes/schoolRoutes.js'
@@ -165,9 +166,20 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal server error', error: err.message })
 })
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-  console.log(`Environment: ${process.env.NODE_ENV}`)
-})
+// Start server with migrations
+(async () => {
+  try {
+    // Run migrations before starting server
+    await runMigrations()
+    
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`)
+      console.log(`Environment: ${process.env.NODE_ENV}`)
+    })
+  } catch (err) {
+    console.error('[STARTUP] ❌ Failed to start server:', err.message)
+    process.exit(1)
+  }
+})()
 
 export default app
