@@ -1,0 +1,15 @@
+{
+  "build": {
+    "env": {
+      "DATABASE_URL": "postgresql://neondb_owner:npg_BloZTI9q5EJd@ep-shy-star-ailugefe-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+      "JWT_SECRET": "your_jwt_secret_key_here_change_in_production",
+      "NODE_ENV": "production"
+    }
+  },
+  "env": {
+    "DATABASE_URL": "postgresql://neondb_owner:npg_BloZTI9q5EJd@ep-shy-star-ailugefe-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+    "JWT_SECRET": "your_jwt_secret_key_here_change_in_production",
+    "NODE_ENV": "production",
+    "PORT": "3000"
+  }
+}
