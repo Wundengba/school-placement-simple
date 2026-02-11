@@ -3,11 +3,15 @@
 
 generator client {
   provider = "prisma-client-js"
+  // Optimize for serverless environments
+  engineType = "library"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // For Vercel serverless: ensure your DATABASE_URL includes ?pgBouncer=true or uses pooler endpoint
+  // Example: postgresql://user:password@pooler.neon.tech/dbname?sslmode=require
 }
 
 model Student {
