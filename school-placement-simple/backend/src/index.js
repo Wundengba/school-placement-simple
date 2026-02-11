@@ -69,6 +69,16 @@ app.get('/api/health', (req, res) => {
   })
 })
 
+// Migration status endpoint
+app.get('/api/migration-status', (req, res) => {
+  res.json({
+    migrationsRunning,
+    migrationError: migrationError ? migrationError.message : null,
+    migrationErrorStack: migrationError ? migrationError.stack : null,
+    timestamp: new Date()
+  })
+})
+
 // DB status endpoint
 app.get('/api/db-status', async (req, res) => {
   try {
