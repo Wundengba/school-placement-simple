@@ -15,7 +15,7 @@ import SchoolSelection from './components/SchoolSelection'
 import Placement from './components/Placement'
 import Schools from './components/Schools'
 import AdminExaminations from './components/AdminExaminations'
-import { IoHome, IoPersonAdd, IoPeople, IoDocumentText, IoBarChart, IoLocation, IoCheckmarkDone, IoLibrary, IoLogOut, IoTestTube } from 'react-icons/io5'
+import { IoHome, IoPersonAdd, IoPeople, IoDocumentText, IoBarChart, IoLocation, IoCheckmarkDone, IoLibrary, IoLogOut, IoClipboard } from 'react-icons/io5'
 
 function getInitialTab() {
   const saved = localStorage.getItem('activeTab')
@@ -184,7 +184,7 @@ export default function App() {
           className={`tab-btn ${activeTab === 'examinations' ? 'active' : ''}`}
           onClick={() => setActiveTab('examinations')}
         >
-          <IoTestTube className="app-icon" /> Examinations
+          <IoClipboard className="app-icon" /> Examinations
         </button>
         <button 
           className={`tab-btn ${activeTab === 'schoolselection' ? 'active' : ''}`}
