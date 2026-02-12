@@ -53,7 +53,7 @@ export default function Schools() {
   }
 
   return (
-    <div className="schools-container">
+    <div className="schools-container container">
       <div className="schools-header">
         <h2><IoSchool className="app-icon" /> Available Schools</h2>
         <p className="schools-summary">
@@ -117,7 +117,8 @@ export default function Schools() {
       </div>
 
       <div className="schools-table-container">
-        <table className="schools-table">
+        <div className="table-responsive">
+          <table className="schools-table">
           <thead>
             <tr>
               <th>ID</th>
@@ -148,7 +149,8 @@ export default function Schools() {
               </tr>
             )}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
     </div>
   )

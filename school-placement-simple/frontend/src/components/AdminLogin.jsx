@@ -61,7 +61,7 @@ export default function AdminLogin({ onBack }) {
 
   return (
     <div className="admin-login-container">
-      <div className="admin-login-card">
+      <div className="admin-login-card container-sm">
         <button className="back-btn" onClick={onBack}>
           <IoArrowBack /> Back
         </button>

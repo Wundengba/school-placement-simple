@@ -1,0 +1,46 @@
+/* Responsive utility classes and grid helpers */
+:root{
+  --gap: 1rem;
+}
+
+.container-sm{max-width: 720px;margin:0 auto;padding:1rem}
+.container{width:100%;max-width:1200px;margin:0 auto;padding:1rem}
+
+.row{display:flex;flex-wrap:wrap;margin:calc(var(--gap) * -0.5)}
+.col{padding:calc(var(--gap) * 0.5);flex:1 1 0%}
+.col-1{flex:0 0 8.333%}
+.col-2{flex:0 0 16.666%}
+.col-3{flex:0 0 25%}
+.col-4{flex:0 0 33.333%}
+.col-6{flex:0 0 50%}
+.col-12{flex:0 0 100%}
+
+/* Make images and iframes scale */
+.img-fluid, img{max-width:100%;height:auto;display:block}
+
+/* Stack columns on small screens */
+@media (max-width: 768px){
+  .row{flex-direction:column}
+  .col, .col-1, .col-2, .col-3, .col-4, .col-6{flex:0 0 100%}
+  .sidebar{position:fixed;left:0;top:0;bottom:0}
+}
+
+/* Responsive table wrapper */
+.table-responsive{width:100%;overflow:auto;-webkit-overflow-scrolling:touch}
+.table-responsive table{width:100%;border-collapse:collapse}
+
+/* Stack form fields on narrow screens */
+.form-row{display:flex;gap:1rem;flex-wrap:wrap}
+.form-row .field{flex:1 1 200px}
+@media (max-width:600px){
+  .form-row{flex-direction:column}
+}
+
+/* Utility spacing */
+.mt-1{margin-top:0.5rem}
+.mt-2{margin-top:1rem}
+.mb-1{margin-bottom:0.5rem}
+.mb-2{margin-bottom:1rem}
+
+/* Ensure modals/full-width elements fit */
+.full-width{width:100%}

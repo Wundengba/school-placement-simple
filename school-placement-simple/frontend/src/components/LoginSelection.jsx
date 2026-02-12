@@ -16,7 +16,7 @@ export default function LoginSelection() {
 
   return (
     <div className="login-selection-container">
-      <div className="login-selection-card">
+      <div className="login-selection-card container-sm">
         <h1>School Placement System</h1>
         <p className="subtitle">Select login type</p>
         

@@ -349,7 +349,7 @@ export default function StudentPortalView({ studentInfo }) {
   const displayEmail = student?.email || 'Not provided'
 
   return (
-    <div className="student-portal">
+    <div className="student-portal container">
       <header className="student-header">
         <div className="student-header-left">
           <h1>Student Placement Portal</h1>

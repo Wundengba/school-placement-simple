@@ -140,3 +140,65 @@
 .student-login-footer {
   margin-top: 1rem;
 }
+
+@media (max-width: 600px) {
+  .student-login-card {
+    padding: 1.5rem;
+    width: 95%;
+  }
+
+  .student-login-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .form-buttons {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-login-modal {
+    padding: 1rem;
+  }
+
+  .student-login-card {
+    padding: 1rem;
+    width: 100%;
+    border-radius: 8px;
+    max-width: none;
+  }
+
+  .student-login-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .student-login-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .student-login-header p {
+    font-size: 0.85rem;
+  }
+
+  .student-login-form {
+    gap: 1rem;
+  }
+
+  .student-login-form .form-group input {
+    padding: 0.7rem;
+    font-size: 16px;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-buttons .btn {
+    padding: 0.8rem;
+  }
+
+  .student-login-footer {
+    font-size: 0.85rem;
+  }
+}

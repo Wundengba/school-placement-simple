@@ -183,7 +183,7 @@ export default function Students() {
   )
 
   return (
-    <div className="students-container">
+    <div className="students-container container">
       <h2>Student Management</h2>
       
       <div className="students-header">
@@ -215,7 +215,8 @@ export default function Students() {
         </div>
       ) : (
         <div className="students-table">
-          <table>
+          <div className="table-responsive">
+            <table>
             <thead>
               <tr>
                 <th>Index Number</th>
@@ -282,7 +283,8 @@ export default function Students() {
                 })
               )}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       )}
 
@@ -339,7 +341,7 @@ export default function Students() {
                         overflow: 'hidden',
                         border: '2px solid #667eea'
                       }}>
-                        <img src={selectedStudent.photo} alt="Student" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                        <img src={selectedStudent.photo} alt="Student" className="img-fluid" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                       </div>
                     </div>
                   )}

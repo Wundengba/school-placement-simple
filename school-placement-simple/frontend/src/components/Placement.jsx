@@ -343,7 +343,7 @@ export default function Placement() {
   }
 
   return (
-    <div className="placement-container">
+    <div className="placement-container container">
       <h2>Placement Results</h2>
       
       <div className="placement-stats">
@@ -409,7 +409,8 @@ export default function Placement() {
         <p>Loading placement data...</p>
       ) : (
         <div className="placement-table">
-          <table>
+          <div className="table-responsive">
+            <table>
             <thead>
               <tr>
                 <th>Index Number</th>
@@ -512,7 +513,8 @@ export default function Placement() {
                 </tr>
               )}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
       )}
 

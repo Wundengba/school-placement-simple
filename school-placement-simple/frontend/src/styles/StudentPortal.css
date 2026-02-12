@@ -215,3 +215,67 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 480px) {
+  .student-header {
+    padding: 1rem;
+  }
+
+  .student-header-left h1 {
+    font-size: 1.3rem;
+  }
+
+  .student-header-left p {
+    font-size: 0.8rem;
+  }
+
+  .student-header-right {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .student-name {
+    font-size: 0.9rem;
+  }
+
+  .btn-logout {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .student-main {
+    padding: 0.75rem;
+  }
+
+  .student-card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+  }
+
+  .student-card h2 {
+    font-size: 1.1rem;
+  }
+
+  .student-card h3 {
+    font-size: 1rem;
+  }
+
+  .info-item .label {
+    font-size: 0.8rem;
+  }
+
+  .info-item .value {
+    font-size: 0.9rem;
+  }
+
+  .status-badge {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .placed-school {
+    padding: 0.75rem;
+  }
+}

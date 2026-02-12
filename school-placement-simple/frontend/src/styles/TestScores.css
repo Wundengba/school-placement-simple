@@ -187,3 +187,85 @@
   font-weight: 500;
   margin-top: 0.2rem;
 }
+
+@media (max-width: 768px) {
+  .testscores-container {
+    padding: 0 0.75rem;
+  }
+
+  .testscores-container h2 {
+    font-size: 1.3rem;
+  }
+
+  .testscores-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .upload-section {
+    width: 100%;
+  }
+
+  .scores-table table {
+    font-size: 0.9rem;
+  }
+
+  .scores-table th,
+  .scores-table td {
+    padding: 0.6rem 0.5rem;
+  }
+
+  .scores-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .testscores-container {
+    padding: 0 0.5rem;
+    margin: 1rem auto;
+  }
+
+  .testscores-container h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .testscores-header {
+    gap: 0.5rem;
+  }
+
+  .scores-table {
+    overflow-x: auto;
+  }
+
+  .scores-table table {
+    font-size: 0.8rem;
+    min-width: 100%;
+  }
+
+  .scores-table th,
+  .scores-table td {
+    padding: 0.5rem 0.4rem;
+  }
+
+  .scores-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .scores-grid .form-group input {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .scores-entry {
+    padding: 0.75rem;
+    margin: 0.75rem 0 1rem 0;
+  }
+}

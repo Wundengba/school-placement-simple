@@ -154,7 +154,7 @@ export default function Registration() {
 
   if (submitted) {
     return (
-      <div className="registration-container">
+      <div className="registration-container container-sm">
         <div className="success-box">
           <h2><IoCheckmarkCircle className="app-icon" /> Registration Successful!</h2>
           <p>Your registration has been submitted successfully.</p>
@@ -165,7 +165,7 @@ export default function Registration() {
   }
 
   return (
-    <div className="registration-container">
+    <div className="registration-container container-sm">
       <h2>Student Registration</h2>
       
       <form onSubmit={handleSubmit} className="registration-form">
@@ -173,7 +173,7 @@ export default function Registration() {
           <h3>Personal Information</h3>
           
           <div className="form-row">
-            <div className="form-group">
+            <div className="form-group field">
               <label>Full Name *</label>
               <input
                 type="text"
@@ -184,7 +184,7 @@ export default function Registration() {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="form-group field">
               <label>Index Number * (12 digits)</label>
               <input
                 type="text"
@@ -202,7 +202,7 @@ export default function Registration() {
           </div>
 
           <div className="form-row">
-            <div className="form-group">
+            <div className="form-group field">
               <label>Gender *</label>
               <select
                 name="gender"
@@ -215,7 +215,7 @@ export default function Registration() {
                 <option value="female">Female</option>
               </select>
             </div>
-            <div className="form-group">
+            <div className="form-group field">
               <label>Date of Birth *</label>
               <input
                 type="date"
@@ -232,7 +232,7 @@ export default function Registration() {
           <div className="photo-container">
             <div className="photo-preview">
               {photoPreview ? (
-                <img src={photoPreview} alt="Student photo" />
+                <img src={photoPreview} alt="Student photo" className="img-fluid" />
               ) : (
                 <div className="photo-placeholder">
                   <IoCamera className="app-icon" />
@@ -274,7 +274,7 @@ export default function Registration() {
           <h3>Guardian Information</h3>
           
           <div className="form-row">
-            <div className="form-group">
+            <div className="form-group field">
               <label>Guardian Name</label>
               <input
                 type="text"
@@ -284,7 +284,7 @@ export default function Registration() {
                 placeholder="Guardian's full name"
               />
             </div>
-            <div className="form-group">
+            <div className="form-group field">
               <label>Guardian Phone * (10 digits)</label>
               <input
                 type="tel"

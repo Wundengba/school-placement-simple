@@ -78,7 +78,7 @@ export default function StudentLoginOption() {
 
   return (
     <div className="student-login-modal">
-      <div className="student-login-card">
+      <div className="student-login-card container-sm">
         <div className="student-login-header">
           <h2>Student Portal Login</h2>
           <p>Enter your index number to check your placement status</p>
@@ -105,15 +105,15 @@ export default function StudentLoginOption() {
 
           {error && <div className="error-message">{error}</div>}
 
-          <div className="form-buttons">
+          <div className="form-row form-buttons">
             <button 
               type="submit" 
-              className="btn btn-primary" 
+              className="btn btn-primary field" 
               disabled={loading || indexNumber.trim().length !== 12}
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
-            <button type="button" className="btn btn-secondary" onClick={() => setShowStudentLogin(false)} disabled={loading}>
+            <button type="button" className="btn btn-secondary field" onClick={() => setShowStudentLogin(false)} disabled={loading}>
               Back
             </button>
           </div>

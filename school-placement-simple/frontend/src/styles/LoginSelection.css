@@ -20,13 +20,13 @@
 .login-selection-card h1 {
   color: #333;
   margin-bottom: 10px;
-  font-size: 2.5em;
+  font-size: clamp(1.5rem, 5vw, 2.5em);
 }
 
 .login-selection-card .subtitle {
   color: #666;
-  font-size: 1.1em;
-  margin-bottom: 40px;
+  font-size: clamp(0.95rem, 3vw, 1.1em);
+  margin-bottom: 30px;
 }
 
 .login-options {
@@ -106,5 +106,29 @@
 
   .btn-text h3 {
     font-size: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-selection-card {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .login-option-btn {
+    padding: 18px 12px;
+    gap: 12px;
+  }
+
+  .btn-icon {
+    font-size: 2.2em;
+  }
+
+  .btn-text h3 {
+    font-size: 0.95rem;
+  }
+
+  .btn-text p {
+    font-size: 0.75rem;
   }
 }

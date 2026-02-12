@@ -41,6 +41,14 @@ body {
   padding: 0 0;
 }
 
+/* Explicit open state to ensure sidebar shows when toggled */
+.sidebar.open {
+  transform: translateX(0);
+  opacity: 1;
+  width: 260px;
+  padding: 12px;
+}
+
 .sidebar-nav { display:flex; flex-direction:column; gap:8px }
 .sidebar .tab-btn { justify-content:flex-start; padding: 0.7rem 0.9rem; width:100%; border-radius:8px }
 
@@ -48,7 +56,8 @@ body {
 
 @media (max-width: 900px) {
   .sidebar { position: absolute; z-index: 60; top: 88px; left: 8px; box-shadow: 0 6px 24px rgba(0,0,0,0.12) }
-  .app-body { position: relative }
+  .app-body { position: relative; flex-direction: column; }
+  .tab-content { padding: 1rem; }
 }
 
 /* Tabs navigation */

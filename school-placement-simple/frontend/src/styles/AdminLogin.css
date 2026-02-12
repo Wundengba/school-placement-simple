@@ -172,3 +172,28 @@
     font-size: 0.8em;
   }
 }
+
+@media (max-width: 400px) {
+  .admin-login-card {
+    padding: 20px 15px;
+    border-radius: 8px;
+  }
+
+  .admin-login-card h2 {
+    font-size: 1.3em;
+    margin-top: 25px;
+  }
+
+  .login-form {
+    gap: 15px;
+  }
+
+  .form-group input {
+    padding: 10px 8px;
+  }
+
+  .demo-info {
+    padding: 12px;
+    font-size: 0.75em;
+  }
+}
