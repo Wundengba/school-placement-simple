@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-02-12T00:00:00.000Z",
+  "version": "1.0",
+  "database": "neon-postgresql",
+  "metadata": {
+    "studentCount": 3,
+    "schoolCount": 0,
+    "placementCount": 0,
+    "totalRecords": 3
+  },
+  "students": [
+    {"id":"cmlh6oh140000qyg3yl6un1xa","indexNumber":"STU001","fullName":"Alice Johnson","email":null,"maths":null,"english":null,"science":null,"placedSchoolId":null,"guardianName":"Bob Johnson","guardianPhone":"0551234567","status":"pending","deleted":false,"createdAt":"2026-02-10T22:39:43.672Z","updatedAt":"2026-02-10T22:39:43.672Z","schoolPreferences":[],"placedSchool":null},
+    {"id":"cmlh6oljv0001qyg38wkk6xr5","indexNumber":"STU002","fullName":"Bob Smith","email":null,"maths":null,"english":null,"science":null,"placedSchoolId":null,"guardianName":null,"guardianPhone":null,"status":"pending","deleted":false,"createdAt":"2026-02-10T22:39:49.531Z","updatedAt":"2026-02-10T22:39:49.531Z","schoolPreferences":[],"placedSchool":null},
+    {"id":"cmlh6v4sr0002qyg3bznq8ewg","indexNumber":"123456789012","fullName":"ASIEDU JOHNSON","email":null,"maths":null,"english":null,"science":null,"placedSchoolId":null,"guardianName":null,"guardianPhone":"1234567890","status":"pending","deleted":false,"createdAt":"2026-02-10T22:44:54.411Z","updatedAt":"2026-02-10T22:44:54.411Z","schoolPreferences":[],"placedSchool":null}
+  ],
+  "schools": [],
+  "placements": []
+}

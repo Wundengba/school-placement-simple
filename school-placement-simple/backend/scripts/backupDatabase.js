@@ -10,7 +10,7 @@ import prisma from '../src/config/prisma.js'
  * Output: backups/backup_YYYY-MM-DD.json
  */
 
-async function backupDatabase() {
+export async function backupDatabase() {
   const backupsDir = path.resolve('./backups')
   
   // Create backups directory if it doesn't exist
@@ -77,5 +77,5 @@ async function backupDatabase() {
   }
 }
 
-// Run backup
-backupDatabase()
+// Note: this module exports `backupDatabase` for programmatic use.
+// To run directly use the runner `backupDatabaseRunner.js` or call this function.

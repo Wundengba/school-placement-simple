@@ -10,18 +10,19 @@ import prisma from '../src/config/prisma.js'
  * Example: npm run restore -- backups/backup_2026-02-11.json
  */
 
-async function restoreDatabase() {
+export async function restoreDatabase(backupFileArg) {
   const args = process.argv.slice(2)
-  
-  if (args.length === 0) {
+
+  // support passing the backup file programmatically
+  const backupFile = backupFileArg || args[0]
+
+  if (!backupFile) {
     console.log('❌ Error: No backup file specified')
     console.log('\nUsage: npm run restore -- <backup-file>')
     console.log('Example: npm run restore -- backups/backup_2026-02-11.json')
     console.log('\nTo list available backups, run: npm run list-backups')
     process.exit(1)
   }
-  
-  const backupFile = args[0]
   const backupPath = path.resolve(backupFile)
   
   // Validate file exists
@@ -48,8 +49,9 @@ async function restoreDatabase() {
     console.log(`\n⚠️  WARNING: This will restore data from the backup.`)
     console.log(`   Existing data will be OVERWRITTEN or MERGED.`)
     
-    const confirmRestore = process.env.SKIP_CONFIRM === 'true' ? 'yes' : 
-      await promptUser('\nContinue restore? (yes/no): ')
+    // Allow either SKIP_CONFIRM or the mistyped SKIO_CONFIRM to skip confirmation
+    const skipFlag = (process.env.SKIP_CONFIRM || process.env.SKIO_CONFIRM || '').toString().toLowerCase()
+    const confirmRestore = skipFlag === 'true' ? 'yes' : await promptUser('\nContinue restore? (yes/no): ')
     
     if (confirmRestore.toLowerCase() !== 'yes' && confirmRestore.toLowerCase() !== 'y') {
       console.log('❌ Restore cancelled')
@@ -93,19 +95,52 @@ async function restoreDatabase() {
       let restored = 0
       for (const student of students) {
         try {
-          const { schoolPreferences, ...studentData } = student
-          
+          // remove nested/relation fields that Prisma upsert won't accept as scalars
+          const { schoolPreferences, placedSchool, placements: studentPlacements, mockScores, ...rawStudent } = student
+
+          // build explicit create/update payloads with only scalar fields
+          const updatePayload = {
+            indexNumber: rawStudent.indexNumber,
+            fullName: rawStudent.fullName,
+            email: rawStudent.email,
+            gender: rawStudent.gender,
+            dateOfBirth: rawStudent.dateOfBirth ? new Date(rawStudent.dateOfBirth) : undefined,
+            photo: rawStudent.photo,
+            maths: rawStudent.maths,
+            english: rawStudent.english,
+            science: rawStudent.science,
+            placedSchoolId: rawStudent.placedSchoolId || null,
+            guardianName: rawStudent.guardianName,
+            guardianPhone: rawStudent.guardianPhone,
+            status: rawStudent.status,
+            deleted: rawStudent.deleted || false,
+            updatedAt: new Date()
+          }
+
+          const createPayload = {
+            id: rawStudent.id,
+            indexNumber: rawStudent.indexNumber,
+            fullName: rawStudent.fullName,
+            email: rawStudent.email,
+            gender: rawStudent.gender,
+            dateOfBirth: rawStudent.dateOfBirth ? new Date(rawStudent.dateOfBirth) : undefined,
+            photo: rawStudent.photo,
+            maths: rawStudent.maths,
+            english: rawStudent.english,
+            science: rawStudent.science,
+            placedSchoolId: rawStudent.placedSchoolId || null,
+            guardianName: rawStudent.guardianName,
+            guardianPhone: rawStudent.guardianPhone,
+            status: rawStudent.status || 'pending',
+            deleted: rawStudent.deleted || false,
+            createdAt: rawStudent.createdAt ? new Date(rawStudent.createdAt) : new Date(),
+            updatedAt: rawStudent.updatedAt ? new Date(rawStudent.updatedAt) : new Date()
+          }
+
           await prisma.student.upsert({
-            where: { id: student.id },
-            update: {
-              ...studentData,
-              updatedAt: new Date()
-            },
-            create: {
-              ...studentData,
-              createdAt: student.createdAt ? new Date(student.createdAt) : new Date(),
-              updatedAt: student.updatedAt ? new Date(student.updatedAt) : new Date()
-            }
+            where: { id: rawStudent.id },
+            update: updatePayload,
+            create: createPayload
           })
           restored++
         } catch (err) {
@@ -173,5 +208,5 @@ function promptUser(question) {
   })
 }
 
-// Run restore
-restoreDatabase()
+// Note: this module exports `restoreDatabase` for programmatic use.
+// To run directly use the runner `restoreDatabaseRunner.js` or call this function.

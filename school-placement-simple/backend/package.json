@@ -8,8 +8,9 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "backup": "node scripts/backupDatabase.js",
-    "restore": "node scripts/restoreDatabase.js",
+    "restore": "node scripts/restoreCli.js",
     "list-backups": "node scripts/listBackups.js",
+    "restore:verify": "node scripts/restore_and_verify.js",
     "postinstall": "prisma generate"
   },
   "keywords": [
