@@ -364,94 +364,38 @@ export default function StudentPortalView({ studentInfo }) {
       </header>
 
       {/* Tab Navigation */}
-      <div style={{
-        backgroundColor: '#f5f5f5',
-        borderBottom: '2px solid #2196F3',
-        display: 'flex',
-        gap: 0,
-        padding: '0 20px'
-      }}>
+      <nav className="tabs-nav">
         <button
           onClick={() => setActiveTab('profile')}
-          style={{
-            padding: '14px 24px',
-            backgroundColor: activeTab === 'profile' ? '#2196F3' : 'transparent',
-            color: activeTab === 'profile' ? 'white' : '#333',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: activeTab === 'profile' ? 'bold' : 'normal',
-            borderRadius: '4px 4px 0 0',
-            transition: 'all 0.3s ease'
-          }}
+          className={`tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
         >
           👤 Profile
         </button>
         <button
           onClick={() => setActiveTab('placement')}
-          style={{
-            padding: '14px 24px',
-            backgroundColor: activeTab === 'placement' ? '#2196F3' : 'transparent',
-            color: activeTab === 'placement' ? 'white' : '#333',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: activeTab === 'placement' ? 'bold' : 'normal',
-            borderRadius: '4px 4px 0 0',
-            transition: 'all 0.3s ease'
-          }}
+          className={`tab-btn ${activeTab === 'placement' ? 'active' : ''}`}
         >
           🎓 Placement Status
         </button>
         <button
           onClick={() => setActiveTab('schools')}
-          style={{
-            padding: '14px 24px',
-            backgroundColor: activeTab === 'schools' ? '#2196F3' : 'transparent',
-            color: activeTab === 'schools' ? 'white' : '#333',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: activeTab === 'schools' ? 'bold' : 'normal',
-            borderRadius: '4px 4px 0 0',
-            transition: 'all 0.3s ease'
-          }}
+          className={`tab-btn ${activeTab === 'schools' ? 'active' : ''}`}
         >
           🏫 School Selection
         </button>
         <button
           onClick={() => setActiveTab('selected')}
-          style={{
-            padding: '14px 24px',
-            backgroundColor: activeTab === 'selected' ? '#2196F3' : 'transparent',
-            color: activeTab === 'selected' ? 'white' : '#333',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: activeTab === 'selected' ? 'bold' : 'normal',
-            borderRadius: '4px 4px 0 0',
-            transition: 'all 0.3s ease'
-          }}
+          className={`tab-btn ${activeTab === 'selected' ? 'active' : ''}`}
         >
           ✅ Your Selections
         </button>
         <button
           onClick={() => setActiveTab('results')}
-          style={{
-            padding: '14px 24px',
-            backgroundColor: activeTab === 'results' ? '#2196F3' : 'transparent',
-            color: activeTab === 'results' ? 'white' : '#333',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: activeTab === 'results' ? 'bold' : 'normal',
-            borderRadius: '4px 4px 0 0',
-            transition: 'all 0.3s ease'
-          }}
+          className={`tab-btn ${activeTab === 'results' ? 'active' : ''}`}
         >
           📊 Results
         </button>
-      </div>
+      </nav>
 
       <main className="student-main">
         {studentDataError && (
