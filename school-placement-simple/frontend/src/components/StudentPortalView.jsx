@@ -54,22 +54,51 @@ export default function StudentPortalView({ studentInfo }) {
     const fetchPlacementData = async () => {
       try {
         const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
-        const resp = await fetch(`${API_BASE}/sync/download`)
-        const data = await resp.json()
         
-        if (data.success && data.data.students) {
-          const studentRecord = data.data.students.find(s => s.indexNumber === student.indexNumber)
-          if (studentRecord) {
-            setPlacementData(studentRecord)
-          } else {
-            setStudentDataError('Student record not found in database')
+        // Use AbortController for timeout
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 8000) // 8 second timeout
+        
+        try {
+          const resp = await fetch(`${API_BASE}/sync/download`, {
+            signal: controller.signal
+          })
+          clearTimeout(timeoutId)
+          
+          if (!resp.ok) {
+            throw new Error(`HTTP ${resp.status}: ${resp.statusText}`)
           }
-        } else {
-          setStudentDataError('Failed to load student data')
+          
+          const data = await resp.json()
+          
+          if (data.success && data.data.students) {
+            const studentRecord = data.data.students.find(s => s.indexNumber === student.indexNumber)
+            if (studentRecord) {
+              setPlacementData(studentRecord)
+            } else {
+              // Student not in database, which is okay - use local data
+              console.log('Student record not in sync database, using local data')
+              setPlacementData(student)
+            }
+          } else {
+            throw new Error('Invalid response format')
+          }
+        } catch (err) {
+          clearTimeout(timeoutId)
+          
+          // If fetch fails, use local student data as fallback
+          if (err.name === 'AbortError') {
+            console.warn('API timeout - using local student data')
+          } else {
+            console.warn('API fetch failed - using local student data:', err.message)
+          }
+          
+          // Use the local student data we already have
+          setPlacementData(student)
         }
       } catch (err) {
-        console.error('Error fetching placement data:', err)
-        setStudentDataError('Error loading student data: ' + err.message)
+        console.error('Unexpected error in fetchPlacementData:', err)
+        setPlacementData(student)
       } finally {
         setLoading(false)
       }
@@ -95,32 +124,48 @@ export default function StudentPortalView({ studentInfo }) {
         const studentId = student.id || student.studentId
         if (!studentId) {
           console.warn('No student ID available for mock scores fetch')
-          return
-        }
-        
-        const resp = await fetch(`${API_BASE}/students/${studentId}/mocks`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        
-        if (!resp.ok) {
-          console.warn('Mock scores fetch failed with status:', resp.status)
           setMockScores([])
           return
         }
         
-        const data = await resp.json()
-        if (data.success && data.mocks) {
-          setMockScores(data.mocks)
-          console.log('✅ Mock scores loaded:', data.mocks.length, 'mocks')
-        } else {
+        // Use AbortController for timeout
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+        
+        try {
+          const resp = await fetch(`${API_BASE}/students/${studentId}/mocks`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            signal: controller.signal
+          })
+          clearTimeout(timeoutId)
+          
+          if (!resp.ok) {
+            console.warn('Mock scores fetch failed with status:', resp.status)
+            setMockScores([])
+            return
+          }
+          
+          const data = await resp.json()
+          if (data.success && data.mocks) {
+            setMockScores(data.mocks)
+            console.log('✅ Mock scores loaded:', data.mocks.length, 'mocks')
+          } else {
+            setMockScores([])
+          }
+        } catch (err) {
+          clearTimeout(timeoutId)
+          if (err.name === 'AbortError') {
+            console.warn('Mock scores fetch timeout')
+          } else {
+            console.warn('Mock scores fetch failed:', err.message)
+          }
           setMockScores([])
         }
       } catch (err) {
-        console.error('Error fetching mock scores:', err.message)
-        // Don't fail - just show empty mock scores section
+        console.error('Unexpected error in fetchMockScores:', err.message)
         setMockScores([])
       } finally {
         setMocksLoading(false)
@@ -131,15 +176,34 @@ export default function StudentPortalView({ studentInfo }) {
       try {
         setExamTypesLoading(true)
         const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.PROD ? 'https://backend-seven-ashen-18.vercel.app/api' : '/api')
-        const resp = await fetch(`${API_BASE}/admin/public/exam-types`)
-        if (!resp.ok) {
+        
+        // Use AbortController for timeout
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+        
+        try {
+          const resp = await fetch(`${API_BASE}/admin/public/exam-types`, {
+            signal: controller.signal
+          })
+          clearTimeout(timeoutId)
+          
+          if (!resp.ok) {
+            setExamTypes([])
+            return
+          }
+          const data = await resp.json()
+          if (data && data.examTypes) setExamTypes(data.examTypes)
+        } catch (err) {
+          clearTimeout(timeoutId)
+          if (err.name === 'AbortError') {
+            console.warn('Exam types fetch timeout')
+          } else {
+            console.warn('Failed to load exam types:', err.message)
+          }
           setExamTypes([])
-          return
         }
-        const data = await resp.json()
-        if (data && data.examTypes) setExamTypes(data.examTypes)
       } catch (err) {
-        console.warn('Failed to load exam types for student portal:', err.message)
+        console.warn('Unexpected error in fetchExamTypes:', err.message)
         setExamTypes([])
       } finally {
         setExamTypesLoading(false)
