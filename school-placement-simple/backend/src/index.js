@@ -252,6 +252,11 @@ app.get('/api/list-routes', (req, res) => {
   }
 })
 
+// Simple ping endpoint to verify deployed code is live
+app.get('/api/debug-ping', (req, res) => {
+  res.json({ success: true, message: 'pong', timestamp: new Date() })
+})
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' })
