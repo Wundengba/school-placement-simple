@@ -12,6 +12,7 @@ import notificationRoutes from './routes/notificationRoutes.js'
 import syncRoutes from './routes/syncRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
+import diagnosticRoutes from './routes/diagnosticRoutes.js'
 
 console.log('[INDEX] Routes Imported')
 
@@ -199,6 +200,7 @@ app.use('/api/placements', placementRoutes)
 app.use('/api/notifications', notificationRoutes)
 app.use('/api/sync', syncRoutes)
 app.use('/api/dashboard', dashboardRoutes)
+app.use('/api', diagnosticRoutes)
 
 // 404 handler
 app.use((req, res) => {
