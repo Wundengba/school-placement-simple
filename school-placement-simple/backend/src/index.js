@@ -221,6 +221,30 @@ app.use('/api/sync', syncRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api', diagnosticRoutes)
 
+// Temporary route lister for debugging registered routes
+app.get('/api/list-routes', (req, res) => {
+  try {
+    const routes = []
+    const stack = app._router && app._router.stack ? app._router.stack : []
+    stack.forEach(mw => {
+      if (mw.route && mw.route.path) {
+        const methods = Object.keys(mw.route.methods).join(',').toUpperCase()
+        routes.push({ path: mw.route.path, methods })
+      } else if (mw.name === 'router' && mw.handle && mw.handle.stack) {
+        mw.handle.stack.forEach(r => {
+          if (r.route && r.route.path) {
+            const methods = Object.keys(r.route.methods).join(',').toUpperCase()
+            routes.push({ path: r.route.path, methods })
+          }
+        })
+      }
+    })
+    res.json({ success: true, count: routes.length, routes })
+  } catch (err) {
+    res.status(500).json({ success: false, error: err && err.message })
+  }
+})
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' })
