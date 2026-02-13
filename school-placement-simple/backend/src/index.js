@@ -96,7 +96,14 @@ app.get('/api/diagnose-db', async (req, res) => {
     res.json({ success: true, dbUrlSet, ping, version, timestamp: new Date() })
   } catch (error) {
     console.error('[DIAG-INLINE] DB diagnostic error:', error && error.message)
-    res.status(500).json({ success: false, error: error && error.message, dbUrlSet: !!process.env.DATABASE_URL })
+    // Verbose diagnostics (temporary): include message and stack to help debugging
+    res.status(500).json({
+      success: false,
+      errorMessage: error && error.message,
+      errorStack: error && error.stack,
+      dbUrlSet: !!process.env.DATABASE_URL,
+      timestamp: new Date()
+    })
   }
 })
 
