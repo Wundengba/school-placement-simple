@@ -81,6 +81,25 @@ app.get('/api/health', (req, res) => {
   })
 })
 
+// Inline diagnostic route (temporary) to check Prisma connectivity and env
+app.get('/api/diagnose-db', async (req, res) => {
+  try {
+    const dbUrlSet = !!process.env.DATABASE_URL
+    const ping = await prisma.$queryRaw`SELECT 1 as result`
+    let version = null
+    try {
+      const v = await prisma.$queryRaw`SELECT version() as v`
+      version = v
+    } catch (e) {
+      // ignore secondary errors
+    }
+    res.json({ success: true, dbUrlSet, ping, version, timestamp: new Date() })
+  } catch (error) {
+    console.error('[DIAG-INLINE] DB diagnostic error:', error && error.message)
+    res.status(500).json({ success: false, error: error && error.message, dbUrlSet: !!process.env.DATABASE_URL })
+  }
+})
+
 // Migration status endpoint
 app.get('/api/migration-status', (req, res) => {
   res.json({
